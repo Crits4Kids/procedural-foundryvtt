@@ -106,3 +106,62 @@
   flex-direction: column;
   gap: 0.5rem;
 }
+
+.procedural-trope-builder {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.procedural-builder-header {
+  font-weight: bold;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #666;
+}
+
+.procedural-builder-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.5rem 0;
+}
+
+.procedural-builder-step {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.procedural-builder-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.procedural-builder-freetext {
+  width: 100%;
+  min-height: 3rem;
+}
+
+.procedural-builder-skill-input {
+  width: 3rem;
+}
+
+.procedural-builder-violations {
+  color: #b00000;
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.procedural-builder-review dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.25rem 0.5rem;
+  margin: 0;
+}
+
+.procedural-builder-footer {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 0.5rem;
+  border-top: 1px solid #666;
+}

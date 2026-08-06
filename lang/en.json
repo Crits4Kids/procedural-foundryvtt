@@ -49,6 +49,23 @@
       "Roll": "Roll",
       "Cancel": "Cancel",
       "Reroll": "Spend Rerun Point & Reroll"
+    },
+    "TropeBuilder": {
+      "Title": "Build a Trope",
+      "Launch": "Build Trope Character",
+      "StepIndicator": "Step",
+      "Back": "Back",
+      "Next": "Next",
+      "Finish": "Finish",
+      "Edit": "Edit",
+      "Roll": "Roll",
+      "ChooseOption": "Choose...",
+      "OrTypeYourOwn": "Or type your own...",
+      "NamePrompt": "What's your character's name?",
+      "NamePlaceholder": "Character name",
+      "GiftedPrompt": "Gifted: choose a stat to add +3 to",
+      "PointsRemaining": "points remaining",
+      "Word": "Word"
     }
   },
   "TYPES": {

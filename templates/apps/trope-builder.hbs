@@ -1,0 +1,17 @@
+<form class="procedural-sheet procedural-trope-builder">
+  <header class="procedural-builder-header">
+    <span>{{localize "PROCEDURAL.TropeBuilder.StepIndicator"}} {{stepNumber}} / {{stepCount}}</span>
+  </header>
+
+  <section class="procedural-builder-body">
+    {{#if show.name}}{{> "systems/procedural/templates/apps/trope-builder-steps/name.hbs"}}{{/if}}
+    {{#if show.trope}}{{> "systems/procedural/templates/apps/trope-builder-steps/trope.hbs"}}{{/if}}
+  </section>
+
+  <footer class="procedural-builder-footer">
+    {{#unless isFirstStep}}
+      <button type="button" data-action="goBack">{{localize "PROCEDURAL.TropeBuilder.Back"}}</button>
+    {{/unless}}
+    <button type="button" data-action="goNext" {{#unless canAdvance}}disabled{{/unless}}>{{localize "PROCEDURAL.TropeBuilder.Next"}}</button>
+  </footer>
+</form>
