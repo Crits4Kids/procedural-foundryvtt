@@ -6,6 +6,7 @@ import EquipmentItemData from "./data/item-equipment.mjs";
 import ProceduralActor from "./documents/actor.mjs";
 import { registerChatListeners } from "./helpers/chat-listeners.mjs";
 import { seedCompendiums } from "./helpers/seed-compendiums.mjs";
+import ProceduralTropeActorSheet from "./sheets/actor-trope-sheet.mjs";
 
 Hooks.once("init", () => {
   CONFIG.Actor.dataModels.trope = TropeActorData;
@@ -17,6 +18,13 @@ Hooks.once("init", () => {
   CONFIG.Actor.documentClass = ProceduralActor;
 
   registerChatListeners();
+
+  Actors.unregisterSheet("core", ActorSheet);
+  Actors.registerSheet("procedural", ProceduralTropeActorSheet, {
+    types: ["trope"],
+    makeDefault: true,
+    label: "PROCEDURAL.SheetTrope"
+  });
 });
 
 Hooks.once("ready", () => {

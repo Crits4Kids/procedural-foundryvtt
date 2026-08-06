@@ -1,0 +1,99 @@
+<form class="procedural-sheet procedural-trope-sheet">
+  <header class="procedural-sheet-header">
+    <img class="procedural-sheet-img" src="{{actor.img}}" data-edit="img" alt="{{actor.name}}">
+    <input class="procedural-sheet-name" type="text" name="name" value="{{actor.name}}">
+  </header>
+
+  <section class="procedural-stats-grid">
+    <div>{{localize "PROCEDURAL.Stat.mental"}}: {{system.stats.mental}}</div>
+    <div>{{localize "PROCEDURAL.Stat.physical"}}: {{system.stats.physical}}</div>
+    <div>{{localize "PROCEDURAL.Stat.social"}}: {{system.stats.social}}</div>
+    <div>
+      {{localize "PROCEDURAL.Actor.RerunPoints"}}:
+      <input type="number" name="system.rerunPoints" value="{{system.rerunPoints}}" min="0">
+    </div>
+    <div>
+      <label>
+        <input type="checkbox" data-action="toggleHurt" {{#if system.hurt}}checked{{/if}}>
+        {{localize "PROCEDURAL.Actor.Hurt"}}
+      </label>
+    </div>
+  </section>
+
+  <section class="procedural-skills-grid">
+    {{#each system.skills as |skill key|}}
+      <div class="procedural-skill-row">
+        <button type="button" data-action="rollSkill" data-skill="{{key}}">
+          {{localize (concat "PROCEDURAL.Skill." key)}}
+        </button>
+        <input type="number" name="system.skills.{{key}}.value" value="{{skill.value}}" min="0">
+      </div>
+    {{/each}}
+  </section>
+
+  <section class="procedural-text-fields">
+    <label>{{localize "PROCEDURAL.Actor.Qualities"}}
+      <input type="text" name="system.qualities" value="{{system.qualities}}">
+    </label>
+    <label>{{localize "PROCEDURAL.Actor.Quirks"}}
+      <input type="text" name="system.quirks" value="{{system.quirks}}">
+    </label>
+    <label>{{localize "PROCEDURAL.Actor.BStory"}}
+      <input type="text" name="system.bStory" value="{{system.bStory}}">
+    </label>
+    <label>{{localize "PROCEDURAL.Actor.HQ"}}
+      <input type="text" name="system.hq" value="{{system.hq}}">
+    </label>
+    <label>{{localize "PROCEDURAL.Actor.AgencyName"}}
+      <input type="text" name="system.agencyName" value="{{system.agencyName}}">
+    </label>
+    <label>{{localize "PROCEDURAL.Actor.DeskItem"}}
+      <input type="text" name="system.deskItem" value="{{system.deskItem}}">
+    </label>
+  </section>
+
+  <section class="procedural-items">
+    <h3>{{localize "TYPES.Item.trope"}}
+      <button type="button" data-action="createItem" data-type="trope">+</button>
+    </h3>
+    <ul>
+      {{#each items.trope as |item|}}
+        <li data-item-id="{{item.id}}">
+          {{item.name}}
+          <button type="button" data-action="editItem">✎</button>
+          <button type="button" data-action="deleteItem">✕</button>
+        </li>
+      {{/each}}
+    </ul>
+
+    <h3>{{localize "TYPES.Item.talent"}}
+      <button type="button" data-action="createItem" data-type="talent">+</button>
+    </h3>
+    <ul>
+      {{#each items.talent as |item|}}
+        <li data-item-id="{{item.id}}">
+          {{item.name}}
+          <button type="button" data-action="editItem">✎</button>
+          <button type="button" data-action="deleteItem">✕</button>
+        </li>
+      {{/each}}
+    </ul>
+
+    <h3>{{localize "TYPES.Item.equipment"}}
+      <button type="button" data-action="createItem" data-type="equipment">+</button>
+    </h3>
+    <ul>
+      {{#each items.equipment as |item|}}
+        <li data-item-id="{{item.id}}">
+          {{item.name}}
+          <button type="button" data-action="editItem">✎</button>
+          <button type="button" data-action="deleteItem">✕</button>
+        </li>
+      {{/each}}
+    </ul>
+  </section>
+
+  <section class="procedural-biography">
+    {{editor system.biography target="system.biography" button=true}}
+  </section>
+</form>
