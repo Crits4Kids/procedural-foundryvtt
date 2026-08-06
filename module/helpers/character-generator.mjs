@@ -86,6 +86,47 @@ export function divestSkills(stats, statNotes, rng) {
   };
 }
 
+/**
+ * Checks a manually-chosen skill allocation against the same rules
+ * divestSkills enforces automatically: each stat's points must be fully
+ * spent, and Tech/Lab may not exceed a cap of 2 unless statNotes names
+ * that skill with an "at least N" minimum — which then also becomes the
+ * floor for that skill, not just a waived cap.
+ * @param {{mental: number, physical: number, social: number}} stats
+ * @param {string} statNotes
+ * @param {{tech:number,lab:number,investigation:number,violence:number,reflexes:number,coordination:number,cool:number,intuition:number,deception:number}} skills
+ * @returns {{valid: boolean, remaining: {mental:number,physical:number,social:number}, violations: string[]}}
+ */
+export function validateSkillAllocation(stats, statNotes, skills) {
+  const noteMin = parseStatNoteMinimum(statNotes);
+  const violations = [];
+
+  const remaining = {};
+  for (const statName of Object.keys(STAT_SKILLS)) {
+    const spent = STAT_SKILLS[statName].reduce((sum, key) => sum + (skills[key] ?? 0), 0);
+    remaining[statName] = stats[statName] - spent;
+  }
+
+  for (const [skill, cap] of Object.entries(CAPPED_SKILLS)) {
+    const value = skills[skill] ?? 0;
+    const isNotedMinimum = noteMin && noteMin.skill === skill;
+    if (!isNotedMinimum && value > cap) {
+      violations.push(`${skill} exceeds the cap of ${cap}`);
+    }
+  }
+
+  if (noteMin) {
+    const value = skills[noteMin.skill] ?? 0;
+    if (value < noteMin.minimum) {
+      violations.push(`${noteMin.skill} is below its required minimum of ${noteMin.minimum}`);
+    }
+  }
+
+  const valid = violations.length === 0 && Object.values(remaining).every(r => r === 0);
+
+  return { valid, remaining, violations };
+}
+
 function rollOddsEvens(table, rng) {
   const selector = roll1d6(rng);
   return selector % 2 === 1 ? table.odds : table.evens;

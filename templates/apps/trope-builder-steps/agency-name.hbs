@@ -1,0 +1,18 @@
+<div class="procedural-builder-step procedural-builder-agency-name">
+  <div class="procedural-builder-row">
+    <button type="button" data-action="rollAgencyName">{{localize "PROCEDURAL.TropeBuilder.Roll"}}</button>
+    <select data-role="agency-word-select">
+      <option value="">{{localize "PROCEDURAL.TropeBuilder.Word"}} 1</option>
+      {{#each table1 as |word|}}<option value="{{word}}">{{word}}</option>{{/each}}
+    </select>
+    <select data-role="agency-word-select">
+      <option value="">{{localize "PROCEDURAL.TropeBuilder.Word"}} 2</option>
+      {{#each table2 as |word|}}<option value="{{word}}">{{word}}</option>{{/each}}
+    </select>
+    <select data-role="agency-word-select">
+      <option value="">{{localize "PROCEDURAL.TropeBuilder.Word"}} 3</option>
+      {{#each table3 as |word|}}<option value="{{word}}">{{word}}</option>{{/each}}
+    </select>
+  </div>
+  <input type="text" name="stepValue" value="{{draft.agencyName}}" placeholder="{{localize 'PROCEDURAL.TropeBuilder.OrTypeYourOwn'}}">
+</div>

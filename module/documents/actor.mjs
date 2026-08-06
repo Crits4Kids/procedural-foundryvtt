@@ -1,6 +1,7 @@
 import { computeRoll } from "../helpers/dice-rules.mjs";
 import { showDiceSoNice } from "../helpers/dice-so-nice.mjs";
 import { generateTrope } from "../helpers/character-generator.mjs";
+import { loadGeneratorData } from "../helpers/generator-data.mjs";
 
 const PHYSICAL_SKILLS = new Set(["violence", "reflexes", "coordination"]);
 
@@ -11,37 +12,6 @@ const TIER_CLASS = {
   success: "procedural-tier-success",
   successEffect: "procedural-tier-success-effect"
 };
-
-const GENERATOR_DATA_PATHS = {
-  tropes: "systems/procedural/data/tropes.json",
-  secondTalents: "systems/procedural/data/second-talents.json",
-  qualities: "systems/procedural/data/qualities.json",
-  quirks: "systems/procedural/data/quirks.json",
-  bstories: "systems/procedural/data/bstories.json",
-  hq: "systems/procedural/data/hq.json",
-  agencyNames: "systems/procedural/data/agency-names.json"
-};
-
-let cachedGeneratorData = null;
-
-async function loadGeneratorData() {
-  if (cachedGeneratorData) return cachedGeneratorData;
-  try {
-    const entries = await Promise.all(
-      Object.entries(GENERATOR_DATA_PATHS).map(async ([key, path]) => {
-        const response = await fetch(path);
-        if (!response.ok) throw new Error(`Failed to fetch "${path}" (${response.status} ${response.statusText})`);
-        return [key, await response.json()];
-      })
-    );
-    cachedGeneratorData = Object.fromEntries(entries);
-    return cachedGeneratorData;
-  } catch (err) {
-    console.error("PROCEDURAL | Failed to load random Trope generator data", err);
-    ui.notifications?.error("PROCEDURAL! failed to load the random Trope generator data. Check the console for details.");
-    throw err;
-  }
-}
 
 export default class ProceduralActor extends Actor {
   async rollSkill(skillKey, { mode = "normal", situationalModifier = 0 } = {}) {

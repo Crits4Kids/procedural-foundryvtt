@@ -1,0 +1,35 @@
+<div class="procedural-builder-step procedural-builder-trope-step">
+  <div class="procedural-builder-row">
+    <button type="button" data-action="rollTrope">{{localize "PROCEDURAL.TropeBuilder.Roll"}}</button>
+    <select data-role="trope-select">
+      <option value="">{{localize "PROCEDURAL.TropeBuilder.ChooseOption"}}</option>
+      {{#each tropeOptions as |opt|}}
+        <option value="{{opt.name}}" {{#if opt.selected}}selected{{/if}}>{{opt.name}}</option>
+      {{/each}}
+    </select>
+  </div>
+
+  {{#if draft.trope}}
+    <div class="procedural-builder-trope-summary">
+      <h3>{{draft.trope.name}}</h3>
+      <p>{{localize "PROCEDURAL.Item.TalentName"}}: {{draft.trope.system.talentName}} — {{draft.trope.system.talentDescription}}</p>
+      <p>
+        {{localize "PROCEDURAL.Stat.mental"}}: {{finalStats.mental}},
+        {{localize "PROCEDURAL.Stat.physical"}}: {{finalStats.physical}},
+        {{localize "PROCEDURAL.Stat.social"}}: {{finalStats.social}}
+      </p>
+    </div>
+  {{/if}}
+
+  {{#if isGifted}}
+    <fieldset class="procedural-builder-gifted">
+      <legend>{{localize "PROCEDURAL.TropeBuilder.GiftedPrompt"}}</legend>
+      {{#each statKeys as |stat|}}
+        <label>
+          <input type="radio" name="giftedStat" value="{{stat}}" data-role="gifted-stat" {{#if (lookup ../giftedStatChecked stat)}}checked{{/if}}>
+          {{localize (concat "PROCEDURAL.Stat." stat)}}
+        </label>
+      {{/each}}
+    </fieldset>
+  {{/if}}
+</div>

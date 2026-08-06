@@ -4,6 +4,7 @@ import TropeItemData from "./data/item-trope.mjs";
 import TalentItemData from "./data/item-talent.mjs";
 import EquipmentItemData from "./data/item-equipment.mjs";
 import ProceduralActor from "./documents/actor.mjs";
+import TropeBuilderApplication from "./apps/trope-builder.mjs";
 import { registerChatListeners } from "./helpers/chat-listeners.mjs";
 import { seedCompendiums } from "./helpers/seed-compendiums.mjs";
 import ProceduralTropeActorSheet from "./sheets/actor-trope-sheet.mjs";
@@ -45,4 +46,24 @@ Hooks.once("init", () => {
 
 Hooks.once("ready", () => {
   seedCompendiums().catch(err => console.error("PROCEDURAL | Compendium seeding failed", err));
+});
+
+Hooks.on("renderActorDirectory", (app, element) => {
+  if (!Actor.canUserCreate(game.user)) return;
+  const header = element.querySelector(".directory-header .header-actions");
+  if (!header || header.querySelector(".procedural-trope-builder-launch")) return;
+
+  const button = document.createElement("button");
+  button.type = "button";
+  button.classList.add("procedural-trope-builder-launch");
+  button.innerHTML = `<i class="fa-solid fa-dice-d20"></i> ${game.i18n.localize("PROCEDURAL.TropeBuilder.Launch")}`;
+  button.addEventListener("click", () => {
+    const existing = foundry.applications.instances.get("procedural-trope-builder");
+    if (existing) {
+      existing.bringToFront();
+      return;
+    }
+    new TropeBuilderApplication().render(true);
+  });
+  header.appendChild(button);
 });
