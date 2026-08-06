@@ -25,7 +25,10 @@ export default class ProceduralActor extends Actor {
     });
 
     try {
-      await showDiceSoNice(result.dice);
+      await Promise.race([
+        showDiceSoNice(result.dice),
+        new Promise(resolve => setTimeout(resolve, 10000))
+      ]);
     } catch (err) {
       console.error("PROCEDURAL | Dice So Nice! animation failed", err);
     }
