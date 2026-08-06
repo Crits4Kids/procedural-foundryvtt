@@ -3,3 +3,4 @@ Rulebook/*.docx
 Rulebook/*.pdf
 .DS_Store
 .worktrees/
+.superpowers/
