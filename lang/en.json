@@ -1,0 +1,58 @@
+{
+  "PROCEDURAL": {
+    "SheetTrope": "Trope Sheet",
+    "SheetNpc": "NPC Sheet",
+    "Skill": {
+      "tech": "Tech",
+      "lab": "Lab",
+      "investigation": "Investigation",
+      "violence": "Violence",
+      "reflexes": "Reflexes",
+      "coordination": "Coordination",
+      "cool": "Cool",
+      "intuition": "Intuition",
+      "deception": "Deception"
+    },
+    "Stat": {
+      "mental": "Mental",
+      "physical": "Physical",
+      "social": "Social"
+    },
+    "Actor": {
+      "RerunPoints": "Rerun Points",
+      "Hurt": "Hurt",
+      "Qualities": "Qualities",
+      "Quirks": "Quirks",
+      "BStory": "B-Story",
+      "HQ": "HQ",
+      "AgencyName": "Agency Name",
+      "DeskItem": "Desk Item"
+    },
+    "Item": {
+      "StatBlock": "Suggested Stats (Mental / Physical / Social)",
+      "StatNotes": "Stat Notes",
+      "TalentName": "Talent Name",
+      "TalentDescription": "Talent Description",
+      "UsesPerAct": "Uses Per Act (blank = no limit)",
+      "Description": "Description",
+      "Used": "Used This Act"
+    },
+    "Roll": {
+      "DialogTitleSuffix": "Roll",
+      "Normal": "Normal",
+      "Advantage": "Advantage",
+      "Disadvantage": "Disadvantage",
+      "SituationalModifier": "Situational Modifier",
+      "Roll": "Roll",
+      "Cancel": "Cancel",
+      "Reroll": "Spend Rerun Point & Reroll"
+    }
+  },
+  "TYPES": {
+    "Item": {
+      "trope": "Trope",
+      "talent": "Talent",
+      "equipment": "Equipment"
+    }
+  }
+}
