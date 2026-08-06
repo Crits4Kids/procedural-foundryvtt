@@ -19,7 +19,7 @@ interludes/evidence tracking) and roll-table compendiums for flavor content
 - Item types: `trope`, `talent`, `equipment`
 - Fully automated 2d6 dice engine: success ladder, advantage/disadvantage,
   raw-2/raw-12 crit handling, Hurt status effects, Rerun Point reroll
-- Compendiums pre-populated with all 12 Tropes and 14 second Talents from the
+- Compendiums pre-populated with all 11 Tropes and 18 second Talents from the
   rulebook
 - Functional/plain sheet styling
 
