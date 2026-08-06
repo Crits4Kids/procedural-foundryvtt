@@ -1,4 +1,5 @@
 import { computeRoll } from "../helpers/dice-rules.mjs";
+import { showDiceSoNice } from "../helpers/dice-so-nice.mjs";
 
 const PHYSICAL_SKILLS = new Set(["violence", "reflexes", "coordination"]);
 
@@ -22,6 +23,12 @@ export default class ProceduralActor extends Actor {
       hurt: this.system.hurt ?? false,
       isPhysicalSkill: PHYSICAL_SKILLS.has(skillKey)
     });
+
+    try {
+      await showDiceSoNice(result.dice);
+    } catch (err) {
+      console.error("PROCEDURAL | Dice So Nice! animation failed", err);
+    }
 
     await this._postRollCard(skillKey, mode, situationalModifier, result);
     return result;
