@@ -1,0 +1,23 @@
+<div class="procedural-builder-step procedural-builder-skills">
+  {{#each statKeys as |stat|}}
+    <fieldset data-stat="{{stat}}">
+      <legend>
+        {{localize (concat "PROCEDURAL.Stat." stat)}} —
+        <span class="procedural-builder-remaining" data-remaining-for="{{stat}}">{{lookup ../validation.remaining stat}}</span>
+        {{localize "PROCEDURAL.TropeBuilder.PointsRemaining"}}
+      </legend>
+      {{#each (lookup ../statSkills stat) as |skillKey|}}
+        <label>
+          {{localize (concat "PROCEDURAL.Skill." skillKey)}}
+          <input type="number" min="0" class="procedural-builder-skill-input" data-skill="{{skillKey}}" value="{{lookup ../draft.skills skillKey}}">
+        </label>
+      {{/each}}
+    </fieldset>
+  {{/each}}
+
+  <ul class="procedural-builder-violations">
+    {{#each validation.violations as |violation|}}
+      <li>{{violation}}</li>
+    {{/each}}
+  </ul>
+</div>

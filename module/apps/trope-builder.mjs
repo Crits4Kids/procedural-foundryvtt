@@ -2,7 +2,7 @@ const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ApplicationV2 } = foundry.applications.api;
 
 import { loadGeneratorData } from "../helpers/generator-data.mjs";
-import { rollTrope } from "../helpers/character-generator.mjs";
+import { rollTrope, validateSkillAllocation } from "../helpers/character-generator.mjs";
 
 const STEP_IDS = [
   "name", "trope", "skills", "quality", "quirk", "bstory",
@@ -10,6 +10,12 @@ const STEP_IDS = [
 ];
 
 const STAT_KEYS = ["mental", "physical", "social"];
+
+const STAT_SKILLS = {
+  mental: ["tech", "lab", "investigation"],
+  physical: ["violence", "reflexes", "coordination"],
+  social: ["cool", "intuition", "deception"]
+};
 
 const EMPTY_SKILLS = {
   tech: 0, lab: 0, investigation: 0,
@@ -45,7 +51,8 @@ export default class TropeBuilderApplication extends HandlebarsApplicationMixin(
       template: "systems/procedural/templates/apps/trope-builder.hbs",
       templates: [
         "systems/procedural/templates/apps/trope-builder-steps/name.hbs",
-        "systems/procedural/templates/apps/trope-builder-steps/trope.hbs"
+        "systems/procedural/templates/apps/trope-builder-steps/trope.hbs",
+        "systems/procedural/templates/apps/trope-builder-steps/skills.hbs"
       ]
     }
   };
@@ -106,6 +113,14 @@ export default class TropeBuilderApplication extends HandlebarsApplicationMixin(
       context.finalStats = this.#draft.stats;
     }
 
+    if (stepId === "skills") {
+      context.statKeys = STAT_KEYS;
+      context.statSkills = STAT_SKILLS;
+      context.validation = this.#draft.trope
+        ? validateSkillAllocation(this.#draft.stats, this.#draft.trope.system.statNotes, this.#draft.skills)
+        : { remaining: { mental: 0, physical: 0, social: 0 }, violations: [] };
+    }
+
     return context;
   }
 
@@ -134,12 +149,38 @@ export default class TropeBuilderApplication extends HandlebarsApplicationMixin(
         });
       });
     }
+
+    if (stepId === "skills") {
+      this.element.querySelectorAll(".procedural-builder-skill-input").forEach(input => {
+        input.addEventListener("input", () => this.#onSkillInput());
+      });
+    }
   }
 
   #refreshNextEnabled(forcedValue) {
     const enabled = forcedValue ?? this.#isStepValid(this.#stepId);
     const nextBtn = this.element.querySelector('[data-action="goNext"], [data-action="finish"]');
     if (nextBtn) nextBtn.disabled = !enabled;
+  }
+
+  #onSkillInput() {
+    const skills = { ...EMPTY_SKILLS };
+    this.element.querySelectorAll(".procedural-builder-skill-input").forEach(input => {
+      skills[input.dataset.skill] = Number(input.value) || 0;
+    });
+    this.#draft.skills = skills;
+
+    const validation = validateSkillAllocation(this.#draft.stats, this.#draft.trope.system.statNotes, skills);
+    for (const stat of STAT_KEYS) {
+      const el = this.element.querySelector(`[data-remaining-for="${stat}"]`);
+      if (el) el.textContent = validation.remaining[stat];
+    }
+    const violationsEl = this.element.querySelector(".procedural-builder-violations");
+    if (violationsEl) {
+      violationsEl.innerHTML = validation.violations.map(v => `<li>${v}</li>`).join("");
+    }
+
+    this.#refreshNextEnabled(validation.valid);
   }
 
   #isGiftedTrope() {
@@ -167,7 +208,8 @@ export default class TropeBuilderApplication extends HandlebarsApplicationMixin(
     switch (stepId) {
       case "name": return this.#draft.name.trim().length > 0;
       case "trope": return this.#draft.trope !== null && (!this.#isGiftedTrope() || this.#draft.giftedStat !== null);
-      case "skills": return false; // Task 4 replaces this
+      case "skills":
+        return !!this.#draft.trope && validateSkillAllocation(this.#draft.stats, this.#draft.trope.system.statNotes, this.#draft.skills).valid;
       case "quality": return this.#draft.quality.trim().length > 0;
       case "quirk": return this.#draft.quirk.trim().length > 0;
       case "bstory": return this.#draft.bStory.trim().length > 0;
