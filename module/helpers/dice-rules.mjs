@@ -5,26 +5,57 @@ function rollDie(rng) {
 /**
  * @param {"normal"|"advantage"|"disadvantage"} mode
  * @param {() => number} rng - returns a float in [0,1), like Math.random
- * @returns {{die1: number, die2: number, rawTotal: number}}
+ * @returns {{die1: number, die2: number, rawTotal: number, dice: Array<{ value: number, kept: boolean }>}}
  */
 export function resolveDice(mode, rng) {
   const first = [rollDie(rng), rollDie(rng)];
 
   if (mode === "advantage") {
     const second = [rollDie(rng), rollDie(rng)];
-    const die1 = Math.max(first[0], second[0]);
-    const die2 = Math.max(first[1], second[1]);
-    return { die1, die2, rawTotal: die1 + die2 };
+    const pair1 = [first[0], second[0]];
+    const pair2 = [first[1], second[1]];
+    const die1 = Math.max(...pair1);
+    const die2 = Math.max(...pair2);
+    const keptIndex1 = pair1[0] >= pair1[1] ? 0 : 1;
+    const keptIndex2 = pair2[0] >= pair2[1] ? 0 : 1;
+
+    const dice = [
+      { value: pair1[0], kept: keptIndex1 === 0 },
+      { value: pair1[1], kept: keptIndex1 === 1 },
+      { value: pair2[0], kept: keptIndex2 === 0 },
+      { value: pair2[1], kept: keptIndex2 === 1 }
+    ];
+
+    return { die1, die2, rawTotal: die1 + die2, dice };
   }
 
   if (mode === "disadvantage") {
-    const dice = [...first];
-    const higherIndex = dice[0] >= dice[1] ? 0 : 1;
-    dice[higherIndex] = rollDie(rng);
-    return { die1: dice[0], die2: dice[1], rawTotal: dice[0] + dice[1] };
+    const higherIndex = first[0] >= first[1] ? 0 : 1;
+    const lowerIndex = higherIndex === 0 ? 1 : 0;
+    const reroll = rollDie(rng);
+
+    const final = [0, 0];
+    final[lowerIndex] = first[lowerIndex];
+    final[higherIndex] = reroll;
+
+    const dice = [
+      { value: first[0], kept: 0 === lowerIndex },
+      { value: first[1], kept: 1 === lowerIndex },
+      { value: reroll, kept: true }
+    ];
+
+    return { die1: final[0], die2: final[1], rawTotal: final[0] + final[1], dice };
   }
 
-  return { die1: first[0], die2: first[1], rawTotal: first[0] + first[1] };
+  return {
+    die1: first[0],
+    die2: first[1],
+    rawTotal: first[0] + first[1],
+    dice: [
+      { value: first[0], kept: true },
+      { value: first[1], kept: true }
+    ]
+  };
 }
 
 /**
@@ -82,7 +113,7 @@ export function computeRoll({
   const effectiveSkillModifier = hurt ? 0 : skillModifier;
   const effectiveSituationalModifier = situationalModifier;
 
-  const { die1, die2, rawTotal } = resolveDice(effectiveMode, rng);
+  const { die1, die2, rawTotal, dice } = resolveDice(effectiveMode, rng);
   const modifiedTotal = rawTotal === 2
     ? 2
     : rawTotal + effectiveSkillModifier + effectiveSituationalModifier;
@@ -93,6 +124,7 @@ export function computeRoll({
     die2,
     rawTotal,
     modifiedTotal,
+    dice,
     skillModifier: effectiveSkillModifier,
     situationalModifier: effectiveSituationalModifier,
     effectiveMode,

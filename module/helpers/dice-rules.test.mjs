@@ -122,3 +122,42 @@ test("computeRoll does not force disadvantage on non-physical skills while hurt"
   });
   assert.equal(result.effectiveMode, "normal");
 });
+
+test("resolveDice normal mode reports both dice as kept", () => {
+  const rng = queue([3, 5]);
+  const result = resolveDice("normal", rng);
+  assert.deepEqual(result.dice, [
+    { value: 3, kept: true },
+    { value: 5, kept: true }
+  ]);
+});
+
+test("resolveDice advantage reports all four dice with correct kept flags", () => {
+  const rng = queue([2, 6, 5, 1]);
+  const result = resolveDice("advantage", rng);
+  assert.deepEqual(result.dice, [
+    { value: 2, kept: false },
+    { value: 5, kept: true },
+    { value: 6, kept: true },
+    { value: 1, kept: false }
+  ]);
+});
+
+test("resolveDice disadvantage reports three dice with correct kept flags", () => {
+  const rng = queue([2, 6, 1]);
+  const result = resolveDice("disadvantage", rng);
+  assert.deepEqual(result.dice, [
+    { value: 2, kept: true },
+    { value: 6, kept: false },
+    { value: 1, kept: true }
+  ]);
+});
+
+test("computeRoll includes the dice breakdown from resolveDice", () => {
+  const rng = queue([3, 4]);
+  const result = computeRoll({ mode: "normal", skillModifier: 0, rng });
+  assert.deepEqual(result.dice, [
+    { value: 3, kept: true },
+    { value: 4, kept: true }
+  ]);
+});
