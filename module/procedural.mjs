@@ -44,5 +44,5 @@ Hooks.once("init", () => {
 });
 
 Hooks.once("ready", () => {
-  seedCompendiums();
+  seedCompendiums().catch(err => console.error("PROCEDURAL | Compendium seeding failed", err));
 });
