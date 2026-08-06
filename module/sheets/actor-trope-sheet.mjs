@@ -91,7 +91,10 @@ export default class ProceduralTropeActorSheet extends HandlebarsApplicationMixi
   }
 
   static async #onRandomizeTrope() {
-    const hasExistingData = this.actor.items.some(i => i.type === "trope") || !!this.actor.system.qualities;
+    const s = this.actor.system;
+    const hasExistingData =
+      this.actor.items.some(i => i.type === "trope" || i.type === "talent") ||
+      !!(s.qualities || s.quirks || s.bStory || s.hq || s.agencyName);
 
     if (hasExistingData) {
       const confirmed = await foundry.applications.api.DialogV2.wait({

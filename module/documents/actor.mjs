@@ -26,14 +26,21 @@ let cachedGeneratorData = null;
 
 async function loadGeneratorData() {
   if (cachedGeneratorData) return cachedGeneratorData;
-  const entries = await Promise.all(
-    Object.entries(GENERATOR_DATA_PATHS).map(async ([key, path]) => {
-      const response = await fetch(path);
-      return [key, await response.json()];
-    })
-  );
-  cachedGeneratorData = Object.fromEntries(entries);
-  return cachedGeneratorData;
+  try {
+    const entries = await Promise.all(
+      Object.entries(GENERATOR_DATA_PATHS).map(async ([key, path]) => {
+        const response = await fetch(path);
+        if (!response.ok) throw new Error(`Failed to fetch "${path}" (${response.status} ${response.statusText})`);
+        return [key, await response.json()];
+      })
+    );
+    cachedGeneratorData = Object.fromEntries(entries);
+    return cachedGeneratorData;
+  } catch (err) {
+    console.error("PROCEDURAL | Failed to load random Trope generator data", err);
+    ui.notifications?.error("PROCEDURAL! failed to load the random Trope generator data. Check the console for details.");
+    throw err;
+  }
 }
 
 export default class ProceduralActor extends Actor {
@@ -112,12 +119,13 @@ export default class ProceduralActor extends Actor {
       "system.bStory": result.bStory,
       "system.hq": result.hq,
       "system.agencyName": result.agencyName,
-      "system.rerunPoints": result.rerunPoints
+      "system.rerunPoints": result.rerunPoints,
+      "system.hurt": false
     });
 
     await Item.createDocuments([
       { name: result.trope.name, type: "trope", img: result.trope.img, system: result.trope.system },
-      { name: result.secondTalent.name, type: "talent", img: result.secondTalent.img, system: result.secondTalent.system }
+      { name: result.secondTalent.name, type: "talent", img: result.secondTalent.img, system: { ...result.secondTalent.system } }
     ], { parent: this });
 
     return result;

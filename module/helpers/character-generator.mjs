@@ -61,7 +61,7 @@ function divestStat(statName, points, statNotes, rng) {
 
   while (remaining > 0) {
     const eligible = skillKeys.filter(isEligible);
-    if (eligible.length === 0) break; // defensive: no Trope in current data can exhaust this
+    if (eligible.length === 0) break; // defensive: unreachable while every stat group has at least one uncapped skill (investigation/physical/social skills are never in CAPPED_SKILLS)
     const picked = eligible[Math.floor(rng() * eligible.length)];
     values[picked] += 1;
     remaining -= 1;
