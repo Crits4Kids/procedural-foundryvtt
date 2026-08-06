@@ -7,6 +7,7 @@ import ProceduralActor from "./documents/actor.mjs";
 import { registerChatListeners } from "./helpers/chat-listeners.mjs";
 import { seedCompendiums } from "./helpers/seed-compendiums.mjs";
 import ProceduralTropeActorSheet from "./sheets/actor-trope-sheet.mjs";
+import ProceduralNpcActorSheet from "./sheets/actor-npc-sheet.mjs";
 
 Hooks.once("init", () => {
   CONFIG.Actor.dataModels.trope = TropeActorData;
@@ -24,6 +25,11 @@ Hooks.once("init", () => {
     types: ["trope"],
     makeDefault: true,
     label: "PROCEDURAL.SheetTrope"
+  });
+  Actors.registerSheet("procedural", ProceduralNpcActorSheet, {
+    types: ["npc"],
+    makeDefault: true,
+    label: "PROCEDURAL.SheetNpc"
   });
 });
 
