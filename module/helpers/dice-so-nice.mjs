@@ -3,7 +3,11 @@ export async function showDiceSoNice(diceResults, { synchronize = true } = {}) {
   if (!diceResults?.length) return;
 
   const die = new foundry.dice.terms.Die({ number: diceResults.length, faces: 6 });
-  die.results = diceResults.map(entry => ({ result: entry.value, active: entry.kept }));
+  die.results = diceResults.map(entry => ({
+    result: entry.value,
+    active: entry.kept,
+    discarded: !entry.kept
+  }));
   die._evaluated = true;
 
   const roll = Roll.fromTerms([die]);
