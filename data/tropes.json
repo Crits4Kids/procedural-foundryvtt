@@ -1,0 +1,123 @@
+[
+  {
+    "name": "Rookie",
+    "img": "icons/svg/mystery-man.svg",
+    "system": {
+      "statBlock": { "mental": 1, "physical": 1, "social": 1 },
+      "statNotes": "",
+      "talentName": "Gifted",
+      "talentDescription": "Choose any stat and add +3 to it during character creation.",
+      "talentUsesPerAct": 1
+    }
+  },
+  {
+    "name": "Coroner",
+    "img": "icons/svg/mystery-man.svg",
+    "system": {
+      "statBlock": { "mental": 5, "physical": 1, "social": 0 },
+      "statNotes": "At least 3 in Lab",
+      "talentName": "Pathologist",
+      "talentDescription": "You can perform autopsies and have advantage on skill rolls to perform them. You also have advantage on Investigation rolls involving any dead bodies.",
+      "talentUsesPerAct": null
+    }
+  },
+  {
+    "name": "Hard-boiled",
+    "img": "icons/svg/mystery-man.svg",
+    "system": {
+      "statBlock": { "mental": 2, "physical": 3, "social": 1 },
+      "statNotes": "",
+      "talentName": "Quick on the Draw",
+      "talentDescription": "You have advantage on a Violence roll the first time you draw your gun in an act.",
+      "talentUsesPerAct": 1
+    }
+  },
+  {
+    "name": "Shot-caller",
+    "img": "icons/svg/mystery-man.svg",
+    "system": {
+      "statBlock": { "mental": 2, "physical": 2, "social": 2 },
+      "statNotes": "",
+      "talentName": "Experienced",
+      "talentDescription": "You may re-roll a critical fail.",
+      "talentUsesPerAct": 1
+    }
+  },
+  {
+    "name": "Techie",
+    "img": "icons/svg/mystery-man.svg",
+    "system": {
+      "statBlock": { "mental": 5, "physical": 0, "social": 1 },
+      "statNotes": "At least 3 in Tech",
+      "talentName": "Hack Attack",
+      "talentDescription": "You have advantage on a Tech roll. You also know how to hack systems, although if you don't get an outright success someone will know you were in there.",
+      "talentUsesPerAct": 1
+    }
+  },
+  {
+    "name": "Lab Tech",
+    "img": "icons/svg/mystery-man.svg",
+    "system": {
+      "statBlock": { "mental": 5, "physical": 0, "social": 1 },
+      "statNotes": "At least 3 in Lab",
+      "talentName": "Enhance!",
+      "talentDescription": "You may add +3 to a single roll analyzing a piece of evidence, +2 to another piece of evidence, and +1 to another piece of evidence over the course of the episode. All three options may be used in the same scene with different pieces of evidence.",
+      "talentUsesPerAct": null
+    }
+  },
+  {
+    "name": "Streetwise",
+    "img": "icons/svg/mystery-man.svg",
+    "system": {
+      "statBlock": { "mental": 1, "physical": 2, "social": 3 },
+      "statNotes": "",
+      "talentName": "Connected",
+      "talentDescription": "You have a criminal or CI (Confidential Informant) who owes you a big favor. This NPC is treated like an ally NPC for one scene in the game, with a +3 roll bonus.",
+      "talentUsesPerAct": 1
+    }
+  },
+  {
+    "name": "Ex-Spook",
+    "img": "icons/svg/mystery-man.svg",
+    "system": {
+      "statBlock": { "mental": 1, "physical": 4, "social": 1 },
+      "statNotes": "",
+      "talentName": "Shadow in the Dark",
+      "talentDescription": "You have advantage +1 on a Coordination roll where stealth is involved.",
+      "talentUsesPerAct": 1
+    }
+  },
+  {
+    "name": "Profiler",
+    "img": "icons/svg/mystery-man.svg",
+    "system": {
+      "statBlock": { "mental": 2, "physical": 1, "social": 3 },
+      "statNotes": "",
+      "talentName": "Inside Your Mind",
+      "talentDescription": "You have advantage on an Intuition roll.",
+      "talentUsesPerAct": 1
+    }
+  },
+  {
+    "name": "Legal Liaison",
+    "img": "icons/svg/mystery-man.svg",
+    "system": {
+      "statBlock": { "mental": 3, "physical": 0, "social": 3 },
+      "statNotes": "",
+      "talentName": "Legalese",
+      "talentDescription": "You have advantage on social rolls when dealing with judges or lawyers.",
+      "talentUsesPerAct": 1
+    }
+  },
+  {
+    "name": "Shades",
+    "img": "icons/svg/mystery-man.svg",
+    "system": {
+      "statBlock": { "mental": 0, "physical": 3, "social": 3 },
+      "statNotes": "",
+      "talentName": "Irresistible",
+      "talentDescription": "You may add +3 to a Cool roll when trying to win someone over.",
+      "talentUsesPerAct": 1
+    }
+  }
+]
