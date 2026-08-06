@@ -1,0 +1,18 @@
+{
+  "odds": [
+    "Your new puppy is destroying your house while you are working.",
+    "A prior adventure just went viral and you've become an internet sensation because of it.",
+    "Your \"wild\" identical twin just rolled into town and needs a favor.",
+    "You're taking a magic class and it's finals week.",
+    "You have your dreaded high school reunion coming up, and it's time to put the past behind you.",
+    "An old sports injury has flared up, causing issues for you."
+  ],
+  "evens": [
+    "An old flame has re-entered your life, will you rekindle the relationship or snuff it out?",
+    "Your teenager was caught with some drugs at school.",
+    "A reporter is bugging you to give an interview about some past exploit/scandal.",
+    "Your significant other is tired of your work coming first and seems ready to leave you.",
+    "You own a struggling side business that is about to go belly up.",
+    "You testified against an old corrupt buddy and they were fired. Now they're making your life hell."
+  ]
+}
