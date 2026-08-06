@@ -1,0 +1,27 @@
+<div class="procedural-roll-card">
+  <header class="procedural-roll-card-header {{tierClass}}">
+    <strong>{{skillLabel}}</strong> Roll ({{result.effectiveMode}})
+  </header>
+  <div class="procedural-roll-card-dice">
+    Dice: {{result.die1}} + {{result.die2}} = {{result.rawTotal}}
+    {{#if result.isCriticalSuccess}}<span class="procedural-crit-tag">CRIT!</span>{{/if}}
+  </div>
+  {{#unless result.isCriticalFailure}}
+  <div class="procedural-roll-card-modifiers">
+    + Skill {{result.skillModifier}} + Situational {{result.situationalModifier}}
+  </div>
+  {{/unless}}
+  <div class="procedural-roll-card-total">
+    Total: <strong>{{result.modifiedTotal}}</strong>
+  </div>
+  <div class="procedural-roll-card-tier {{tierClass}}">
+    {{result.label}}
+  </div>
+  {{#if canReroll}}
+  <button type="button" class="procedural-reroll-button"
+          data-actor-id="{{actorId}}" data-skill-key="{{skillKey}}"
+          data-mode="{{mode}}" data-situational-modifier="{{situationalModifier}}">
+    {{localize "PROCEDURAL.Roll.Reroll"}}
+  </button>
+  {{/if}}
+</div>
