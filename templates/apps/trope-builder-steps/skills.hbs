@@ -9,7 +9,7 @@
       {{#each (lookup ../statSkills stat) as |skillKey|}}
         <label>
           {{localize (concat "PROCEDURAL.Skill." skillKey)}}
-          <input type="number" min="0" class="procedural-builder-skill-input" data-skill="{{skillKey}}" value="{{lookup ../draft.skills skillKey}}">
+          <input type="number" min="0" class="procedural-builder-skill-input" data-skill="{{skillKey}}" value="{{lookup ../../draft.skills skillKey}}">
         </label>
       {{/each}}
     </fieldset>
