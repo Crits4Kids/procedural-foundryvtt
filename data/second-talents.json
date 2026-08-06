@@ -1,0 +1,146 @@
+[
+  {
+    "name": "Sentinel",
+    "img": "icons/svg/mystery-man.svg",
+    "system": {
+      "description": "If another agent in a scene is hurt, gain +2 on your skill rolls in that scene.",
+      "usesPerAct": 1
+    }
+  },
+  {
+    "name": "Drama Queen",
+    "img": "icons/svg/mystery-man.svg",
+    "system": {
+      "description": "You have advantage on a skill roll while working on your B-story or Flashback.",
+      "usesPerAct": 1
+    }
+  },
+  {
+    "name": "Jack of All Trades",
+    "img": "icons/svg/mystery-man.svg",
+    "system": {
+      "description": "Your presence in a scene always counts for the Partner Bonus, even if you don't have a modifier in the skill being used.",
+      "usesPerAct": 1
+    }
+  },
+  {
+    "name": "Clutch Performer",
+    "img": "icons/svg/mystery-man.svg",
+    "system": {
+      "description": "If you have an unspent Rerun Points in the Arrest Phase, add +2 to all your rolls.",
+      "usesPerAct": 1
+    }
+  },
+  {
+    "name": "Gambler",
+    "img": "icons/svg/mystery-man.svg",
+    "system": {
+      "description": "You may use this Talent when spending a Rerun Point to re-roll. If you get an outright success (10+) on the re-roll, you don't lose the Rerun Point. If you do not get an outright success, you do lose it and the roll is automatically a critical fail.",
+      "usesPerAct": 1
+    }
+  },
+  {
+    "name": "Hard case",
+    "img": "icons/svg/mystery-man.svg",
+    "system": {
+      "description": "You're great at playing the bad cop. Gain advantage +1 on a Cool or Deception roll when threatening consequences to someone.",
+      "usesPerAct": 1
+    }
+  },
+  {
+    "name": "Weekend Warrior",
+    "img": "icons/svg/mystery-man.svg",
+    "system": {
+      "description": "You may add +2 to a Violence roll where shooting is involved if you have no Violence modifier.",
+      "usesPerAct": 1
+    }
+  },
+  {
+    "name": "Undercover",
+    "img": "icons/svg/mystery-man.svg",
+    "system": {
+      "description": "You're an expert chameleon in the criminal underworld. You may pose as someone else and gain advantage on your first Deception roll for it.",
+      "usesPerAct": 1
+    }
+  },
+  {
+    "name": "Expect Results",
+    "img": "icons/svg/mystery-man.svg",
+    "system": {
+      "description": "You may spend a Rerun Point before a skill roll to automatically get a so-so result.",
+      "usesPerAct": 1
+    }
+  },
+  {
+    "name": "Martial Artist",
+    "img": "icons/svg/mystery-man.svg",
+    "system": {
+      "description": "Choose a martial art during character creation. You have advantage on Violence skill rolls when using your martial art.",
+      "usesPerAct": 1
+    }
+  },
+  {
+    "name": "Wheelman",
+    "img": "icons/svg/mystery-man.svg",
+    "system": {
+      "description": "You have advantage on all Coordination skill rolls while driving.",
+      "usesPerAct": null
+    }
+  },
+  {
+    "name": "Good Cop",
+    "img": "icons/svg/mystery-man.svg",
+    "system": {
+      "description": "If you run out of questions during an interrogation, you may spend 1 Rerun Point to get 1d6 more questions.",
+      "usesPerAct": 1
+    }
+  },
+  {
+    "name": "Field Medic",
+    "img": "icons/svg/mystery-man.svg",
+    "system": {
+      "description": "You may make a Coordination roll to attempt to treat anyone's hurt status. On an outright success or better, they're patched up and good to go!",
+      "usesPerAct": 1
+    }
+  },
+  {
+    "name": "Ace Interrogator",
+    "img": "icons/svg/mystery-man.svg",
+    "system": {
+      "description": "You know the secret number of questions available to the players if you are present at an interrogation.",
+      "usesPerAct": 1
+    }
+  },
+  {
+    "name": "Loose Cannon",
+    "img": "icons/svg/mystery-man.svg",
+    "system": {
+      "description": "You can add +2 to a Violence roll as long as another player cautioned you against that very action.",
+      "usesPerAct": 1
+    }
+  },
+  {
+    "name": "Olfactory Edge",
+    "img": "icons/svg/mystery-man.svg",
+    "system": {
+      "description": "You have advantage on any Investigation roll that involves your sense of smell.",
+      "usesPerAct": null
+    }
+  },
+  {
+    "name": "Human Lie Detector",
+    "img": "icons/svg/mystery-man.svg",
+    "system": {
+      "description": "If you get an outright success or better on an Intuition roll to catch someone lying, you also see their \"tell\" which you can see if they lie to you in the future.",
+      "usesPerAct": 1
+    }
+  },
+  {
+    "name": "Fan Favorite",
+    "img": "icons/svg/mystery-man.svg",
+    "system": {
+      "description": "If you're about to become hurt, you may roll 1d6. If you rolled a 1 or 2, prevent the hurt status.",
+      "usesPerAct": 1
+    }
+  }
+]

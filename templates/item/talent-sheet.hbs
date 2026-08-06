@@ -1,0 +1,19 @@
+<form class="procedural-sheet procedural-item-sheet">
+  <header class="procedural-sheet-header">
+    <img class="procedural-sheet-img" src="{{item.img}}" data-action="editImage" data-edit="img" alt="{{item.name}}">
+    <input class="procedural-sheet-name" type="text" name="name" value="{{item.name}}">
+  </header>
+
+  <label>{{localize "PROCEDURAL.Item.Description"}}
+    <textarea name="system.description">{{system.description}}</textarea>
+  </label>
+
+  <label>{{localize "PROCEDURAL.Item.UsesPerAct"}}
+    <input type="number" name="system.usesPerAct" value="{{system.usesPerAct}}" min="0">
+  </label>
+
+  <label>
+    <input type="checkbox" name="system.used" {{#if system.used}}checked{{/if}}>
+    {{localize "PROCEDURAL.Item.Used"}}
+  </label>
+</form>
