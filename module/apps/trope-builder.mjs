@@ -41,7 +41,13 @@ export default class TropeBuilderApplication extends HandlebarsApplicationMixin(
   };
 
   static PARTS = {
-    form: { template: "systems/procedural/templates/apps/trope-builder.hbs" }
+    form: {
+      template: "systems/procedural/templates/apps/trope-builder.hbs",
+      templates: [
+        "systems/procedural/templates/apps/trope-builder-steps/name.hbs",
+        "systems/procedural/templates/apps/trope-builder-steps/trope.hbs"
+      ]
+    }
   };
 
   #stepIndex = 0;
