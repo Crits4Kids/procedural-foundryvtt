@@ -51,7 +51,8 @@ export default class TropeBuilderApplication extends HandlebarsApplicationMixin(
       goToStep: TropeBuilderApplication.#onGoToStep,
       rollTrope: TropeBuilderApplication.#onRollTrope,
       rollTable: TropeBuilderApplication.#onRollTable,
-      rollAgencyName: TropeBuilderApplication.#onRollAgencyName
+      rollAgencyName: TropeBuilderApplication.#onRollAgencyName,
+      finish: TropeBuilderApplication.#onFinish
     }
   };
 
@@ -64,7 +65,8 @@ export default class TropeBuilderApplication extends HandlebarsApplicationMixin(
         "systems/procedural/templates/apps/trope-builder-steps/skills.hbs",
         "systems/procedural/templates/apps/trope-builder-steps/roll-choose-create.hbs",
         "systems/procedural/templates/apps/trope-builder-steps/second-talent.hbs",
-        "systems/procedural/templates/apps/trope-builder-steps/agency-name.hbs"
+        "systems/procedural/templates/apps/trope-builder-steps/agency-name.hbs",
+        "systems/procedural/templates/apps/trope-builder-steps/review.hbs"
       ]
     }
   };
@@ -154,6 +156,10 @@ export default class TropeBuilderApplication extends HandlebarsApplicationMixin(
       context.table1 = this.#data.agencyNames.table1;
       context.table2 = this.#data.agencyNames.table2;
       context.table3 = this.#data.agencyNames.table3;
+    }
+
+    if (stepId === "review") {
+      context.finalStats = this.#draft.stats;
     }
 
     return context;
@@ -321,5 +327,39 @@ export default class TropeBuilderApplication extends HandlebarsApplicationMixin(
   static #onRollAgencyName() {
     this.#draft.agencyName = rollAgencyName(this.#data.agencyNames, Math.random);
     this.render();
+  }
+
+  static async #onFinish() {
+    if (!this.#isStepValid("review")) return;
+    const draft = this.#draft;
+
+    const actor = await Actor.create({ name: draft.name, type: "trope" });
+
+    await actor.update({
+      "system.stats": draft.stats,
+      "system.skills.tech.value": draft.skills.tech,
+      "system.skills.lab.value": draft.skills.lab,
+      "system.skills.investigation.value": draft.skills.investigation,
+      "system.skills.violence.value": draft.skills.violence,
+      "system.skills.reflexes.value": draft.skills.reflexes,
+      "system.skills.coordination.value": draft.skills.coordination,
+      "system.skills.cool.value": draft.skills.cool,
+      "system.skills.intuition.value": draft.skills.intuition,
+      "system.skills.deception.value": draft.skills.deception,
+      "system.qualities": draft.quality,
+      "system.quirks": draft.quirk,
+      "system.bStory": draft.bStory,
+      "system.hq": draft.hq,
+      "system.agencyName": draft.agencyName,
+      "system.rerunPoints": 1
+    });
+
+    await Item.createDocuments([
+      { name: draft.trope.name, type: "trope", img: draft.trope.img, system: { ...draft.trope.system, statBlock: draft.stats } },
+      { name: draft.secondTalent.name, type: "talent", img: draft.secondTalent.img, system: { ...draft.secondTalent.system } }
+    ], { parent: actor });
+
+    await this.close();
+    actor.sheet.render(true);
   }
 }
