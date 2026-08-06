@@ -2,7 +2,7 @@ const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ApplicationV2 } = foundry.applications.api;
 
 import { loadGeneratorData } from "../helpers/generator-data.mjs";
-import { rollTrope, validateSkillAllocation, rollQualityOrQuirk, rollBStoryOrHq, rollAgencyName } from "../helpers/character-generator.mjs";
+import { rollTrope, validateSkillAllocation, rollQualityOrQuirk, rollBStoryOrHq } from "../helpers/character-generator.mjs";
 
 const STEP_IDS = [
   "name", "trope", "skills", "quality", "quirk", "bstory",
@@ -84,8 +84,11 @@ export default class TropeBuilderApplication extends HandlebarsApplicationMixin(
     bStory: "",
     secondTalent: null,
     hq: "",
-    agencyName: ""
+    agencyName: "",
+    agencyWords: [null, null, null]
   };
+
+  #finishing = false;
 
   get #stepId() {
     return STEP_IDS[this.#stepIndex];
@@ -171,8 +174,9 @@ export default class TropeBuilderApplication extends HandlebarsApplicationMixin(
 
     const textInput = this.element.querySelector('[name="stepValue"]');
     if (textInput) {
-      textInput.addEventListener("input", () => {
+      textInput.addEventListener("input", (event) => {
         this.#draft[TEXT_STEP_DRAFT_KEYS[stepId]] = textInput.value;
+        if (stepId === "agencyName" && event?.isTrusted) this.#draft.agencyWords = null;
         this.#refreshNextEnabled();
       });
     }
@@ -211,18 +215,21 @@ export default class TropeBuilderApplication extends HandlebarsApplicationMixin(
       talentSelect?.addEventListener("change", () => {
         const talent = this.#data.secondTalents.find(t => t.name === talentSelect.value);
         this.#draft.secondTalent = talent ?? null;
-        this.#refreshNextEnabled();
+        this.render();
       });
     }
 
     if (stepId === "agencyName") {
       this.element.querySelectorAll('[data-role="agency-word-select"]').forEach((select, index) => {
         select.addEventListener("change", () => {
-          if (!select.value || !textInput) return;
-          const words = textInput.value.split(" ");
-          words[index] = select.value;
-          textInput.value = words.join(" ").trim();
-          textInput.dispatchEvent(new Event("input"));
+          if (!select.value) return;
+          if (!this.#draft.agencyWords) this.#draft.agencyWords = [null, null, null];
+          this.#draft.agencyWords[index] = select.value;
+          this.#draft.agencyName = this.#draft.agencyWords.filter(Boolean).join(" ");
+          if (textInput) {
+            textInput.value = this.#draft.agencyName;
+            textInput.dispatchEvent(new Event("input"));
+          }
         });
       });
     }
@@ -237,7 +244,7 @@ export default class TropeBuilderApplication extends HandlebarsApplicationMixin(
   #onSkillInput() {
     const skills = { ...EMPTY_SKILLS };
     this.element.querySelectorAll(".procedural-builder-skill-input").forEach(input => {
-      skills[input.dataset.skill] = Number(input.value) || 0;
+      skills[input.dataset.skill] = Math.max(0, Number(input.value) || 0);
     });
     this.#draft.skills = skills;
 
@@ -259,6 +266,7 @@ export default class TropeBuilderApplication extends HandlebarsApplicationMixin(
   }
 
   #setTrope(tropeEntry) {
+    if (this.#draft.trope?.name === tropeEntry.name) return;
     this.#draft.trope = tropeEntry;
     this.#draft.giftedStat = null;
     this.#draft.stats = { ...tropeEntry.system.statBlock };
@@ -325,41 +333,52 @@ export default class TropeBuilderApplication extends HandlebarsApplicationMixin(
   }
 
   static #onRollAgencyName() {
-    this.#draft.agencyName = rollAgencyName(this.#data.agencyNames, Math.random);
+    const { table1, table2, table3 } = this.#data.agencyNames;
+    const pick = table => table[Math.floor(Math.random() * table.length)];
+    this.#draft.agencyWords = [pick(table1), pick(table2), pick(table3)];
+    this.#draft.agencyName = this.#draft.agencyWords.join(" ");
     this.render();
   }
 
   static async #onFinish() {
     if (!this.#isStepValid("review")) return;
-    const draft = this.#draft;
+    if (this.#finishing) return;
+    this.#finishing = true;
 
-    const actor = await Actor.create({ name: draft.name, type: "trope" });
+    try {
+      const draft = this.#draft;
+      const actor = await Actor.create({ name: draft.name, type: "trope" });
 
-    await actor.update({
-      "system.stats": draft.stats,
-      "system.skills.tech.value": draft.skills.tech,
-      "system.skills.lab.value": draft.skills.lab,
-      "system.skills.investigation.value": draft.skills.investigation,
-      "system.skills.violence.value": draft.skills.violence,
-      "system.skills.reflexes.value": draft.skills.reflexes,
-      "system.skills.coordination.value": draft.skills.coordination,
-      "system.skills.cool.value": draft.skills.cool,
-      "system.skills.intuition.value": draft.skills.intuition,
-      "system.skills.deception.value": draft.skills.deception,
-      "system.qualities": draft.quality,
-      "system.quirks": draft.quirk,
-      "system.bStory": draft.bStory,
-      "system.hq": draft.hq,
-      "system.agencyName": draft.agencyName,
-      "system.rerunPoints": 1
-    });
+      await actor.update({
+        "system.stats": draft.stats,
+        "system.skills.tech.value": draft.skills.tech,
+        "system.skills.lab.value": draft.skills.lab,
+        "system.skills.investigation.value": draft.skills.investigation,
+        "system.skills.violence.value": draft.skills.violence,
+        "system.skills.reflexes.value": draft.skills.reflexes,
+        "system.skills.coordination.value": draft.skills.coordination,
+        "system.skills.cool.value": draft.skills.cool,
+        "system.skills.intuition.value": draft.skills.intuition,
+        "system.skills.deception.value": draft.skills.deception,
+        "system.qualities": draft.quality,
+        "system.quirks": draft.quirk,
+        "system.bStory": draft.bStory,
+        "system.hq": draft.hq,
+        "system.agencyName": draft.agencyName,
+        "system.rerunPoints": 1
+      });
 
-    await Item.createDocuments([
-      { name: draft.trope.name, type: "trope", img: draft.trope.img, system: { ...draft.trope.system, statBlock: draft.stats } },
-      { name: draft.secondTalent.name, type: "talent", img: draft.secondTalent.img, system: { ...draft.secondTalent.system } }
-    ], { parent: actor });
+      await Item.createDocuments([
+        { name: draft.trope.name, type: "trope", img: draft.trope.img, system: { ...draft.trope.system, statBlock: draft.stats } },
+        { name: draft.secondTalent.name, type: "talent", img: draft.secondTalent.img, system: { ...draft.secondTalent.system } }
+      ], { parent: actor });
 
-    await this.close();
-    actor.sheet.render(true);
+      await this.close();
+      actor.sheet.render(true);
+    } catch (err) {
+      console.error("PROCEDURAL | Failed to finish the Trope builder wizard", err);
+      ui.notifications?.error("PROCEDURAL! failed to create your character. Check the console for details.");
+      this.#finishing = false;
+    }
   }
 }

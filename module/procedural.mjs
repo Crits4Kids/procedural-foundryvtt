@@ -49,6 +49,7 @@ Hooks.once("ready", () => {
 });
 
 Hooks.on("renderActorDirectory", (app, element) => {
+  if (!Actor.canUserCreate(game.user)) return;
   const header = element.querySelector(".directory-header .header-actions");
   if (!header || header.querySelector(".procedural-trope-builder-launch")) return;
 
@@ -56,6 +57,13 @@ Hooks.on("renderActorDirectory", (app, element) => {
   button.type = "button";
   button.classList.add("procedural-trope-builder-launch");
   button.innerHTML = `<i class="fa-solid fa-dice-d20"></i> ${game.i18n.localize("PROCEDURAL.TropeBuilder.Launch")}`;
-  button.addEventListener("click", () => new TropeBuilderApplication().render(true));
+  button.addEventListener("click", () => {
+    const existing = foundry.applications.instances.get("procedural-trope-builder");
+    if (existing) {
+      existing.bringToFront();
+      return;
+    }
+    new TropeBuilderApplication().render(true);
+  });
   header.appendChild(button);
 });

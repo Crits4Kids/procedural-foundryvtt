@@ -6,6 +6,20 @@
     <dt>{{localize "TYPES.Item.trope"}}</dt>
     <dd>{{draft.trope.name}} ({{finalStats.mental}}/{{finalStats.physical}}/{{finalStats.social}}) <button type="button" data-action="goToStep" data-step="trope">{{localize "PROCEDURAL.TropeBuilder.Edit"}}</button></dd>
 
+    <dt>{{localize "PROCEDURAL.TropeBuilder.Skills"}}</dt>
+    <dd>
+      {{localize "PROCEDURAL.Skill.tech"}}: {{draft.skills.tech}},
+      {{localize "PROCEDURAL.Skill.lab"}}: {{draft.skills.lab}},
+      {{localize "PROCEDURAL.Skill.investigation"}}: {{draft.skills.investigation}},
+      {{localize "PROCEDURAL.Skill.violence"}}: {{draft.skills.violence}},
+      {{localize "PROCEDURAL.Skill.reflexes"}}: {{draft.skills.reflexes}},
+      {{localize "PROCEDURAL.Skill.coordination"}}: {{draft.skills.coordination}},
+      {{localize "PROCEDURAL.Skill.cool"}}: {{draft.skills.cool}},
+      {{localize "PROCEDURAL.Skill.intuition"}}: {{draft.skills.intuition}},
+      {{localize "PROCEDURAL.Skill.deception"}}: {{draft.skills.deception}}
+      <button type="button" data-action="goToStep" data-step="skills">{{localize "PROCEDURAL.TropeBuilder.Edit"}}</button>
+    </dd>
+
     <dt>{{localize "PROCEDURAL.Actor.Qualities"}}</dt>
     <dd>{{draft.quality}} <button type="button" data-action="goToStep" data-step="quality">{{localize "PROCEDURAL.TropeBuilder.Edit"}}</button></dd>
 

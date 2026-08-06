@@ -65,7 +65,8 @@
       "NamePlaceholder": "Character name",
       "GiftedPrompt": "Gifted: choose a stat to add +3 to",
       "PointsRemaining": "points remaining",
-      "Word": "Word"
+      "Word": "Word",
+      "Skills": "Skills"
     }
   },
   "TYPES": {
