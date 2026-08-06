@@ -1,0 +1,39 @@
+{
+  "Actor": {
+    "Trope": {
+      "stats": {
+        "mental": 0,
+        "physical": 0,
+        "social": 0
+      },
+      "skills": {
+        "tech": 0,
+        "lab": 0,
+        "investigation": 0,
+        "violence": 0,
+        "reflexes": 0,
+        "coordination": 0,
+        "cool": 0,
+        "intuition": 0,
+        "deception": 0
+      },
+      "rerunPoints": 1,
+      "qualities": "",
+      "quirks": "",
+      "bStory": "",
+      "hq": "",
+      "agencyName": "",
+      "talents": [],
+      "secondTalent": []
+    }
+  },
+  "Item": {
+    "talent": {
+      "description": "",
+      "effect": ""
+    },
+    "equipment": {
+      "description": ""
+    }
+  }
+}
