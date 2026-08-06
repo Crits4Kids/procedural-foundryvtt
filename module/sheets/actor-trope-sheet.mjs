@@ -11,7 +11,8 @@ export default class ProceduralTropeActorSheet extends HandlebarsApplicationMixi
       toggleHurt: ProceduralTropeActorSheet.#onToggleHurt,
       createItem: ProceduralTropeActorSheet.#onCreateItem,
       editItem: ProceduralTropeActorSheet.#onEditItem,
-      deleteItem: ProceduralTropeActorSheet.#onDeleteItem
+      deleteItem: ProceduralTropeActorSheet.#onDeleteItem,
+      randomizeTrope: ProceduralTropeActorSheet.#onRandomizeTrope
     }
   };
 
@@ -87,5 +88,33 @@ export default class ProceduralTropeActorSheet extends HandlebarsApplicationMixi
   static async #onDeleteItem(event, target) {
     const itemId = target.closest("[data-item-id]").dataset.itemId;
     await this.actor.items.get(itemId)?.delete();
+  }
+
+  static async #onRandomizeTrope() {
+    const hasExistingData = this.actor.items.some(i => i.type === "trope") || !!this.actor.system.qualities;
+
+    if (hasExistingData) {
+      const confirmed = await foundry.applications.api.DialogV2.wait({
+        window: { title: game.i18n.localize("PROCEDURAL.Actor.Randomize") },
+        content: `<p>${game.i18n.localize("PROCEDURAL.Actor.RandomizeConfirm")}</p>`,
+        buttons: [
+          {
+            action: "confirm",
+            label: game.i18n.localize("PROCEDURAL.Actor.Confirm"),
+            default: true,
+            callback: () => true
+          },
+          {
+            action: "cancel",
+            label: game.i18n.localize("PROCEDURAL.Roll.Cancel"),
+            callback: () => false
+          }
+        ],
+        rejectClose: false
+      });
+      if (!confirmed) return;
+    }
+
+    await this.actor.generateRandomTrope();
   }
 }

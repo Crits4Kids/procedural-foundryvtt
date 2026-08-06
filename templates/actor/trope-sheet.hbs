@@ -2,6 +2,9 @@
   <header class="procedural-sheet-header">
     <img class="procedural-sheet-img" src="{{actor.img}}" data-action="editImage" data-edit="img" alt="{{actor.name}}">
     <input class="procedural-sheet-name" type="text" name="name" value="{{actor.name}}">
+    <button type="button" class="procedural-randomize-btn" data-action="randomizeTrope">
+      {{localize "PROCEDURAL.Actor.Randomize"}}
+    </button>
   </header>
 
   <section class="procedural-stats-grid">
