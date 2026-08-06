@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { rollTrope, applyGifted, divestSkills, rollQualityOrQuirk, rollBStoryOrHq, rollAgencyName, pickRandom, generateTrope } from "./character-generator.mjs";
+import { rollTrope, applyGifted, divestSkills, rollQualityOrQuirk, rollBStoryOrHq, rollAgencyName, pickRandom, generateTrope, validateSkillAllocation } from "./character-generator.mjs";
 
 function queue(values) {
   let i = 0;
@@ -216,4 +216,50 @@ test("generateTrope wires every roll together into one result", () => {
   assert.equal(result.agencyName, "Federal Crime Squad");
   assert.equal(result.secondTalent.name, "Sentinel");
   assert.equal(result.rerunPoints, 1);
+});
+
+const ZERO_SKILLS = {
+  tech: 0, lab: 0, investigation: 0,
+  violence: 0, reflexes: 0, coordination: 0,
+  cool: 0, intuition: 0, deception: 0
+};
+
+test("validateSkillAllocation accepts a fully-spent, cap-compliant allocation", () => {
+  const skills = { ...ZERO_SKILLS, tech: 1, lab: 1 };
+  const result = validateSkillAllocation({ mental: 2, physical: 0, social: 0 }, "", skills);
+  assert.deepEqual(result, {
+    valid: true,
+    remaining: { mental: 0, physical: 0, social: 0 },
+    violations: []
+  });
+});
+
+test("validateSkillAllocation flags a Tech/Lab skill exceeding the cap with no statNotes minimum", () => {
+  const skills = { ...ZERO_SKILLS, tech: 3 };
+  const result = validateSkillAllocation({ mental: 3, physical: 0, social: 0 }, "", skills);
+  assert.equal(result.valid, false);
+  assert.deepEqual(result.violations, ["tech exceeds the cap of 2"]);
+  assert.deepEqual(result.remaining, { mental: 0, physical: 0, social: 0 });
+});
+
+test("validateSkillAllocation does not flag a statNotes-noted skill for exceeding the cap", () => {
+  const skills = { ...ZERO_SKILLS, lab: 5 };
+  const result = validateSkillAllocation({ mental: 5, physical: 0, social: 0 }, "At least 3 in Lab", skills);
+  assert.equal(result.valid, true);
+  assert.deepEqual(result.violations, []);
+});
+
+test("validateSkillAllocation flags a statNotes-noted skill below its required minimum", () => {
+  const skills = { ...ZERO_SKILLS, lab: 2 };
+  const result = validateSkillAllocation({ mental: 2, physical: 0, social: 0 }, "At least 3 in Lab", skills);
+  assert.equal(result.valid, false);
+  assert.deepEqual(result.violations, ["lab is below its required minimum of 3"]);
+});
+
+test("validateSkillAllocation flags nonzero remaining points even with no cap violations", () => {
+  const skills = { ...ZERO_SKILLS, tech: 1, lab: 1 };
+  const result = validateSkillAllocation({ mental: 3, physical: 0, social: 0 }, "", skills);
+  assert.equal(result.valid, false);
+  assert.deepEqual(result.violations, []);
+  assert.deepEqual(result.remaining, { mental: 1, physical: 0, social: 0 });
 });
