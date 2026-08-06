@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { rollTrope, applyGifted, divestSkills } from "./character-generator.mjs";
+import { rollTrope, applyGifted, divestSkills, rollQualityOrQuirk, rollBStoryOrHq, rollAgencyName, pickRandom, generateTrope } from "./character-generator.mjs";
 
 function queue(values) {
   let i = 0;
@@ -124,4 +124,96 @@ test("Gifted's stat bonus flows into skill divestment", () => {
     violence: 4, reflexes: 0, coordination: 0,
     cool: 1, intuition: 0, deception: 0
   });
+});
+
+const QUALITIES_FIXTURE = {
+  odds: ["Plucky", "Dogged", "Tough", "Honest", "Efficient", "Clever", "Shrewd", "Kind", "Astute", "Empathetic", "Foodie"],
+  evens: ["Loyal", "Relaxed", "Zen", "Wise", "Unflappable", "Crafty", "Diligent", "Studious", "Steadfast", "Relentless", "Uncompromising"]
+};
+
+const QUIRKS_FIXTURE = {
+  odds: ["Impatient", "Condescending", "Hungry", "Oral fixation", "Procrastinator", "Shy", "Colorblind", "Superfan", "Workaholic", "Silly", "Distracted"],
+  evens: ["Irritable", "Phobic", "Narcissist", "Impulsive", "Luddite", "Blowhard", "Obsessed", "Science-denier", "Geek", "Perfectionist", "Overly religious"]
+};
+
+const BSTORIES_FIXTURE = {
+  odds: ["Puppy chaos", "Viral fame", "Wild twin", "Magic class finals", "High school reunion", "Old sports injury"],
+  evens: ["Old flame", "Teen caught with drugs", "Reporter digging", "Partner wants out", "Struggling side business", "Corrupt buddy retaliating"]
+};
+
+const HQ_FIXTURE = {
+  odds: ["Former funeral parlor", "Former beauty salon", "Luxury RV", "Former firehouse", "Museum basement", "Haunted house"],
+  evens: ["Boring office suite", "Above a diner", "Ancient church", "Next to a yoga studio", "Restored farmhouse", "Former pizza restaurant"]
+};
+
+const AGENCY_NAMES_FIXTURE = {
+  table1: ["Federal", "Bureau of", "Department of", "National", "State", "United Nations"],
+  table2: ["Crime", "Investigation", "Criminal Science", "Homicide", "Murder", "Justice"],
+  table3: ["Squad", "Agency", "Department", "Investigators", "Force", "Organization"]
+};
+
+const SECOND_TALENTS_FIXTURE = [
+  { name: "Sentinel", img: "icons/svg/mystery-man.svg", system: { description: "Sentinel description", usesPerAct: 1 } },
+  { name: "Drama Queen", img: "icons/svg/mystery-man.svg", system: { description: "Drama Queen description", usesPerAct: 1 } }
+];
+
+test("rollQualityOrQuirk selects the Odds table on an odd 1d6 and looks up by 2d6 sum", () => {
+  const rng = queue([1, 3, 4]); // 1 -> odd/Odds; then 3+4=7
+  assert.equal(rollQualityOrQuirk(QUALITIES_FIXTURE, rng), "Clever");
+});
+
+test("rollQualityOrQuirk selects the Evens table on an even 1d6", () => {
+  const rng = queue([2, 5, 5]); // 2 -> even/Evens; then 5+5=10
+  assert.equal(rollQualityOrQuirk(QUALITIES_FIXTURE, rng), "Steadfast");
+});
+
+test("rollBStoryOrHq selects the Odds (small stakes) table and 1d6 entry", () => {
+  const rng = queue([3, 4]); // 3 -> odd/Odds; then entry 4
+  assert.equal(rollBStoryOrHq(BSTORIES_FIXTURE, rng), "Magic class finals");
+});
+
+test("rollBStoryOrHq selects the Evens (large stakes) table and 1d6 entry", () => {
+  const rng = queue([6, 2]); // 6 -> even/Evens; then entry 2
+  assert.equal(rollBStoryOrHq(BSTORIES_FIXTURE, rng), "Teen caught with drugs");
+});
+
+test("rollAgencyName concatenates one 1d6 pick per table in order", () => {
+  const rng = queue([1, 2, 5]);
+  assert.equal(rollAgencyName(AGENCY_NAMES_FIXTURE, rng), "Federal Investigation Force");
+});
+
+test("pickRandom returns the entry at the computed index", () => {
+  const rng = fixedRng([0.6]);
+  assert.equal(pickRandom(["a", "b", "c", "d"], rng), "c");
+});
+
+test("generateTrope wires every roll together into one result", () => {
+  const rng = fixedRng([0]); // every rng() call returns 0 -> always the first option/index
+
+  const result = generateTrope({
+    tropes: FIXTURE_TROPES,
+    secondTalents: SECOND_TALENTS_FIXTURE,
+    qualities: QUALITIES_FIXTURE,
+    quirks: QUIRKS_FIXTURE,
+    bstories: BSTORIES_FIXTURE,
+    hq: HQ_FIXTURE,
+    agencyNames: AGENCY_NAMES_FIXTURE
+  }, rng);
+
+  assert.equal(result.trope.name, "Rookie");
+  assert.equal(result.trope.system.talentName, "Gifted");
+  assert.deepEqual(result.trope.system.statBlock, { mental: 4, physical: 1, social: 1 });
+  assert.deepEqual(result.stats, { mental: 4, physical: 1, social: 1 });
+  assert.deepEqual(result.skills, {
+    tech: 2, lab: 2, investigation: 0,
+    violence: 1, reflexes: 0, coordination: 0,
+    cool: 1, intuition: 0, deception: 0
+  });
+  assert.equal(result.quality, "Plucky");
+  assert.equal(result.quirk, "Impatient");
+  assert.equal(result.bStory, "Puppy chaos");
+  assert.equal(result.hq, "Former funeral parlor");
+  assert.equal(result.agencyName, "Federal Crime Squad");
+  assert.equal(result.secondTalent.name, "Sentinel");
+  assert.equal(result.rerunPoints, 1);
 });
