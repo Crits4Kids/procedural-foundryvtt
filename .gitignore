@@ -4,3 +4,4 @@ Rulebook/*.pdf
 Rulebook/*.md
 .DS_Store
 .worktrees/
+.claude/
