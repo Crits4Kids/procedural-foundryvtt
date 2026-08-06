@@ -1,0 +1,33 @@
+<form class="procedural-sheet procedural-item-sheet">
+  <header class="procedural-sheet-header">
+    <img class="procedural-sheet-img" src="{{item.img}}" data-action="editImage" data-edit="img" alt="{{item.name}}">
+    <input class="procedural-sheet-name" type="text" name="name" value="{{item.name}}">
+  </header>
+
+  <label>{{localize "PROCEDURAL.Item.StatBlock"}}
+    <input type="number" name="system.statBlock.mental" value="{{system.statBlock.mental}}" min="0">
+    <input type="number" name="system.statBlock.physical" value="{{system.statBlock.physical}}" min="0">
+    <input type="number" name="system.statBlock.social" value="{{system.statBlock.social}}" min="0">
+  </label>
+
+  <label>{{localize "PROCEDURAL.Item.StatNotes"}}
+    <input type="text" name="system.statNotes" value="{{system.statNotes}}">
+  </label>
+
+  <label>{{localize "PROCEDURAL.Item.TalentName"}}
+    <input type="text" name="system.talentName" value="{{system.talentName}}">
+  </label>
+
+  <label>{{localize "PROCEDURAL.Item.TalentDescription"}}
+    <textarea name="system.talentDescription">{{system.talentDescription}}</textarea>
+  </label>
+
+  <label>{{localize "PROCEDURAL.Item.UsesPerAct"}}
+    <input type="number" name="system.talentUsesPerAct" value="{{system.talentUsesPerAct}}" min="0">
+  </label>
+
+  <label>
+    <input type="checkbox" name="system.used" {{#if system.used}}checked{{/if}}>
+    {{localize "PROCEDURAL.Item.Used"}}
+  </label>
+</form>

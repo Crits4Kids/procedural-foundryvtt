@@ -1,0 +1,10 @@
+<form class="procedural-sheet procedural-item-sheet">
+  <header class="procedural-sheet-header">
+    <img class="procedural-sheet-img" src="{{item.img}}" data-action="editImage" data-edit="img" alt="{{item.name}}">
+    <input class="procedural-sheet-name" type="text" name="name" value="{{item.name}}">
+  </header>
+
+  <label>{{localize "PROCEDURAL.Item.Description"}}
+    <textarea name="system.description">{{system.description}}</textarea>
+  </label>
+</form>
