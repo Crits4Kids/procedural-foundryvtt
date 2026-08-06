@@ -21,6 +21,7 @@ export default class ProceduralTropeActorSheet extends HandlebarsApplicationMixi
 
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
+    context.actor = this.actor;
     context.system = this.actor.system;
     context.items = {
       trope: this.actor.items.filter(i => i.type === "trope"),
