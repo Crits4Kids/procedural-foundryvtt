@@ -2,7 +2,7 @@ const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ApplicationV2 } = foundry.applications.api;
 
 import { loadGeneratorData } from "../helpers/generator-data.mjs";
-import { rollTrope, validateSkillAllocation } from "../helpers/character-generator.mjs";
+import { rollTrope, validateSkillAllocation, rollQualityOrQuirk, rollBStoryOrHq } from "../helpers/character-generator.mjs";
 
 const STEP_IDS = [
   "name", "trope", "skills", "quality", "quirk", "bstory",
@@ -32,6 +32,13 @@ const TEXT_STEP_DRAFT_KEYS = {
   agencyName: "agencyName"
 };
 
+const ROLL_CHOOSE_CREATE_CONFIG = {
+  quality: { dataKey: "qualities", labelKey: "PROCEDURAL.Actor.Qualities", draftKey: "quality", rollFn: rollQualityOrQuirk },
+  quirk: { dataKey: "quirks", labelKey: "PROCEDURAL.Actor.Quirks", draftKey: "quirk", rollFn: rollQualityOrQuirk },
+  bstory: { dataKey: "bstories", labelKey: "PROCEDURAL.Actor.BStory", draftKey: "bStory", rollFn: rollBStoryOrHq },
+  hq: { dataKey: "hq", labelKey: "PROCEDURAL.Actor.HQ", draftKey: "hq", rollFn: rollBStoryOrHq }
+};
+
 export default class TropeBuilderApplication extends HandlebarsApplicationMixin(ApplicationV2) {
   static DEFAULT_OPTIONS = {
     id: "procedural-trope-builder",
@@ -42,7 +49,8 @@ export default class TropeBuilderApplication extends HandlebarsApplicationMixin(
       goNext: TropeBuilderApplication.#onNext,
       goBack: TropeBuilderApplication.#onBack,
       goToStep: TropeBuilderApplication.#onGoToStep,
-      rollTrope: TropeBuilderApplication.#onRollTrope
+      rollTrope: TropeBuilderApplication.#onRollTrope,
+      rollTable: TropeBuilderApplication.#onRollTable
     }
   };
 
@@ -52,7 +60,8 @@ export default class TropeBuilderApplication extends HandlebarsApplicationMixin(
       templates: [
         "systems/procedural/templates/apps/trope-builder-steps/name.hbs",
         "systems/procedural/templates/apps/trope-builder-steps/trope.hbs",
-        "systems/procedural/templates/apps/trope-builder-steps/skills.hbs"
+        "systems/procedural/templates/apps/trope-builder-steps/skills.hbs",
+        "systems/procedural/templates/apps/trope-builder-steps/roll-choose-create.hbs"
       ]
     }
   };
@@ -92,7 +101,7 @@ export default class TropeBuilderApplication extends HandlebarsApplicationMixin(
       name: stepId === "name",
       trope: stepId === "trope",
       skills: stepId === "skills",
-      rollChooseCreate: false, // Task 5 replaces this with a real check
+      rollChooseCreate: stepId in ROLL_CHOOSE_CREATE_CONFIG,
       secondTalent: stepId === "secondTalent",
       agencyName: stepId === "agencyName",
       review: stepId === "review"
@@ -121,6 +130,16 @@ export default class TropeBuilderApplication extends HandlebarsApplicationMixin(
         : { remaining: { mental: 0, physical: 0, social: 0 }, violations: [] };
     }
 
+    if (stepId in ROLL_CHOOSE_CREATE_CONFIG) {
+      const config = ROLL_CHOOSE_CREATE_CONFIG[stepId];
+      const table = this.#data[config.dataKey];
+      context.rollChooseCreate = {
+        label: game.i18n.localize(config.labelKey),
+        options: [...table.odds, ...table.evens],
+        value: this.#draft[config.draftKey]
+      };
+    }
+
     return context;
   }
 
@@ -133,6 +152,15 @@ export default class TropeBuilderApplication extends HandlebarsApplicationMixin(
       textInput.addEventListener("input", () => {
         this.#draft[TEXT_STEP_DRAFT_KEYS[stepId]] = textInput.value;
         this.#refreshNextEnabled();
+      });
+    }
+
+    const fillSelect = this.element.querySelector('[data-fills-value]');
+    if (fillSelect && textInput) {
+      fillSelect.addEventListener("change", () => {
+        if (!fillSelect.value) return;
+        textInput.value = fillSelect.value;
+        textInput.dispatchEvent(new Event("input"));
       });
     }
 
@@ -243,5 +271,13 @@ export default class TropeBuilderApplication extends HandlebarsApplicationMixin(
   static #onRollTrope() {
     const trope = rollTrope(this.#data.tropes, Math.random);
     this.#setTrope(trope);
+  }
+
+  static #onRollTable() {
+    const config = ROLL_CHOOSE_CREATE_CONFIG[this.#stepId];
+    if (!config) return;
+    const value = config.rollFn(this.#data[config.dataKey], Math.random);
+    this.#draft[config.draftKey] = value;
+    this.render();
   }
 }

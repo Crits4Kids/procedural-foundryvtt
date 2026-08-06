@@ -1,0 +1,13 @@
+<div class="procedural-builder-step procedural-builder-rcc">
+  <label class="procedural-builder-rcc-label">{{label}}</label>
+  <div class="procedural-builder-row">
+    <button type="button" data-action="rollTable">{{localize "PROCEDURAL.TropeBuilder.Roll"}}</button>
+    <select data-fills-value>
+      <option value="">{{localize "PROCEDURAL.TropeBuilder.ChooseOption"}}</option>
+      {{#each options as |option|}}
+        <option value="{{option}}">{{option}}</option>
+      {{/each}}
+    </select>
+  </div>
+  <textarea name="stepValue" class="procedural-builder-freetext" placeholder="{{localize 'PROCEDURAL.TropeBuilder.OrTypeYourOwn'}}">{{value}}</textarea>
+</div>
