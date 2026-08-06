@@ -925,28 +925,28 @@ git commit -m "feat: add a Randomize button to the Trope sheet"
 
 This cannot be automated or verified by a subagent — note it as a follow-up for the human.
 
-- [ ] **Step 1: Run the full automated suite one more time**
+- [x] **Step 1: Run the full automated suite one more time**
 
 ```bash
 npm test
 ```
 Expected: all tests pass.
 
-- [ ] **Step 2: Launch the world used for the existing smoke test** (or create a fresh one per Task 15 steps 1-4 of the v1 plan if none exists), and create a blank `trope` Actor.
+- [x] **Step 2: Launch the world used for the existing smoke test** (or create a fresh one per Task 15 steps 1-4 of the v1 plan if none exists), and create a blank `trope` Actor.
 
-- [ ] **Step 3: Click "Randomize" on the blank actor.** Confirm no confirm-dialog appears (nothing to overwrite yet), and that afterward:
+- [x] **Step 3: Click "Randomize" on the blank actor.** Confirm no confirm-dialog appears (nothing to overwrite yet), and that afterward:
   - The header stats and all 9 skill inputs are populated with numbers that add up to the displayed Trope's stat totals (spot-check against the Trope's stat block, e.g. if Coroner was rolled, confirm Lab is at least 3).
   - Qualities, Quirks, B-Story, HQ, and Agency Name text fields are all populated with rulebook-style text.
   - Rerun Points shows 1.
   - The Trope list shows exactly one item (name matches the rolled Trope, e.g. "Rookie"), and the Talent list shows exactly one item (a second Talent, e.g. "Sentinel") — open each to confirm their stat block/description match what's expected for that roll.
 
-- [ ] **Step 4: Click "Randomize" again on the now-populated actor.** Confirm the overwrite confirmation dialog appears with the expected text, Cancel leaves everything unchanged, and confirming re-rolls everything — in particular, confirm the Trope/Talent item lists still show exactly one item each afterward (not two), proving the old ones were deleted rather than accumulated.
+- [x] **Step 4: Click "Randomize" again on the now-populated actor.** Confirm the overwrite confirmation dialog appears with the expected text, Cancel leaves everything unchanged, and confirming re-rolls everything — in particular, confirm the Trope/Talent item lists still show exactly one item each afterward (not two), proving the old ones were deleted rather than accumulated.
 
-- [ ] **Step 5: Roll a skill on the freshly randomized actor** (e.g. click one of the populated skill buttons) to confirm the generated skill values feed correctly into the existing roll pipeline — the chat card's modifier should match the sheet's displayed skill value.
+- [x] **Step 5: Roll a skill on the freshly randomized actor** (e.g. click one of the populated skill buttons) to confirm the generated skill values feed correctly into the existing roll pipeline — the chat card's modifier should match the sheet's displayed skill value.
 
-- [ ] **Step 6: Repeat step 3 a handful of times on fresh actors until a Rookie is rolled** (2 on 2d6, roughly 1-in-36 odds — reroll a few actors if needed), to specifically confirm the Gifted-stat-pick path: one of Mental/Physical/Social should visibly be 3 higher than Rookie's baseline of 1, and the skill points divested from that stat should sum to the boosted total.
+- [x] **Step 6: Repeat step 3 a handful of times on fresh actors until a Rookie is rolled** (2 on 2d6, roughly 1-in-36 odds — reroll a few actors if needed), to specifically confirm the Gifted-stat-pick path: one of Mental/Physical/Social should visibly be 3 higher than Rookie's baseline of 1, and the skill points divested from that stat should sum to the boosted total.
 
-- [ ] **Step 7: Final commit (if any fixes were needed during manual verification)**
+- [ ] **Step 7: Final commit (if any fixes were needed during manual verification)** — not applicable, no fixes were needed during manual verification.
 
 ```bash
 git add -A
