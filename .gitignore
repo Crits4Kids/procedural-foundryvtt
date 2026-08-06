@@ -2,3 +2,4 @@ node_modules/
 Rulebook/*.docx
 Rulebook/*.pdf
 .DS_Store
+.worktrees/
