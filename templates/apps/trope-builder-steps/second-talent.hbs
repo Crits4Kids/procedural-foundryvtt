@@ -1,0 +1,11 @@
+<div class="procedural-builder-step">
+  <select data-role="talent-select">
+    <option value="">{{localize "PROCEDURAL.TropeBuilder.ChooseOption"}}</option>
+    {{#each secondTalentOptions as |opt|}}
+      <option value="{{opt.name}}" {{#if opt.selected}}selected{{/if}}>{{opt.name}}</option>
+    {{/each}}
+  </select>
+  {{#if draft.secondTalent}}
+    <p class="procedural-builder-talent-description">{{draft.secondTalent.system.description}}</p>
+  {{/if}}
+</div>

@@ -2,7 +2,7 @@ const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ApplicationV2 } = foundry.applications.api;
 
 import { loadGeneratorData } from "../helpers/generator-data.mjs";
-import { rollTrope, validateSkillAllocation, rollQualityOrQuirk, rollBStoryOrHq } from "../helpers/character-generator.mjs";
+import { rollTrope, validateSkillAllocation, rollQualityOrQuirk, rollBStoryOrHq, rollAgencyName } from "../helpers/character-generator.mjs";
 
 const STEP_IDS = [
   "name", "trope", "skills", "quality", "quirk", "bstory",
@@ -50,7 +50,8 @@ export default class TropeBuilderApplication extends HandlebarsApplicationMixin(
       goBack: TropeBuilderApplication.#onBack,
       goToStep: TropeBuilderApplication.#onGoToStep,
       rollTrope: TropeBuilderApplication.#onRollTrope,
-      rollTable: TropeBuilderApplication.#onRollTable
+      rollTable: TropeBuilderApplication.#onRollTable,
+      rollAgencyName: TropeBuilderApplication.#onRollAgencyName
     }
   };
 
@@ -61,7 +62,9 @@ export default class TropeBuilderApplication extends HandlebarsApplicationMixin(
         "systems/procedural/templates/apps/trope-builder-steps/name.hbs",
         "systems/procedural/templates/apps/trope-builder-steps/trope.hbs",
         "systems/procedural/templates/apps/trope-builder-steps/skills.hbs",
-        "systems/procedural/templates/apps/trope-builder-steps/roll-choose-create.hbs"
+        "systems/procedural/templates/apps/trope-builder-steps/roll-choose-create.hbs",
+        "systems/procedural/templates/apps/trope-builder-steps/second-talent.hbs",
+        "systems/procedural/templates/apps/trope-builder-steps/agency-name.hbs"
       ]
     }
   };
@@ -140,6 +143,19 @@ export default class TropeBuilderApplication extends HandlebarsApplicationMixin(
       };
     }
 
+    if (stepId === "secondTalent") {
+      context.secondTalentOptions = this.#data.secondTalents.map(t => ({
+        name: t.name,
+        selected: t.name === (this.#draft.secondTalent?.name ?? "")
+      }));
+    }
+
+    if (stepId === "agencyName") {
+      context.table1 = this.#data.agencyNames.table1;
+      context.table2 = this.#data.agencyNames.table2;
+      context.table3 = this.#data.agencyNames.table3;
+    }
+
     return context;
   }
 
@@ -181,6 +197,27 @@ export default class TropeBuilderApplication extends HandlebarsApplicationMixin(
     if (stepId === "skills") {
       this.element.querySelectorAll(".procedural-builder-skill-input").forEach(input => {
         input.addEventListener("input", () => this.#onSkillInput());
+      });
+    }
+
+    if (stepId === "secondTalent") {
+      const talentSelect = this.element.querySelector('[data-role="talent-select"]');
+      talentSelect?.addEventListener("change", () => {
+        const talent = this.#data.secondTalents.find(t => t.name === talentSelect.value);
+        this.#draft.secondTalent = talent ?? null;
+        this.#refreshNextEnabled();
+      });
+    }
+
+    if (stepId === "agencyName") {
+      this.element.querySelectorAll('[data-role="agency-word-select"]').forEach((select, index) => {
+        select.addEventListener("change", () => {
+          if (!select.value || !textInput) return;
+          const words = textInput.value.split(" ");
+          words[index] = select.value;
+          textInput.value = words.join(" ").trim();
+          textInput.dispatchEvent(new Event("input"));
+        });
       });
     }
   }
@@ -278,6 +315,11 @@ export default class TropeBuilderApplication extends HandlebarsApplicationMixin(
     if (!config) return;
     const value = config.rollFn(this.#data[config.dataKey], Math.random);
     this.#draft[config.draftKey] = value;
+    this.render();
+  }
+
+  static #onRollAgencyName() {
+    this.#draft.agencyName = rollAgencyName(this.#data.agencyNames, Math.random);
     this.render();
   }
 }
