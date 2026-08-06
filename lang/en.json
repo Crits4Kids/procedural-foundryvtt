@@ -26,7 +26,10 @@
       "BStory": "B-Story",
       "HQ": "HQ",
       "AgencyName": "Agency Name",
-      "DeskItem": "Desk Item"
+      "DeskItem": "Desk Item",
+      "Randomize": "Randomize",
+      "RandomizeConfirm": "This will overwrite the current Trope, skills, and flavor fields. Continue?",
+      "Confirm": "Confirm"
     },
     "Item": {
       "StatBlock": "Suggested Stats (Mental / Physical / Social)",
