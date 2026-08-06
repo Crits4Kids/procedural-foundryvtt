@@ -1,6 +1,8 @@
 node_modules/
 Rulebook/*.docx
 Rulebook/*.pdf
+Rulebook/*.md
 .DS_Store
 .worktrees/
 .superpowers/
+.claude/
