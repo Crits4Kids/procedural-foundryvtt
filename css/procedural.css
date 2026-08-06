@@ -1,0 +1,108 @@
+.procedural-sheet {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0.5rem;
+}
+
+.procedural-sheet-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.procedural-sheet-img {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border: 1px solid #666;
+}
+
+.procedural-sheet-name {
+  flex: 1;
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.procedural-stats-grid,
+.procedural-skills-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+
+.procedural-skill-row {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.procedural-skill-row button {
+  flex: 1;
+  text-align: left;
+}
+
+.procedural-skill-row input {
+  width: 3rem;
+}
+
+.procedural-text-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.procedural-items ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.procedural-items li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.15rem 0;
+}
+
+.procedural-items li > :first-child {
+  flex: 1;
+}
+
+.procedural-roll-card {
+  border: 1px solid #666;
+  border-radius: 4px;
+  padding: 0.5rem;
+}
+
+.procedural-roll-card-header {
+  font-size: 1rem;
+  margin-bottom: 0.25rem;
+}
+
+.procedural-roll-card-tier {
+  font-weight: bold;
+  margin-top: 0.25rem;
+}
+
+.procedural-crit-tag {
+  color: #b00;
+  font-weight: bold;
+  margin-left: 0.5rem;
+}
+
+.procedural-tier-critical-failure { color: #b00000; }
+.procedural-tier-failure { color: #a05a00; }
+.procedural-tier-so-so { color: #7a7a00; }
+.procedural-tier-success { color: #2a7a00; }
+.procedural-tier-success-effect { color: #0a6b3d; font-weight: bold; }
+
+.procedural-reroll-button {
+  margin-top: 0.5rem;
+}
+
+.procedural-roll-dialog {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
