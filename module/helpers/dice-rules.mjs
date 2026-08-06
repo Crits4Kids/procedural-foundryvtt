@@ -80,7 +80,7 @@ export function computeRoll({
 }) {
   const effectiveMode = hurt && isPhysicalSkill ? "disadvantage" : mode;
   const effectiveSkillModifier = hurt ? 0 : skillModifier;
-  const effectiveSituationalModifier = hurt ? 0 : situationalModifier;
+  const effectiveSituationalModifier = situationalModifier;
 
   const { die1, die2, rawTotal } = resolveDice(effectiveMode, rng);
   const modifiedTotal = rawTotal === 2

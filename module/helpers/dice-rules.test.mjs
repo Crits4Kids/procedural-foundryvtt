@@ -92,15 +92,15 @@ test("computeRoll applies skill and situational modifiers normally", () => {
   assert.equal(result.tier, "success");
 });
 
-test("computeRoll suppresses all modifiers while hurt", () => {
+test("computeRoll suppresses skill modifier but not situational modifier while hurt", () => {
   const rng = queue([3, 4]);
   const result = computeRoll({
     mode: "normal", skillModifier: 5, situationalModifier: 5,
     hurt: true, isPhysicalSkill: false, rng
   });
-  assert.equal(result.modifiedTotal, 7);
+  assert.equal(result.modifiedTotal, 12);
   assert.equal(result.skillModifier, 0);
-  assert.equal(result.situationalModifier, 0);
+  assert.equal(result.situationalModifier, 5);
 });
 
 test("computeRoll forces disadvantage on physical skills while hurt", () => {
