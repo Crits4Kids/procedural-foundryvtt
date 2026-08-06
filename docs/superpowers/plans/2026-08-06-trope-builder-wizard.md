@@ -17,9 +17,42 @@
 - **Avoid Handlebars helpers whose exact v14 signature isn't already proven in this codebase.** `{{localize}}` and `{{concat}}` are already used in `templates/actor/trope-sheet.hbs` — safe to reuse freely. `{{#each}}`, `{{#if}}`/`{{#unless}}`, and `{{lookup}}` are core Handlebars, not Foundry-specific — safe. Do **not** use `{{eq}}`, `{{or}}`, `{{selectOptions}}`, or any other comparison/selection helper not already proven in this repo — precompute booleans/selected-flags in JS context instead (every task below already does this; keep following that pattern for any new template work).
 - Full spec: `docs/superpowers/specs/2026-08-06-trope-builder-wizard-design.md`.
 
-## Before you start: one genuine API-currency risk
+## Before you start: a local Foundry v14 install is available as ground truth
 
-Task 8 (the Actors-directory launcher button) is the one piece of this plan with real Foundry-version uncertainty — there's no public source repository for Foundry VTT to check against, and this project's own API doc site doesn't document the exact DOM structure of the sidebar Actor Directory. Task 8's instructions include a WebFetch check to run immediately before writing that file, plus a fallback plan if the assumed CSS selector doesn't match. Every other task in this plan (data refactor, pure-logic validation, the wizard's own templates/class) has no comparable uncertainty — the wizard's own markup deliberately avoids every Handlebars feature not already proven working in this exact codebase, per the Global Constraints above.
+This machine has a real Foundry VTT v14 client installed at
+`/Applications/Foundry Virtual Tabletop.app/Contents/Resources/app/` — its
+`client/` directory is the actual shipped source (not minified), and is the
+authoritative answer to any "does this Foundry API work the way I think it
+does" question this plan raises. **Prefer reading directly from that install
+over WebFetch-ing the public API doc site** (`foundryvtt.com/api`), which
+covers only public type signatures, not implementation behavior or exact DOM
+structure — a gap that caused a real, confirmed defect in this plan's
+original text (see below). Grep it like any other local source tree, e.g.:
+
+```bash
+grep -rn "renderActorDirectory\|getHeaderControls" "/Applications/Foundry Virtual Tabletop.app/Contents/Resources/app/client/"
+```
+
+Task 8 (the Actors-directory launcher button) was the one task where this
+mattered — it has already been resolved by reading the relevant
+sidebar/directory source directly, and Task 8's own instructions below
+already fold in the confirmed answer with citations, so there's nothing
+further to research there.
+
+**A note on how this plan already got one thing wrong:** this plan's
+original text for `TropeBuilderApplication`'s `static PARTS` declaration
+omitted the `templates: [...]` array that `HandlebarsApplicationMixin`
+requires in order to preload and register step partials referenced via
+`{{> "..."}}` in the shell template — confirmed by reading
+`client/applications/api/handlebars-application.mjs` directly on this local
+install. Without it, every `{{> "systems/procedural/templates/apps/trope-builder-steps/*.hbs"}}`
+reference in `trope-builder.hbs` throws `The partial ... could not be
+found` on first render, because Handlebars never registers a partial that
+was never fetched. **This has already been corrected** in Task 3's `PARTS`
+block below, and each of Tasks 4-7 includes an explicit step appending its
+new step partial's path to that same `templates` array — do not skip those
+steps, and do not add a new step partial anywhere in this plan without also
+adding its path there.
 
 ---
 
@@ -378,7 +411,13 @@ export default class TropeBuilderApplication extends HandlebarsApplicationMixin(
   };
 
   static PARTS = {
-    form: { template: "systems/procedural/templates/apps/trope-builder.hbs" }
+    form: {
+      template: "systems/procedural/templates/apps/trope-builder.hbs",
+      templates: [
+        "systems/procedural/templates/apps/trope-builder-steps/name.hbs",
+        "systems/procedural/templates/apps/trope-builder-steps/trope.hbs"
+      ]
+    }
   };
 
   #stepIndex = 0;
@@ -871,21 +910,38 @@ In `templates/apps/trope-builder.hbs`, add a line to the body section:
     {{#if show.skills}}{{> "systems/procedural/templates/apps/trope-builder-steps/skills.hbs"}}{{/if}}
 ```
 
-- [ ] **Step 8: Verify syntax**
+- [ ] **Step 8: Register the new step partial in `PARTS.form.templates`**
+
+`HandlebarsApplicationMixin` only preloads and registers the templates listed in `PARTS.form.templates` as Handlebars partials — a `{{> "..."}}` reference to a path that isn't in that array throws `The partial ... could not be found` on render. In `module/apps/trope-builder.mjs`, add the new step's path to the array:
+
+```js
+  static PARTS = {
+    form: {
+      template: "systems/procedural/templates/apps/trope-builder.hbs",
+      templates: [
+        "systems/procedural/templates/apps/trope-builder-steps/name.hbs",
+        "systems/procedural/templates/apps/trope-builder-steps/trope.hbs",
+        "systems/procedural/templates/apps/trope-builder-steps/skills.hbs"
+      ]
+    }
+  };
+```
+
+- [ ] **Step 9: Verify syntax**
 
 ```bash
 node --check module/apps/trope-builder.mjs
 ```
 Expected: no output.
 
-- [ ] **Step 9: Run the full test suite as a regression check**
+- [ ] **Step 10: Run the full test suite as a regression check**
 
 ```bash
 npm test
 ```
-Expected: all 22 tests pass.
+Expected: all tests pass (this task adds no Node-testable code, so the count should match whatever the suite already reports going into this task — report the actual number, don't assume a stale count from this plan text).
 
-- [ ] **Step 10: Commit**
+- [ ] **Step 11: Commit**
 
 ```bash
 git add module/apps/trope-builder.mjs templates/apps/trope-builder-steps/skills.hbs templates/apps/trope-builder.hbs
@@ -1032,6 +1088,24 @@ In `templates/apps/trope-builder.hbs`, add one line to the body section (it cove
     {{#if show.rollChooseCreate}}{{> "systems/procedural/templates/apps/trope-builder-steps/roll-choose-create.hbs" rollChooseCreate}}{{/if}}
 ```
 
+- [ ] **Step 7b: Register the new step partial in `PARTS.form.templates`**
+
+Only one new path is needed even though this partial is reused for four steps — it's a single file. In `module/apps/trope-builder.mjs`:
+
+```js
+  static PARTS = {
+    form: {
+      template: "systems/procedural/templates/apps/trope-builder.hbs",
+      templates: [
+        "systems/procedural/templates/apps/trope-builder-steps/name.hbs",
+        "systems/procedural/templates/apps/trope-builder-steps/trope.hbs",
+        "systems/procedural/templates/apps/trope-builder-steps/skills.hbs",
+        "systems/procedural/templates/apps/trope-builder-steps/roll-choose-create.hbs"
+      ]
+    }
+  };
+```
+
 - [ ] **Step 8: Verify syntax**
 
 ```bash
@@ -1044,7 +1118,7 @@ Expected: no output.
 ```bash
 npm test
 ```
-Expected: all 22 tests pass.
+Expected: all tests pass (report the actual current count — this task adds no Node-testable code, so it should match whatever the suite already reported going into this task).
 
 - [ ] **Step 10: Commit**
 
@@ -1200,6 +1274,26 @@ In `templates/apps/trope-builder.hbs`, add two lines to the body section:
     {{#if show.agencyName}}{{> "systems/procedural/templates/apps/trope-builder-steps/agency-name.hbs"}}{{/if}}
 ```
 
+- [ ] **Step 7b: Register both new step partials in `PARTS.form.templates`**
+
+In `module/apps/trope-builder.mjs`:
+
+```js
+  static PARTS = {
+    form: {
+      template: "systems/procedural/templates/apps/trope-builder.hbs",
+      templates: [
+        "systems/procedural/templates/apps/trope-builder-steps/name.hbs",
+        "systems/procedural/templates/apps/trope-builder-steps/trope.hbs",
+        "systems/procedural/templates/apps/trope-builder-steps/skills.hbs",
+        "systems/procedural/templates/apps/trope-builder-steps/roll-choose-create.hbs",
+        "systems/procedural/templates/apps/trope-builder-steps/second-talent.hbs",
+        "systems/procedural/templates/apps/trope-builder-steps/agency-name.hbs"
+      ]
+    }
+  };
+```
+
 - [ ] **Step 8: Verify syntax**
 
 ```bash
@@ -1212,7 +1306,7 @@ Expected: no output.
 ```bash
 npm test
 ```
-Expected: all 22 tests pass.
+Expected: all tests pass (report the actual current count — this task adds no Node-testable code, so it should match whatever the suite already reported going into this task).
 
 - [ ] **Step 10: Commit**
 
@@ -1365,6 +1459,27 @@ Replace the full contents of `templates/apps/trope-builder.hbs` with:
 </form>
 ```
 
+- [ ] **Step 5b: Register the Review step partial in `PARTS.form.templates`**
+
+In `module/apps/trope-builder.mjs`, add the final path to the array (this completes the full set — every step partial the wizard uses is now listed):
+
+```js
+  static PARTS = {
+    form: {
+      template: "systems/procedural/templates/apps/trope-builder.hbs",
+      templates: [
+        "systems/procedural/templates/apps/trope-builder-steps/name.hbs",
+        "systems/procedural/templates/apps/trope-builder-steps/trope.hbs",
+        "systems/procedural/templates/apps/trope-builder-steps/skills.hbs",
+        "systems/procedural/templates/apps/trope-builder-steps/roll-choose-create.hbs",
+        "systems/procedural/templates/apps/trope-builder-steps/second-talent.hbs",
+        "systems/procedural/templates/apps/trope-builder-steps/agency-name.hbs",
+        "systems/procedural/templates/apps/trope-builder-steps/review.hbs"
+      ]
+    }
+  };
+```
+
 - [ ] **Step 6: Verify syntax**
 
 ```bash
@@ -1377,7 +1492,7 @@ Expected: no output.
 ```bash
 npm test
 ```
-Expected: all 22 tests pass.
+Expected: all tests pass (report the actual current count — this task adds no Node-testable code, so it should match whatever the suite already reported going into this task).
 
 - [ ] **Step 8: Commit**
 
@@ -1397,7 +1512,7 @@ git commit -m "feat: add Review step and wizard Finish (creates the Trope actor)
 - Consumes: `TropeBuilderApplication` (Task 3-7).
 - Produces: a visible button in the Actors sidebar directory that opens the wizard.
 
-Before writing this file, fetch `https://foundryvtt.com/api/` (via WebFetch) and search for `renderActorDirectory` and `getHeaderControlsActorDirectory` — confirm whether either hook is documented for v14 and what shape it passes. As of this plan's writing, Foundry's API doc site does not expose the exact DOM structure of the sidebar Actor Directory template (there is no public Foundry VTT source repository to cross-check either), so the code below uses `renderActorDirectory` with a DOM-injection approach and a documented fallback selector, rather than betting on the exact shape of an `ApplicationHeaderControlsEntry` object. If your WebFetch check turns up a more specific, current API, prefer it — but if it's inconclusive (a real possibility, since this was already inconclusive when this plan was written), proceed with the code below, which only assumes `renderActorDirectory` fires with `(app, html)` where `html` may be a raw `HTMLElement` or a jQuery-wrapped element (a distinction this project's v1 plan already flagged as a general v13+ migration risk, and the code below handles both).
+This task's Foundry-API question — how to add a button to the Actors sidebar directory — has already been resolved by reading the local Foundry v14 install directly (see "Before you start" at the top of this plan), not guessed. The findings are folded into the code below with citations to the exact source files, so no further research is needed before writing this file. If you want to double-check independently, `client/applications/sidebar/document-directory.mjs` and `templates/sidebar/directory/header.hbs` under `/Applications/Foundry Virtual Tabletop.app/Contents/Resources/app/` are the two files that answered this.
 
 - [ ] **Step 1: Read the current `module/procedural.mjs`**
 
@@ -1460,12 +1575,14 @@ Add this import near the top, alongside the other imports:
 import TropeBuilderApplication from "./apps/trope-builder.mjs";
 ```
 
-Add this hook registration at the end of the file, after the existing `Hooks.once("ready", ...)` block:
+Add this hook registration at the end of the file, after the existing `Hooks.once("ready", ...)` block. This is now written against confirmed v14 source (read directly from the local Foundry install's `client/applications/sidebar/document-directory.mjs` and `templates/sidebar/directory/header.hbs`), not a guess:
+
+- `ActorDirectory` extends `DocumentDirectory`, an `ApplicationV2`. Its "render" lifecycle hook fires as `Hooks.callAll("render" + className, app, element, context, options)` for every class in its inheritance chain — confirmed in `client/applications/api/application.mjs`'s `_doEvent`/`#callHooks` (`hookArgs: [this.#element, ...handlerArgs]` where `handlerArgs = [context, options]`) — so `renderActorDirectory` fires with **`(app, element, context, options)`**, where `element` is always a raw `HTMLElement` (ApplicationV2 never uses jQuery — that was a V1-only convention), never wrapped.
+- The header markup (`templates/sidebar/directory/header.hbs`) is exactly `<header class="directory-header flexcol"><div class="header-actions action-buttons flexrow">...</div>...</header>` — confirming the selector `.directory-header .header-actions` is correct.
 
 ```js
-Hooks.on("renderActorDirectory", (app, html) => {
-  const root = html instanceof HTMLElement ? html : html[0];
-  const header = root.querySelector(".directory-header .header-actions") ?? root.querySelector(".directory-header");
+Hooks.on("renderActorDirectory", (app, element) => {
+  const header = element.querySelector(".directory-header .header-actions");
   if (!header || header.querySelector(".procedural-trope-builder-launch")) return;
 
   const button = document.createElement("button");
@@ -1502,7 +1619,7 @@ Expected: no output.
 ```bash
 npm test
 ```
-Expected: all 22 tests pass.
+Expected: all tests pass (report the actual current count — this task adds no Node-testable code, so it should match whatever the suite already reported going into this task).
 
 - [ ] **Step 6: Commit**
 
