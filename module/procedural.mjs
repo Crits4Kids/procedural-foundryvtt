@@ -6,6 +6,7 @@ import EquipmentItemData from "./data/item-equipment.mjs";
 import CaseTrackerData from "./data/case-tracker.mjs";
 import ProceduralActor from "./documents/actor.mjs";
 import TropeBuilderApplication from "./apps/trope-builder.mjs";
+import CaseTrackerApplication from "./apps/case-tracker.mjs";
 import { registerChatListeners } from "./helpers/chat-listeners.mjs";
 import { seedCompendiums } from "./helpers/seed-compendiums.mjs";
 import ProceduralTropeActorSheet from "./sheets/actor-trope-sheet.mjs";
@@ -72,4 +73,23 @@ Hooks.on("renderActorDirectory", (app, element) => {
     new TropeBuilderApplication().render(true);
   });
   header.appendChild(button);
+});
+
+Hooks.on("getSceneControlButtons", controls => {
+  controls.tokens.tools.proceduralCaseTracker = {
+    name: "proceduralCaseTracker",
+    title: "PROCEDURAL.CaseTracker.Title",
+    icon: "fa-solid fa-magnifying-glass",
+    order: Object.keys(controls.tokens.tools).length,
+    button: true,
+    visible: game.user.isGM,
+    onChange: () => {
+      const existing = foundry.applications.instances.get("procedural-case-tracker");
+      if (existing) {
+        existing.bringToFront();
+        return;
+      }
+      new CaseTrackerApplication().render(true);
+    }
+  };
 });
