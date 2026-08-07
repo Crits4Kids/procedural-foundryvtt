@@ -78,7 +78,17 @@
       "Interlude": "Interlude",
       "ArrestPhaseTriggered": "Arrest Phase Triggered",
       "ArrestPhaseNotes": "Arrest Phase Notes",
-      "EpilogueNotes": "Epilogue Notes"
+      "EpilogueNotes": "Epilogue Notes",
+      "EvidenceLog": "Evidence Log",
+      "AddEvidence": "Add Evidence",
+      "EvidenceDescription": "Description",
+      "EvidenceNotes": "Notes",
+      "Delete": "Delete",
+      "Status": {
+        "good": "Good",
+        "bad": "Bad",
+        "unknown": "Unknown"
+      }
     }
   },
   "TYPES": {

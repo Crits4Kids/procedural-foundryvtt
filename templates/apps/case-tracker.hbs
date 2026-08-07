@@ -37,4 +37,26 @@
     {{localize "PROCEDURAL.CaseTracker.EpilogueNotes"}}
     <textarea name="epilogueNotes" class="procedural-builder-freetext">{{epilogueNotes}}</textarea>
   </label>
+
+  <section class="procedural-case-tracker-evidence">
+    <h2>{{localize "PROCEDURAL.CaseTracker.EvidenceLog"}}</h2>
+
+    <ul class="procedural-case-tracker-evidence-list">
+      {{#each evidence as |entry index|}}
+        <li class="procedural-case-tracker-evidence-row" data-evidence-id="{{entry.id}}">
+          <input type="hidden" name="evidence.{{index}}.id" value="{{entry.id}}">
+          <input type="text" name="evidence.{{index}}.description" value="{{entry.description}}" placeholder="{{localize 'PROCEDURAL.CaseTracker.EvidenceDescription'}}">
+          <select name="evidence.{{index}}.status">
+            {{#each entry.statusOptions as |opt|}}
+              <option value="{{opt.value}}" {{#if opt.selected}}selected{{/if}}>{{opt.label}}</option>
+            {{/each}}
+          </select>
+          <textarea name="evidence.{{index}}.notes" class="procedural-builder-freetext" placeholder="{{localize 'PROCEDURAL.CaseTracker.EvidenceNotes'}}">{{entry.notes}}</textarea>
+          <button type="button" data-action="deleteEvidence">{{localize "PROCEDURAL.CaseTracker.Delete"}}</button>
+        </li>
+      {{/each}}
+    </ul>
+
+    <button type="button" data-action="addEvidence">{{localize "PROCEDURAL.CaseTracker.AddEvidence"}}</button>
+  </section>
 </section>

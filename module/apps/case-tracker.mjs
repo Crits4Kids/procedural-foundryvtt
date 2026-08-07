@@ -1,6 +1,8 @@
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ApplicationV2 } = foundry.applications.api;
 
+const EVIDENCE_STATUSES = ["good", "bad", "unknown"];
+
 function getCaseTracker() {
   return game.settings.get("procedural", "caseTracker");
 }
@@ -23,6 +25,10 @@ export default class CaseTrackerApplication extends HandlebarsApplicationMixin(A
       handler: CaseTrackerApplication.#onSubmit,
       submitOnChange: true,
       closeOnSubmit: false
+    },
+    actions: {
+      addEvidence: CaseTrackerApplication.#onAddEvidence,
+      deleteEvidence: CaseTrackerApplication.#onDeleteEvidence
     }
   };
 
@@ -46,6 +52,17 @@ export default class CaseTrackerApplication extends HandlebarsApplicationMixin(A
     context.arrestPhaseNotes = data.arrestPhaseNotes;
     context.epilogueNotes = data.epilogueNotes;
 
+    context.evidence = data.evidence.map(entry => ({
+      id: entry.id,
+      description: entry.description,
+      notes: entry.notes,
+      statusOptions: EVIDENCE_STATUSES.map(status => ({
+        value: status,
+        label: game.i18n.localize(`PROCEDURAL.CaseTracker.Status.${status}`),
+        selected: status === entry.status
+      }))
+    }));
+
     return context;
   }
 
@@ -59,7 +76,22 @@ export default class CaseTrackerApplication extends HandlebarsApplicationMixin(A
       arrestPhaseTriggered: expanded.arrestPhaseTriggered ?? false,
       arrestPhaseNotes: expanded.arrestPhaseNotes ?? "",
       epilogueNotes: expanded.epilogueNotes ?? "",
-      evidence: []
+      evidence: Object.values(expanded.evidence ?? {})
     });
+  }
+
+  static async #onAddEvidence() {
+    const data = getCaseTracker().toObject();
+    data.evidence.push({ id: foundry.utils.randomID(), description: "", status: "unknown", notes: "" });
+    await setCaseTracker(data);
+    this.render();
+  }
+
+  static async #onDeleteEvidence(event, target) {
+    const id = target.closest("[data-evidence-id]").dataset.evidenceId;
+    const data = getCaseTracker().toObject();
+    data.evidence = data.evidence.filter(entry => entry.id !== id);
+    await setCaseTracker(data);
+    this.render();
   }
 }
