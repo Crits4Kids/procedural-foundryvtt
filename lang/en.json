@@ -84,6 +84,10 @@
       "EvidenceDescription": "Description",
       "EvidenceNotes": "Notes",
       "Delete": "Delete",
+      "Interrogations": "Interrogations",
+      "StartInterrogation": "Start Interrogation",
+      "InterrogationSuspect": "Suspect",
+      "InterrogationNotes": "Notes",
       "Status": {
         "good": "Good",
         "bad": "Bad",

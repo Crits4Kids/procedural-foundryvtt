@@ -217,3 +217,36 @@
 .procedural-case-tracker-evidence-row .procedural-builder-freetext {
   min-height: 2.5rem;
 }
+
+.procedural-case-tracker-interrogation-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.procedural-case-tracker-interrogation-row {
+  display: grid;
+  grid-template-columns: 2fr minmax(6rem, 1fr) 2fr auto;
+  gap: 0.5rem;
+  align-items: start;
+  border: 1px solid #666;
+  border-radius: 4px;
+  padding: 0.5rem;
+}
+
+.procedural-case-tracker-interrogation-row .procedural-builder-freetext {
+  min-height: 2.5rem;
+}
+
+.procedural-case-tracker-interrogation-counter {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.procedural-case-tracker-interrogation-counter input[type="number"] {
+  width: 3.5rem;
+}

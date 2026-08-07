@@ -1,3 +1,5 @@
+import { resolveDice } from "../helpers/dice-rules.mjs";
+
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ApplicationV2 } = foundry.applications.api;
 
@@ -28,7 +30,10 @@ export default class CaseTrackerApplication extends HandlebarsApplicationMixin(A
     },
     actions: {
       addEvidence: CaseTrackerApplication.#onAddEvidence,
-      deleteEvidence: CaseTrackerApplication.#onDeleteEvidence
+      deleteEvidence: CaseTrackerApplication.#onDeleteEvidence,
+      startInterrogation: CaseTrackerApplication.#onStartInterrogation,
+      decrementInterrogation: CaseTrackerApplication.#onDecrementInterrogation,
+      deleteInterrogation: CaseTrackerApplication.#onDeleteInterrogation
     }
   };
 
@@ -64,6 +69,8 @@ export default class CaseTrackerApplication extends HandlebarsApplicationMixin(A
       }))
     }));
 
+    context.interrogations = data.interrogations;
+
     return context;
   }
 
@@ -79,7 +86,8 @@ export default class CaseTrackerApplication extends HandlebarsApplicationMixin(A
       arrestPhaseTriggered: expanded.arrestPhaseTriggered ?? false,
       arrestPhaseNotes: expanded.arrestPhaseNotes ?? "",
       epilogueNotes: expanded.epilogueNotes ?? "",
-      evidence: Object.values(expanded.evidence ?? {})
+      evidence: Object.values(expanded.evidence ?? {}),
+      interrogations: Object.values(expanded.interrogations ?? {})
     };
   }
 
@@ -109,6 +117,55 @@ export default class CaseTrackerApplication extends HandlebarsApplicationMixin(A
     } catch (err) {
       console.error("PROCEDURAL | Failed to delete evidence from the Case Tracker", err);
       ui.notifications?.error("PROCEDURAL! failed to delete evidence. Check the console for details.");
+      return;
+    }
+    this.render();
+  }
+
+  static async #onStartInterrogation() {
+    const data = CaseTrackerApplication.#formToData(this.form);
+    const { rawTotal } = resolveDice("normal", Math.random);
+    data.interrogations.push({
+      id: foundry.utils.randomID(),
+      suspect: "",
+      questionsRemaining: rawTotal,
+      notes: ""
+    });
+    try {
+      await setCaseTracker(data);
+    } catch (err) {
+      console.error("PROCEDURAL | Failed to start an interrogation in the Case Tracker", err);
+      ui.notifications?.error("PROCEDURAL! failed to start the interrogation. Check the console for details.");
+      return;
+    }
+    this.render();
+  }
+
+  static async #onDecrementInterrogation(event, target) {
+    const id = target.closest("[data-interrogation-id]").dataset.interrogationId;
+    const data = CaseTrackerApplication.#formToData(this.form);
+    const entry = data.interrogations.find(item => item.id === id);
+    if (!entry) return;
+    entry.questionsRemaining = Math.max(0, entry.questionsRemaining - 1);
+    try {
+      await setCaseTracker(data);
+    } catch (err) {
+      console.error("PROCEDURAL | Failed to decrement an interrogation in the Case Tracker", err);
+      ui.notifications?.error("PROCEDURAL! failed to update the interrogation. Check the console for details.");
+      return;
+    }
+    this.render();
+  }
+
+  static async #onDeleteInterrogation(event, target) {
+    const id = target.closest("[data-interrogation-id]").dataset.interrogationId;
+    const data = CaseTrackerApplication.#formToData(this.form);
+    data.interrogations = data.interrogations.filter(entry => entry.id !== id);
+    try {
+      await setCaseTracker(data);
+    } catch (err) {
+      console.error("PROCEDURAL | Failed to delete an interrogation from the Case Tracker", err);
+      ui.notifications?.error("PROCEDURAL! failed to delete the interrogation. Check the console for details.");
       return;
     }
     this.render();

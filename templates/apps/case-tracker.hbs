@@ -59,4 +59,25 @@
 
     <button type="button" data-action="addEvidence">{{localize "PROCEDURAL.CaseTracker.AddEvidence"}}</button>
   </section>
+
+  <section class="procedural-case-tracker-interrogations">
+    <h2>{{localize "PROCEDURAL.CaseTracker.Interrogations"}}</h2>
+
+    <ul class="procedural-case-tracker-interrogation-list">
+      {{#each interrogations as |entry index|}}
+        <li class="procedural-case-tracker-interrogation-row" data-interrogation-id="{{entry.id}}">
+          <input type="hidden" name="interrogations.{{index}}.id" value="{{entry.id}}">
+          <input type="text" name="interrogations.{{index}}.suspect" value="{{entry.suspect}}" placeholder="{{localize 'PROCEDURAL.CaseTracker.InterrogationSuspect'}}">
+          <div class="procedural-case-tracker-interrogation-counter">
+            <button type="button" data-action="decrementInterrogation">-1</button>
+            <input type="number" name="interrogations.{{index}}.questionsRemaining" value="{{entry.questionsRemaining}}" min="0" step="1">
+          </div>
+          <textarea name="interrogations.{{index}}.notes" class="procedural-builder-freetext" placeholder="{{localize 'PROCEDURAL.CaseTracker.InterrogationNotes'}}">{{entry.notes}}</textarea>
+          <button type="button" data-action="deleteInterrogation">{{localize "PROCEDURAL.CaseTracker.Delete"}}</button>
+        </li>
+      {{/each}}
+    </ul>
+
+    <button type="button" data-action="startInterrogation">{{localize "PROCEDURAL.CaseTracker.StartInterrogation"}}</button>
+  </section>
 </section>
