@@ -1,0 +1,62 @@
+<section class="procedural-sheet procedural-case-tracker">
+  <div class="procedural-builder-row">
+    <label>{{localize "PROCEDURAL.CaseTracker.Act"}}
+      <input type="number" name="act" value="{{act}}" min="1" step="1">
+    </label>
+    <label>{{localize "PROCEDURAL.CaseTracker.Scene"}}
+      <input type="number" name="scene" value="{{scene}}" min="1" step="1">
+    </label>
+  </div>
+
+  <label class="procedural-case-tracker-field">
+    {{localize "PROCEDURAL.CaseTracker.TurnOrder"}}
+    <textarea name="turnOrder" class="procedural-builder-freetext" placeholder="{{localize 'PROCEDURAL.CaseTracker.TurnOrderPlaceholder'}}">{{turnOrder}}</textarea>
+  </label>
+
+  <fieldset class="procedural-case-tracker-interludes">
+    <legend>{{localize "PROCEDURAL.CaseTracker.Interludes"}}</legend>
+    {{#each interludes as |interlude|}}
+      <label>
+        <input type="checkbox" name="interludes.{{interlude.index}}" {{#if interlude.used}}checked{{/if}}>
+        {{interlude.label}}
+      </label>
+    {{/each}}
+  </fieldset>
+
+  <fieldset class="procedural-case-tracker-arrest-phase">
+    <legend>
+      <label>
+        <input type="checkbox" name="arrestPhaseTriggered" {{#if arrestPhaseTriggered}}checked{{/if}}>
+        {{localize "PROCEDURAL.CaseTracker.ArrestPhaseTriggered"}}
+      </label>
+    </legend>
+    <textarea name="arrestPhaseNotes" class="procedural-builder-freetext" placeholder="{{localize 'PROCEDURAL.CaseTracker.ArrestPhaseNotes'}}">{{arrestPhaseNotes}}</textarea>
+  </fieldset>
+
+  <label class="procedural-case-tracker-field">
+    {{localize "PROCEDURAL.CaseTracker.EpilogueNotes"}}
+    <textarea name="epilogueNotes" class="procedural-builder-freetext">{{epilogueNotes}}</textarea>
+  </label>
+
+  <section class="procedural-case-tracker-evidence">
+    <h2>{{localize "PROCEDURAL.CaseTracker.EvidenceLog"}}</h2>
+
+    <ul class="procedural-case-tracker-evidence-list">
+      {{#each evidence as |entry index|}}
+        <li class="procedural-case-tracker-evidence-row" data-evidence-id="{{entry.id}}">
+          <input type="hidden" name="evidence.{{index}}.id" value="{{entry.id}}">
+          <input type="text" name="evidence.{{index}}.description" value="{{entry.description}}" placeholder="{{localize 'PROCEDURAL.CaseTracker.EvidenceDescription'}}">
+          <select name="evidence.{{index}}.status">
+            {{#each entry.statusOptions as |opt|}}
+              <option value="{{opt.value}}" {{#if opt.selected}}selected{{/if}}>{{opt.label}}</option>
+            {{/each}}
+          </select>
+          <textarea name="evidence.{{index}}.notes" class="procedural-builder-freetext" placeholder="{{localize 'PROCEDURAL.CaseTracker.EvidenceNotes'}}">{{entry.notes}}</textarea>
+          <button type="button" data-action="deleteEvidence">{{localize "PROCEDURAL.CaseTracker.Delete"}}</button>
+        </li>
+      {{/each}}
+    </ul>
+
+    <button type="button" data-action="addEvidence">{{localize "PROCEDURAL.CaseTracker.AddEvidence"}}</button>
+  </section>
+</section>

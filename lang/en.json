@@ -67,6 +67,28 @@
       "PointsRemaining": "points remaining",
       "Word": "Word",
       "Skills": "Skills"
+    },
+    "CaseTracker": {
+      "Title": "Case Tracker",
+      "Act": "Act",
+      "Scene": "Scene",
+      "TurnOrder": "Turn Order",
+      "TurnOrderPlaceholder": "One name per line",
+      "Interludes": "Interludes",
+      "Interlude": "Interlude",
+      "ArrestPhaseTriggered": "Arrest Phase Triggered",
+      "ArrestPhaseNotes": "Arrest Phase Notes",
+      "EpilogueNotes": "Epilogue Notes",
+      "EvidenceLog": "Evidence Log",
+      "AddEvidence": "Add Evidence",
+      "EvidenceDescription": "Description",
+      "EvidenceNotes": "Notes",
+      "Delete": "Delete",
+      "Status": {
+        "good": "Good",
+        "bad": "Bad",
+        "unknown": "Unknown"
+      }
     }
   },
   "TYPES": {
