@@ -1,0 +1,212 @@
+[
+  {
+    "name": "A Sad Little Cactus",
+    "img": "icons/svg/mystery-man.svg",
+    "system": { "description": "Won in an office white elephant exchange, watered on a whim, and now somehow the one thing keeping this desk alive." }
+  },
+  {
+    "name": "An Old Photo of Dad in the War",
+    "img": "icons/svg/mystery-man.svg",
+    "system": { "description": "Faded around the edges, tucked into a cheap frame. Nobody at the precinct has ever asked which war." }
+  },
+  {
+    "name": "An Urn with Your Cat's Ashes",
+    "img": "icons/svg/mystery-man.svg",
+    "system": { "description": "\"Whiskers is basically still on the team.\" Nobody argues with that logic." }
+  },
+  {
+    "name": "An Old, Patched Stuffed Animal",
+    "img": "icons/svg/mystery-man.svg",
+    "system": { "description": "One eye, no ear, held together with duct tape and stubbornness. Older than the badge." }
+  },
+  {
+    "name": "A Word-a-Day Calendar",
+    "img": "icons/svg/mystery-man.svg",
+    "system": { "description": "Three years out of date. Still gets flipped every morning like a ritual nobody wants to break." }
+  },
+  {
+    "name": "A Half-Full Jar of Terrible Candy",
+    "img": "icons/svg/mystery-man.svg",
+    "system": { "description": "The kind nobody actually likes. Somehow it's never empty." }
+  },
+  {
+    "name": "A Cigarette Case with a Bullet Hole in It",
+    "img": "icons/svg/mystery-man.svg",
+    "system": { "description": "Carried every day for a year after the night it stopped a round meant for someone's chest." }
+  },
+  {
+    "name": "A Solved Rubik's Cube",
+    "img": "icons/svg/mystery-man.svg",
+    "system": { "description": "Solved once, years ago, and never touched since for fear of ruining the streak." }
+  },
+  {
+    "name": "A Bobblehead of a Local Sports Hero",
+    "img": "icons/svg/mystery-man.svg",
+    "system": { "description": "Nods along to every conversation whether it's relevant or not." }
+  },
+  {
+    "name": "A Participation Ribbon from a Hot Dog Eating Contest",
+    "img": "icons/svg/mystery-man.svg",
+    "system": { "description": "Framed like a medal of honor. It is, in fact, a participation ribbon." }
+  },
+  {
+    "name": "A Golden Protractor",
+    "img": "icons/svg/mystery-man.svg",
+    "system": { "description": "A joke gift for \"always coming at things from the right angle.\" The joke's still funny, four years later." }
+  },
+  {
+    "name": "A Metronome",
+    "img": "icons/svg/mystery-man.svg",
+    "system": { "description": "Ticks along during long stakeouts and longer interrogations. Nobody remembers who left it here." }
+  },
+  {
+    "name": "A \"World's Okayest Detective\" Mug",
+    "img": "icons/svg/mystery-man.svg",
+    "system": { "description": "A chipped mug, gift from a partner who transferred out years ago. Nobody's had the heart to replace it." }
+  },
+  {
+    "name": "The Unsolved Case File",
+    "img": "icons/svg/mystery-man.svg",
+    "system": { "description": "A slim manila folder kept in the bottom drawer, corners worn soft from being pulled out and put back a hundred times." }
+  },
+  {
+    "name": "A Single Burnt-Out Lightbulb",
+    "img": "icons/svg/mystery-man.svg",
+    "system": { "description": "Kept from the interrogation room the night of a confession that changed everything. Nobody remembers why it matters. They do." }
+  },
+  {
+    "name": "The Lucky Pen",
+    "img": "icons/svg/mystery-man.svg",
+    "system": { "description": "Signed every arrest report for three years running. Runs dry the second anyone else tries to use it." }
+  },
+  {
+    "name": "A Polaroid, Slightly Singed",
+    "img": "icons/svg/mystery-man.svg",
+    "system": { "description": "Two rookies grinning outside a burned-out warehouse. Only one of them still works here." }
+  },
+  {
+    "name": "The Dartboard with No Bullseye",
+    "img": "icons/svg/mystery-man.svg",
+    "system": { "description": "Someone's face used to be pinned there. Long since taken down, but the pinholes remain." }
+  },
+  {
+    "name": "A Kid's Crayon Drawing of a Police Badge",
+    "img": "icons/svg/mystery-man.svg",
+    "system": { "description": "Taped up, curling at the edges. \"To the best detective ever\" in shaky handwriting." }
+  },
+  {
+    "name": "An Evidence Bag, Empty",
+    "img": "icons/svg/mystery-man.svg",
+    "system": { "description": "Sealed, labeled, dated. Whatever was inside it was returned to its owner years ago. The bag never got thrown away." }
+  },
+  {
+    "name": "A Rubber Duck Wearing Tiny Handcuffs",
+    "img": "icons/svg/mystery-man.svg",
+    "system": { "description": "A gag gift that became a squeeze toy during every tense phone call since." }
+  },
+  {
+    "name": "The Countdown Calendar",
+    "img": "icons/svg/mystery-man.svg",
+    "system": { "description": "X's through nearly every day of the year, counting down to a retirement that keeps getting pushed back." }
+  },
+  {
+    "name": "A Cassette Tape, Unlabeled",
+    "img": "icons/svg/mystery-man.svg",
+    "system": { "description": "Plays fine. Nobody in the office owns a tape deck anymore, so nobody's heard it in a decade." }
+  },
+  {
+    "name": "A Snow Globe from a City They've Never Been To",
+    "img": "icons/svg/mystery-man.svg",
+    "system": { "description": "A gift, or a threat, depending on who's telling the story." }
+  },
+  {
+    "name": "A Chess Piece, Just the Black King",
+    "img": "icons/svg/mystery-man.svg",
+    "system": { "description": "Won it off a suspect during an interrogation that went sideways in the most memorable way." }
+  },
+  {
+    "name": "The \"World Famous Chili\" Recipe Card",
+    "img": "icons/svg/mystery-man.svg",
+    "system": { "description": "Stained, laminated, guarded jealously. Brought out exactly once a year for the precinct potluck." }
+  },
+  {
+    "name": "A Framed Newspaper Clipping, Yellowed",
+    "img": "icons/svg/mystery-man.svg",
+    "system": { "description": "Front page, their name in the byline. They've never let anyone read the whole article out loud." }
+  },
+  {
+    "name": "A Cracked Phone Screen, Kept in a Drawer",
+    "img": "icons/svg/mystery-man.svg",
+    "system": { "description": "The last text on it has never been deleted." }
+  },
+  {
+    "name": "A Toy Siren, the Kind That Clips to a Bike",
+    "img": "icons/svg/mystery-man.svg",
+    "system": { "description": "A niece's birthday gift, or a nephew's, depending on the day they're asked." }
+  },
+  {
+    "name": "A Stack of Rejected Case Theories",
+    "img": "icons/svg/mystery-man.svg",
+    "system": { "description": "Pinned together, each one crossed out except the last, which is circled twice." }
+  },
+  {
+    "name": "A Jar of Bent Paperclips",
+    "img": "icons/svg/mystery-man.svg",
+    "system": { "description": "Every one straightened into a tiny useless lockpick, then bent back. A nervous habit nobody's called out." }
+  },
+  {
+    "name": "A Softball Trophy, Precinct League, Third Place",
+    "img": "icons/svg/mystery-man.svg",
+    "system": { "description": "The only trophy on the desk. It is proudly, defiantly, the wrong kind of pride." }
+  },
+  {
+    "name": "A Postcard That Was Never Mailed",
+    "img": "icons/svg/mystery-man.svg",
+    "system": { "description": "Address filled in, stamp affixed, message half-finished on the back." }
+  },
+  {
+    "name": "A Well-Worn Deck of Cards, Missing the Two of Clubs",
+    "img": "icons/svg/mystery-man.svg",
+    "system": { "description": "Used for stakeouts. The missing card is a long story nobody tells the same way twice." }
+  },
+  {
+    "name": "A Tiny Cactus in a \"World's Best Partner\" Pot",
+    "img": "icons/svg/mystery-man.svg",
+    "system": { "description": "The pot outlived the partnership. The cactus, somehow, is thriving." }
+  },
+  {
+    "name": "A Sun-Bleached Business Card from a Rival Agency",
+    "img": "icons/svg/mystery-man.svg",
+    "system": { "description": "Kept, not thrown away, for reasons that change depending on who's asking." }
+  },
+  {
+    "name": "A Handwritten List Titled \"Things I Got Wrong\"",
+    "img": "icons/svg/mystery-man.svg",
+    "system": { "description": "Folded into quarters, tucked under the desk blotter where no one's supposed to see it." }
+  },
+  {
+    "name": "A Chipped Shot Glass from an Undercover Job",
+    "img": "icons/svg/mystery-man.svg",
+    "system": { "description": "Never used since. Just sits there as a reminder of a night that almost went very badly." }
+  },
+  {
+    "name": "A Bobblehead Judge with a Missing Gavel Hand",
+    "img": "icons/svg/mystery-man.svg",
+    "system": { "description": "A courtroom souvenir from the one case that actually stuck." }
+  },
+  {
+    "name": "A Faded Friendship Bracelet",
+    "img": "icons/svg/mystery-man.svg",
+    "system": { "description": "Too small to wear anymore. Nobody at the precinct has ever asked who made it." }
+  },
+  {
+    "name": "A Half-Finished Crossword, Pen Not Pencil",
+    "img": "icons/svg/mystery-man.svg",
+    "system": { "description": "Same newspaper for six weeks running. The 14-across clue has been circled in red." }
+  },
+  {
+    "name": "A Small Brass Key That Doesn't Fit Anything in the Building",
+    "img": "icons/svg/mystery-man.svg",
+    "system": { "description": "Tried it on every lock in HQ. Twice." }
+  }
+]
