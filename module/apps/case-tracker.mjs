@@ -37,6 +37,7 @@ export default class CaseTrackerApplication extends HandlebarsApplicationMixin(A
   };
 
   async _prepareContext(options) {
+    if (!game.user.isGM) throw new Error("The Case Tracker is GM-only.");
     const context = await super._prepareContext(options);
     const data = getCaseTracker().toObject();
 
@@ -66,9 +67,11 @@ export default class CaseTrackerApplication extends HandlebarsApplicationMixin(A
     return context;
   }
 
-  static async #onSubmit(event, form, formData) {
-    const expanded = foundry.utils.expandObject(formData.object);
-    await setCaseTracker({
+  static #formToData(form) {
+    const expanded = foundry.utils.expandObject(
+      new foundry.applications.ux.FormDataExtended(form).object
+    );
+    return {
       act: expanded.act ?? 1,
       scene: expanded.scene ?? 1,
       turnOrder: expanded.turnOrder ?? "",
@@ -77,21 +80,37 @@ export default class CaseTrackerApplication extends HandlebarsApplicationMixin(A
       arrestPhaseNotes: expanded.arrestPhaseNotes ?? "",
       epilogueNotes: expanded.epilogueNotes ?? "",
       evidence: Object.values(expanded.evidence ?? {})
-    });
+    };
+  }
+
+  static async #onSubmit(event, form) {
+    await setCaseTracker(CaseTrackerApplication.#formToData(form));
   }
 
   static async #onAddEvidence() {
-    const data = getCaseTracker().toObject();
+    const data = CaseTrackerApplication.#formToData(this.form);
     data.evidence.push({ id: foundry.utils.randomID(), description: "", status: "unknown", notes: "" });
-    await setCaseTracker(data);
+    try {
+      await setCaseTracker(data);
+    } catch (err) {
+      console.error("PROCEDURAL | Failed to add evidence to the Case Tracker", err);
+      ui.notifications?.error("PROCEDURAL! failed to add evidence. Check the console for details.");
+      return;
+    }
     this.render();
   }
 
   static async #onDeleteEvidence(event, target) {
     const id = target.closest("[data-evidence-id]").dataset.evidenceId;
-    const data = getCaseTracker().toObject();
+    const data = CaseTrackerApplication.#formToData(this.form);
     data.evidence = data.evidence.filter(entry => entry.id !== id);
-    await setCaseTracker(data);
+    try {
+      await setCaseTracker(data);
+    } catch (err) {
+      console.error("PROCEDURAL | Failed to delete evidence from the Case Tracker", err);
+      ui.notifications?.error("PROCEDURAL! failed to delete evidence. Check the console for details.");
+      return;
+    }
     this.render();
   }
 }

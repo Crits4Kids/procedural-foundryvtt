@@ -12,9 +12,10 @@ mechanics of *PROCEDURAL!*, a tabletop crime-procedural RPG.
   via a chat card button
 - Compendiums auto-populated on first world launch with all 11 Tropes and
   18 second Talents from the rulebook
+- A GM-only Case Tracker app (scene controls) for tracking act/scene,
+  interludes, the arrest phase, and evidence over the course of a session
 
-Session-structure tooling (acts/scenes/interludes, evidence tracking) and
-flavor roll-tables (Quality/Quirk/HQ/etc) are intentionally out of scope for
+Flavor roll-tables (Quality/Quirk/HQ/etc) are intentionally out of scope for
 this v1 — see `docs/superpowers/specs/2026-08-05-procedural-system-v1-design.md`
 for the full scope rationale.
 

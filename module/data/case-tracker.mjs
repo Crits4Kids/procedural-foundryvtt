@@ -3,8 +3,8 @@ export default class CaseTrackerData extends foundry.abstract.DataModel {
     const { SchemaField, StringField, NumberField, BooleanField, ArrayField } = foundry.data.fields;
 
     return {
-      act: new NumberField({ required: true, integer: true, initial: 1, min: 1 }),
-      scene: new NumberField({ required: true, integer: true, initial: 1, min: 1 }),
+      act: new NumberField({ required: true, integer: true, initial: 1 }),
+      scene: new NumberField({ required: true, integer: true, initial: 1 }),
       turnOrder: new StringField({ initial: "" }),
       interludes: new ArrayField(new BooleanField({ initial: false }), { initial: [false, false, false] }),
       arrestPhaseTriggered: new BooleanField({ initial: false }),
