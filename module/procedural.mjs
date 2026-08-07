@@ -3,6 +3,7 @@ import NpcActorData from "./data/actor-npc.mjs";
 import TropeItemData from "./data/item-trope.mjs";
 import TalentItemData from "./data/item-talent.mjs";
 import EquipmentItemData from "./data/item-equipment.mjs";
+import CaseTrackerData from "./data/case-tracker.mjs";
 import ProceduralActor from "./documents/actor.mjs";
 import TropeBuilderApplication from "./apps/trope-builder.mjs";
 import { registerChatListeners } from "./helpers/chat-listeners.mjs";
@@ -21,6 +22,11 @@ Hooks.once("init", () => {
   CONFIG.Item.dataModels.trope = TropeItemData;
   CONFIG.Item.dataModels.talent = TalentItemData;
   CONFIG.Item.dataModels.equipment = EquipmentItemData;
+  game.settings.register("procedural", "caseTracker", {
+    scope: "world",
+    config: false,
+    type: CaseTrackerData
+  });
 
   CONFIG.Actor.documentClass = ProceduralActor;
 
