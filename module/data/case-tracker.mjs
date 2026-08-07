@@ -18,6 +18,15 @@ export default class CaseTrackerData extends foundry.abstract.DataModel {
           notes: new StringField({ initial: "" })
         }),
         { initial: [] }
+      ),
+      interrogations: new ArrayField(
+        new SchemaField({
+          id: new StringField({ required: true }),
+          suspect: new StringField({ initial: "" }),
+          questionsRemaining: new NumberField({ required: true, integer: true, initial: 0, min: 0 }),
+          notes: new StringField({ initial: "" })
+        }),
+        { initial: [] }
       )
     };
   }
