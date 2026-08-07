@@ -12,7 +12,7 @@ mechanics of *PROCEDURAL!*, a tabletop crime-procedural RPG.
   via a chat card button
 - Compendiums auto-populated on first world launch with all 11 Tropes,
   18 second Talents, and 42 Desk Items (12 from the rulebook's "What's on
-  Your Desk?" table plus 30 new ones) from the rulebook and beyond
+  Your Desk?" table plus 30 new ones)
 - A GM-only Case Tracker app (scene controls) for tracking act/scene,
   interludes, the arrest phase, evidence, and interrogations over the
   course of a session
@@ -37,7 +37,8 @@ for the full scope rationale.
    automatically. Check the Compendium Packs sidebar tab to confirm.
 6. Create a `trope` Actor, drag a Trope item onto it from the compendium,
    allocate skill points, and start rolling. Drag a Desk Item onto the same
-   actor to give them something personal at HQ.
+   actor to give them something personal at HQ — the sheet's free-text
+   "Desk Item" field stays separate, for a short flashback note.
 
 ## Running the automated tests
 

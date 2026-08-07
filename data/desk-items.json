@@ -72,7 +72,7 @@
   {
     "name": "A Single Burnt-Out Lightbulb",
     "img": "icons/svg/mystery-man.svg",
-    "system": { "description": "Kept from the interrogation room the night of a confession that changed everything. Nobody remembers why it matters. They do." }
+    "system": { "description": "Kept from the interrogation room the night of a confession that changed everything. Nobody else remembers why it matters. They do." }
   },
   {
     "name": "The Lucky Pen",
@@ -157,7 +157,7 @@
   {
     "name": "A Softball Trophy, Precinct League, Third Place",
     "img": "icons/svg/mystery-man.svg",
-    "system": { "description": "The only trophy on the desk. It is proudly, defiantly, the wrong kind of pride." }
+    "system": { "description": "The only trophy on the desk. Displayed proudly, defiantly, as the wrong kind of pride." }
   },
   {
     "name": "A Postcard That Was Never Mailed",
