@@ -27,6 +27,8 @@
       "HQ": "HQ",
       "AgencyName": "Agency Name",
       "DeskItem": "Desk Item",
+      "DeskItemNote": "Desk Item Note",
+      "DeskItemEmpty": "Drag a Desk Item here from the Procedural: Desk Items compendium.",
       "Randomize": "Randomize",
       "RandomizeConfirm": "This will overwrite the current Trope, skills, and flavor fields. Continue?",
       "Confirm": "Confirm"

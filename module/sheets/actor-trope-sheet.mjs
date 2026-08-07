@@ -28,12 +28,32 @@ export default class ProceduralTropeActorSheet extends HandlebarsApplicationMixi
       secrets: this.actor.isOwner,
       relativeTo: this.actor
     });
+    context.deskItem = this.actor.items.get(this.actor.system.deskItemId) ?? null;
     context.items = {
       trope: this.actor.items.filter(i => i.type === "trope"),
       talent: this.actor.items.filter(i => i.type === "talent"),
-      equipment: this.actor.items.filter(i => i.type === "equipment")
+      equipment: this.actor.items.filter(i => i.type === "equipment" && i.id !== this.actor.system.deskItemId)
     };
     return context;
+  }
+
+  async _onDropItem(event, item) {
+    const created = await super._onDropItem(event, item);
+    if (created?.type === "equipment" && event.target.closest?.('[data-drop-zone="desk-item"]')) {
+      await this.#setDeskItem(created);
+    }
+    return created;
+  }
+
+  async #setDeskItem(item) {
+    const actor = this.actor;
+    const previousId = actor.system.deskItemId;
+    if (previousId && previousId !== item.id) {
+      await actor.items.get(previousId)?.delete();
+    }
+    if (actor.system.deskItemId !== item.id) {
+      await actor.update({ "system.deskItemId": item.id });
+    }
   }
 
   static async #onRollSkill(event, target) {
@@ -94,7 +114,7 @@ export default class ProceduralTropeActorSheet extends HandlebarsApplicationMixi
     const s = this.actor.system;
     const hasExistingData =
       this.actor.items.some(i => i.type === "trope" || i.type === "talent") ||
-      !!(s.qualities || s.quirks || s.bStory || s.hq || s.agencyName);
+      !!(s.qualities || s.quirks || s.bStory || s.hq || s.agencyName || s.deskItemId);
 
     if (hasExistingData) {
       const confirmed = await foundry.applications.api.DialogV2.wait({

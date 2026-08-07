@@ -250,3 +250,36 @@
 .procedural-case-tracker-interrogation-counter input[type="number"] {
   width: 3.5rem;
 }
+
+.procedural-desk-item {
+  border: 1px solid #666;
+  border-radius: 4px;
+  padding: 0.5rem;
+}
+
+.procedural-desk-item-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.procedural-desk-item-img {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border: 1px solid #666;
+}
+
+.procedural-desk-item-info {
+  flex: 1;
+}
+
+.procedural-desk-item-info p {
+  margin: 0.25rem 0 0;
+}
+
+.procedural-desk-item-empty {
+  color: #888;
+  font-style: italic;
+  margin: 0;
+}
