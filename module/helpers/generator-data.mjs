@@ -5,7 +5,8 @@ export const GENERATOR_DATA_PATHS = {
   quirks: "systems/procedural/data/quirks.json",
   bstories: "systems/procedural/data/bstories.json",
   hq: "systems/procedural/data/hq.json",
-  agencyNames: "systems/procedural/data/agency-names.json"
+  agencyNames: "systems/procedural/data/agency-names.json",
+  deskItems: "systems/procedural/data/desk-items.json"
 };
 
 let cachedGeneratorData = null;

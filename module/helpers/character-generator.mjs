@@ -180,10 +180,11 @@ export function pickRandom(list, rng) {
  * @param {{odds: string[], evens: string[]}} data.bstories - data/bstories.json shape
  * @param {{odds: string[], evens: string[]}} data.hq - data/hq.json shape
  * @param {{table1: string[], table2: string[], table3: string[]}} data.agencyNames - data/agency-names.json shape
+ * @param {Array<object>} data.deskItems - data/desk-items.json shape
  * @param {() => number} [rng]
  */
 export function generateTrope(data, rng = Math.random) {
-  const { tropes, secondTalents, qualities, quirks, bstories, hq, agencyNames } = data;
+  const { tropes, secondTalents, qualities, quirks, bstories, hq, agencyNames, deskItems } = data;
 
   const rolledTrope = rollTrope(tropes, rng);
   const stats = applyGifted(rolledTrope, { ...rolledTrope.system.statBlock }, rng);
@@ -202,6 +203,7 @@ export function generateTrope(data, rng = Math.random) {
     hq: rollBStoryOrHq(hq, rng),
     agencyName: rollAgencyName(agencyNames, rng),
     secondTalent: pickRandom(secondTalents, rng),
+    deskItem: pickRandom(deskItems, rng),
     rerunPoints: 1
   };
 }
