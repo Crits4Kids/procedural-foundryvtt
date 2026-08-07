@@ -145,6 +145,7 @@ export default class CaseTrackerApplication extends HandlebarsApplicationMixin(A
     const id = target.closest("[data-interrogation-id]").dataset.interrogationId;
     const data = CaseTrackerApplication.#formToData(this.form);
     const entry = data.interrogations.find(item => item.id === id);
+    if (!entry) return;
     entry.questionsRemaining = Math.max(0, entry.questionsRemaining - 1);
     try {
       await setCaseTracker(data);
