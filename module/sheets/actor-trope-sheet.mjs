@@ -107,7 +107,11 @@ export default class ProceduralTropeActorSheet extends HandlebarsApplicationMixi
 
   static async #onDeleteItem(event, target) {
     const itemId = target.closest("[data-item-id]").dataset.itemId;
+    const isDeskItem = this.actor.system.deskItemId === itemId;
     await this.actor.items.get(itemId)?.delete();
+    if (isDeskItem) {
+      await this.actor.update({ "system.deskItemId": "" });
+    }
   }
 
   static async #onRandomizeTrope() {
