@@ -19,6 +19,7 @@ export default class TropeActorData extends foundry.abstract.TypeDataModel {
       hq: new StringField({ initial: "" }),
       agencyName: new StringField({ initial: "" }),
       deskItem: new StringField({ initial: "" }),
+      deskItemId: new StringField({ initial: "" }),
       biography: new HTMLField({ initial: "" })
     };
   }
