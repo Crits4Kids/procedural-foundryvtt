@@ -17,7 +17,7 @@ export default class ProceduralTropeActorSheet extends HandlebarsApplicationMixi
   };
 
   static PARTS = {
-    form: { template: "systems/procedural/templates/actor/trope-sheet.hbs" }
+    form: { template: "systems/procedural/templates/actor/trope-sheet.hbs", scrollable: [""] }
   };
 
   async _prepareContext(options) {
