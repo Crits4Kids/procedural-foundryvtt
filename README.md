@@ -10,8 +10,9 @@ mechanics of *PROCEDURAL!*, a tabletop crime-procedural RPG.
 - Fully automated skill rolls: 2d6 + modifier, Advantage/Disadvantage,
   Critical Failure/Success, "Hurt" status effects, and Rerun Point rerolls
   via a chat card button
-- Compendiums auto-populated on first world launch with all 11 Tropes and
-  18 second Talents from the rulebook
+- Compendiums auto-populated on first world launch with all 11 Tropes,
+  18 second Talents, and 42 Desk Items (12 from the rulebook's "What's on
+  Your Desk?" table plus 30 new ones)
 - A GM-only Case Tracker app (scene controls) for tracking act/scene,
   interludes, the arrest phase, evidence, and interrogations over the
   course of a session
@@ -31,11 +32,13 @@ for the full scope rationale.
 3. Launch Foundry VTT (v14), and on the Setup screen confirm "PROCEDURAL!"
    appears in the systems list.
 4. Create a new World using the PROCEDURAL! system, then launch it.
-5. On first launch, two world compendiums — "Procedural: Tropes" and
-   "Procedural: Second Talents" — are created automatically. Check the
-   Compendium Packs sidebar tab to confirm.
+5. On first launch, three world compendiums — "Procedural: Tropes",
+   "Procedural: Second Talents", and "Procedural: Desk Items" — are created
+   automatically. Check the Compendium Packs sidebar tab to confirm.
 6. Create a `trope` Actor, drag a Trope item onto it from the compendium,
-   allocate skill points, and start rolling.
+   allocate skill points, and start rolling. Drag a Desk Item onto the same
+   actor to give them something personal at HQ — the sheet's free-text
+   "Desk Item" field stays separate, for a short flashback note.
 
 ## Running the automated tests
 

@@ -10,6 +10,12 @@ const SEED_PACKS = [
     name: "procedural-second-talents",
     type: "talent",
     path: "systems/procedural/data/second-talents.json"
+  },
+  {
+    label: "Procedural: Desk Items",
+    name: "procedural-desk-items",
+    type: "equipment",
+    path: "systems/procedural/data/desk-items.json"
   }
 ];
 
