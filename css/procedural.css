@@ -5,6 +5,11 @@
   padding: 0.5rem;
 }
 
+.procedural-trope-sheet {
+  height: 100%;
+  overflow-y: auto;
+}
+
 .procedural-sheet-header {
   display: flex;
   align-items: center;
@@ -50,6 +55,21 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.5rem;
+}
+
+.procedural-text-fields label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.procedural-text-fields textarea {
+  width: 100%;
+  min-height: 2.5rem;
+  resize: vertical;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  font-family: inherit;
 }
 
 .procedural-items ul {

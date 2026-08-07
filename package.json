@@ -1,7 +1,7 @@
 {
   "name": "procedural-foundryvtt",
   "private": true,
-  "version": "0.5.0",
+  "version": "0.5.2",
   "type": "module",
   "scripts": {
     "test": "node --test module/**/*.test.mjs"
