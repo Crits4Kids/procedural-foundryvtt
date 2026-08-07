@@ -1,0 +1,11 @@
+<div class="procedural-builder-step">
+  <select data-role="desk-item-select">
+    <option value="">{{localize "PROCEDURAL.TropeBuilder.ChooseOption"}}</option>
+    {{#each deskItemOptions as |opt|}}
+      <option value="{{opt.name}}" {{#if opt.selected}}selected{{/if}}>{{opt.name}}</option>
+    {{/each}}
+  </select>
+  {{#if draft.deskItem}}
+    <p class="procedural-builder-talent-description">{{draft.deskItem.system.description}}</p>
+  {{/if}}
+</div>

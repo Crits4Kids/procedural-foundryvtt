@@ -50,9 +50,26 @@
     <label>{{localize "PROCEDURAL.Actor.AgencyName"}}
       <input type="text" name="system.agencyName" value="{{system.agencyName}}">
     </label>
-    <label>{{localize "PROCEDURAL.Actor.DeskItem"}}
+    <label>{{localize "PROCEDURAL.Actor.DeskItemNote"}}
       <input type="text" name="system.deskItem" value="{{system.deskItem}}">
     </label>
+  </section>
+
+  <section class="procedural-desk-item" data-drop-zone="desk-item">
+    <h3>{{localize "PROCEDURAL.Actor.DeskItem"}}</h3>
+    {{#if deskItem}}
+      <div class="procedural-desk-item-card" data-item-id="{{deskItem.id}}">
+        <img class="procedural-desk-item-img" src="{{deskItem.img}}" alt="{{deskItem.name}}">
+        <div class="procedural-desk-item-info">
+          <strong>{{deskItem.name}}</strong>
+          <p>{{deskItem.system.description}}</p>
+        </div>
+        <button type="button" data-action="editItem">✎</button>
+        <button type="button" data-action="deleteItem">✕</button>
+      </div>
+    {{else}}
+      <p class="procedural-desk-item-empty">{{localize "PROCEDURAL.Actor.DeskItemEmpty"}}</p>
+    {{/if}}
   </section>
 
   <section class="procedural-items">

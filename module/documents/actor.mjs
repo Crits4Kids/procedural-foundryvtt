@@ -68,7 +68,8 @@ export default class ProceduralActor extends Actor {
     const data = await loadGeneratorData();
     const result = generateTrope(data);
 
-    const staleItems = this.items.filter(i => i.type === "trope" || i.type === "talent");
+    const currentDeskItem = this.items.get(this.system.deskItemId);
+    const staleItems = this.items.filter(i => i.type === "trope" || i.type === "talent" || i.id === currentDeskItem?.id);
     if (staleItems.length) {
       await this.deleteEmbeddedDocuments("Item", staleItems.map(i => i.id));
     }
@@ -93,10 +94,13 @@ export default class ProceduralActor extends Actor {
       "system.hurt": false
     });
 
-    await Item.createDocuments([
+    const [, , deskItem] = await Item.createDocuments([
       { name: result.trope.name, type: "trope", img: result.trope.img, system: result.trope.system },
-      { name: result.secondTalent.name, type: "talent", img: result.secondTalent.img, system: { ...result.secondTalent.system } }
+      { name: result.secondTalent.name, type: "talent", img: result.secondTalent.img, system: { ...result.secondTalent.system } },
+      { name: result.deskItem.name, type: "equipment", img: result.deskItem.img, system: { ...result.deskItem.system } }
     ], { parent: this });
+
+    await this.update({ "system.deskItemId": deskItem.id });
 
     return result;
   }

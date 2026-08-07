@@ -36,9 +36,11 @@ for the full scope rationale.
    "Procedural: Second Talents", and "Procedural: Desk Items" — are created
    automatically. Check the Compendium Packs sidebar tab to confirm.
 6. Create a `trope` Actor, drag a Trope item onto it from the compendium,
-   allocate skill points, and start rolling. Drag a Desk Item onto the same
-   actor to give them something personal at HQ — the sheet's free-text
-   "Desk Item" field stays separate, for a short flashback note.
+   allocate skill points, and start rolling. Drag a Desk Item onto the
+   sheet's dedicated "Desk Item" section to give them something personal at
+   HQ (dragging a new one replaces the old one) — the separate "Desk Item
+   Note" free-text field stays for a short flashback note. Randomize and
+   the Trope builder wizard both pick/set a desk item automatically too.
 
 ## Running the automated tests
 

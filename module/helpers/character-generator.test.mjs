@@ -157,6 +157,11 @@ const SECOND_TALENTS_FIXTURE = [
   { name: "Drama Queen", img: "icons/svg/mystery-man.svg", system: { description: "Drama Queen description", usesPerAct: 1 } }
 ];
 
+const DESK_ITEMS_FIXTURE = [
+  { name: "A Sad Little Cactus", img: "icons/svg/mystery-man.svg", system: { description: "Cactus description" } },
+  { name: "The Lucky Pen", img: "icons/svg/mystery-man.svg", system: { description: "Pen description" } }
+];
+
 test("rollQualityOrQuirk selects the Odds table on an odd 1d6 and looks up by 2d6 sum", () => {
   const rng = queue([1, 3, 4]); // 1 -> odd/Odds; then 3+4=7
   assert.equal(rollQualityOrQuirk(QUALITIES_FIXTURE, rng), "Clever");
@@ -197,7 +202,8 @@ test("generateTrope wires every roll together into one result", () => {
     quirks: QUIRKS_FIXTURE,
     bstories: BSTORIES_FIXTURE,
     hq: HQ_FIXTURE,
-    agencyNames: AGENCY_NAMES_FIXTURE
+    agencyNames: AGENCY_NAMES_FIXTURE,
+    deskItems: DESK_ITEMS_FIXTURE
   }, rng);
 
   assert.equal(result.trope.name, "Rookie");
@@ -215,6 +221,7 @@ test("generateTrope wires every roll together into one result", () => {
   assert.equal(result.hq, "Former funeral parlor");
   assert.equal(result.agencyName, "Federal Crime Squad");
   assert.equal(result.secondTalent.name, "Sentinel");
+  assert.equal(result.deskItem.name, "A Sad Little Cactus");
   assert.equal(result.rerunPoints, 1);
 });
 
