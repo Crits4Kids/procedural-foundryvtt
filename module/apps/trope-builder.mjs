@@ -6,7 +6,7 @@ import { rollTrope, validateSkillAllocation, rollQualityOrQuirk, rollBStoryOrHq 
 
 const STEP_IDS = [
   "name", "trope", "skills", "quality", "quirk", "bstory",
-  "secondTalent", "hq", "agencyName", "review"
+  "secondTalent", "hq", "deskItem", "agencyName", "review"
 ];
 
 const STAT_KEYS = ["mental", "physical", "social"];
@@ -65,6 +65,7 @@ export default class TropeBuilderApplication extends HandlebarsApplicationMixin(
         "systems/procedural/templates/apps/trope-builder-steps/skills.hbs",
         "systems/procedural/templates/apps/trope-builder-steps/roll-choose-create.hbs",
         "systems/procedural/templates/apps/trope-builder-steps/second-talent.hbs",
+        "systems/procedural/templates/apps/trope-builder-steps/desk-item.hbs",
         "systems/procedural/templates/apps/trope-builder-steps/agency-name.hbs",
         "systems/procedural/templates/apps/trope-builder-steps/review.hbs"
       ]
@@ -84,6 +85,7 @@ export default class TropeBuilderApplication extends HandlebarsApplicationMixin(
     bStory: "",
     secondTalent: null,
     hq: "",
+    deskItem: null,
     agencyName: "",
     agencyWords: [null, null, null]
   };
@@ -111,6 +113,7 @@ export default class TropeBuilderApplication extends HandlebarsApplicationMixin(
       skills: stepId === "skills",
       rollChooseCreate: stepId in ROLL_CHOOSE_CREATE_CONFIG,
       secondTalent: stepId === "secondTalent",
+      deskItem: stepId === "deskItem",
       agencyName: stepId === "agencyName",
       review: stepId === "review"
     };
@@ -152,6 +155,13 @@ export default class TropeBuilderApplication extends HandlebarsApplicationMixin(
       context.secondTalentOptions = this.#data.secondTalents.map(t => ({
         name: t.name,
         selected: t.name === (this.#draft.secondTalent?.name ?? "")
+      }));
+    }
+
+    if (stepId === "deskItem") {
+      context.deskItemOptions = this.#data.deskItems.map(d => ({
+        name: d.name,
+        selected: d.name === (this.#draft.deskItem?.name ?? "")
       }));
     }
 
@@ -215,6 +225,15 @@ export default class TropeBuilderApplication extends HandlebarsApplicationMixin(
       talentSelect?.addEventListener("change", () => {
         const talent = this.#data.secondTalents.find(t => t.name === talentSelect.value);
         this.#draft.secondTalent = talent ?? null;
+        this.render();
+      });
+    }
+
+    if (stepId === "deskItem") {
+      const deskItemSelect = this.element.querySelector('[data-role="desk-item-select"]');
+      deskItemSelect?.addEventListener("change", () => {
+        const deskItem = this.#data.deskItems.find(d => d.name === deskItemSelect.value);
+        this.#draft.deskItem = deskItem ?? null;
         this.render();
       });
     }
@@ -294,6 +313,7 @@ export default class TropeBuilderApplication extends HandlebarsApplicationMixin(
       case "bstory": return this.#draft.bStory.trim().length > 0;
       case "secondTalent": return this.#draft.secondTalent !== null;
       case "hq": return this.#draft.hq.trim().length > 0;
+      case "deskItem": return this.#draft.deskItem !== null;
       case "agencyName": return this.#draft.agencyName.trim().length > 0;
       case "review": return true;
       default: return false;
@@ -368,10 +388,13 @@ export default class TropeBuilderApplication extends HandlebarsApplicationMixin(
         "system.rerunPoints": 1
       });
 
-      await Item.createDocuments([
+      const [, , deskItem] = await Item.createDocuments([
         { name: draft.trope.name, type: "trope", img: draft.trope.img, system: { ...draft.trope.system, statBlock: draft.stats } },
-        { name: draft.secondTalent.name, type: "talent", img: draft.secondTalent.img, system: { ...draft.secondTalent.system } }
+        { name: draft.secondTalent.name, type: "talent", img: draft.secondTalent.img, system: { ...draft.secondTalent.system } },
+        { name: draft.deskItem.name, type: "equipment", img: draft.deskItem.img, system: { ...draft.deskItem.system } }
       ], { parent: actor });
+
+      await actor.update({ "system.deskItemId": deskItem.id });
 
       await this.close();
       actor.sheet.render(true);
