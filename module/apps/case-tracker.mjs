@@ -1,4 +1,5 @@
 import { resolveDice } from "../helpers/dice-rules.mjs";
+import { findTalentsToReset } from "../helpers/talent-reset.mjs";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ApplicationV2 } = foundry.applications.api;
@@ -10,7 +11,43 @@ function getCaseTracker() {
 }
 
 async function setCaseTracker(data) {
+  const previousAct = getCaseTracker().act;
   await game.settings.set("procedural", "caseTracker", data);
+  if (data.act !== previousAct) {
+    await resetTalentUses(data.act);
+  }
+}
+
+async function resetTalentUses(act) {
+  const actors = game.actors.map(actor => ({
+    id: actor.id,
+    items: actor.items.map(item => ({
+      id: item.id,
+      type: item.type,
+      system: { used: item.system?.used }
+    }))
+  }));
+  const updates = findTalentsToReset(actors);
+  if (!updates.length) return;
+
+  const updatesByActor = new Map();
+  for (const { actorId, itemId } of updates) {
+    if (!updatesByActor.has(actorId)) updatesByActor.set(actorId, []);
+    updatesByActor.get(actorId).push({ _id: itemId, "system.used": false });
+  }
+
+  try {
+    for (const [actorId, itemUpdates] of updatesByActor) {
+      await game.actors.get(actorId).updateEmbeddedDocuments("Item", itemUpdates);
+    }
+  } catch (err) {
+    console.error("PROCEDURAL | Failed to reset Talents for the new act", err);
+    ui.notifications?.error("PROCEDURAL! failed to reset Talents. Check the console for details.");
+    return;
+  }
+
+  const count = updates.length;
+  ui.notifications?.info(`PROCEDURAL! reset ${count} Talent${count === 1 ? "" : "s"} for Act ${act}.`);
 }
 
 export default class CaseTrackerApplication extends HandlebarsApplicationMixin(ApplicationV2) {

@@ -8,3 +8,4 @@ Rulebook/*.md
 .claude/
 packs/
 .pack-src/
+package-lock.json
