@@ -2,7 +2,7 @@
   "id": "procedural",
   "title": "PROCEDURAL!",
   "description": "PROCEDURAL! is a tabletop role-playing game where players take on character tropes from their favorite TV crime shows and try to solve cases within a three-act time limit. Every game session is essentially an episode of an original detective show that you make up! Players will need to work together to not only uncover the mystery, but also compile quality evidence for a conviction. Finding out who did it is only half the battle-- you have to make it stick in court!",
-  "version": "0.5.2",
+  "version": "0.6.0",
   "authors": [{ "name": "mkniller" }],
   "compatibility": {
     "minimum": "14",

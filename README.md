@@ -15,7 +15,9 @@ mechanics of *PROCEDURAL!*, a tabletop crime-procedural RPG.
   Your Desk?" table plus 30 new ones)
 - A GM-only Case Tracker app (scene controls) for tracking act/scene,
   interludes, the arrest phase, evidence, and interrogations over the
-  course of a session
+  course of a session — changing the Act field automatically clears every
+  Talent's "Used" checkbox (including each Trope's own built-in Talent) for
+  every actor in the Actors directory
 
 Flavor roll-tables (Quality/Quirk/HQ/etc) are intentionally out of scope for
 this v1 — see `docs/superpowers/specs/2026-08-05-procedural-system-v1-design.md`
