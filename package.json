@@ -1,9 +1,13 @@
 {
   "name": "procedural-foundryvtt",
   "private": true,
-  "version": "0.6.0",
+  "version": "0.7.0",
   "type": "module",
   "scripts": {
-    "test": "node --test module/**/*.test.mjs"
+    "test": "node --test",
+    "build:packs": "node scripts/build-packs.mjs"
+  },
+  "devDependencies": {
+    "@foundryvtt/foundryvtt-cli": "^3.0.4"
   }
 }
