@@ -27,6 +27,24 @@ async function buildPack({ dataFile, packName, itemType }) {
   const srcDir = path.join(ROOT, ".pack-src", packName);
   const destDir = path.join(ROOT, "packs", packName);
 
+  // Check for ID collisions before writing any files
+  const idToNames = {};
+  const collisions = [];
+  for (const entry of entries) {
+    const id = stableId(`${packName}:${entry.name}`);
+    if (idToNames[id]) {
+      collisions.push(`"${idToNames[id]}" and "${entry.name}" (ID: ${id})`);
+    } else {
+      idToNames[id] = entry.name;
+    }
+  }
+
+  if (collisions.length > 0) {
+    throw new Error(
+      `Duplicate entry names in pack "${packName}": ${collisions.join(", ")}`
+    );
+  }
+
   await rm(srcDir, { recursive: true, force: true });
   await mkdir(srcDir, { recursive: true });
 
