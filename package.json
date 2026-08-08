@@ -4,7 +4,7 @@
   "version": "0.6.0",
   "type": "module",
   "scripts": {
-    "test": "node --test module scripts",
+    "test": "node --test",
     "build:packs": "node scripts/build-packs.mjs"
   },
   "devDependencies": {
