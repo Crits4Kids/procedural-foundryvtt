@@ -32,6 +32,36 @@ test("findTalentsToReset ignores a non-Talent item even if system.used is true",
   assert.deepEqual(findTalentsToReset(actors), []);
 });
 
+test("findTalentsToReset returns a pair for a used Trope's built-in Talent", () => {
+  const actors = [
+    { id: "a1", items: [{ id: "i1", type: "trope", system: { used: true } }] }
+  ];
+  assert.deepEqual(findTalentsToReset(actors), [{ actorId: "a1", itemId: "i1" }]);
+});
+
+test("findTalentsToReset ignores an unused Trope's built-in Talent", () => {
+  const actors = [
+    { id: "a1", items: [{ id: "i1", type: "trope", system: { used: false } }] }
+  ];
+  assert.deepEqual(findTalentsToReset(actors), []);
+});
+
+test("findTalentsToReset returns both a used Talent and a used Trope on the same actor", () => {
+  const actors = [
+    {
+      id: "a1",
+      items: [
+        { id: "i1", type: "talent", system: { used: true } },
+        { id: "i2", type: "trope", system: { used: true } }
+      ]
+    }
+  ];
+  assert.deepEqual(findTalentsToReset(actors), [
+    { actorId: "a1", itemId: "i1" },
+    { actorId: "a1", itemId: "i2" }
+  ]);
+});
+
 test("findTalentsToReset handles multiple actors with mixed used/unused Talents", () => {
   const actors = [
     {

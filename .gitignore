@@ -6,3 +6,4 @@ Rulebook/*.md
 .worktrees/
 .superpowers/
 .claude/
+package-lock.json
