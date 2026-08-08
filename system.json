@@ -2,7 +2,10 @@
   "id": "procedural",
   "title": "PROCEDURAL!",
   "description": "PROCEDURAL! is a tabletop role-playing game where players take on character tropes from their favorite TV crime shows and try to solve cases within a three-act time limit. Every game session is essentially an episode of an original detective show that you make up! Players will need to work together to not only uncover the mystery, but also compile quality evidence for a conviction. Finding out who did it is only half the battle-- you have to make it stick in court!",
-  "version": "0.5.2",
+  "version": "0.6.0",
+  "manifest": "https://github.com/mkniller/procedural-foundryvtt/releases/latest/download/system.json",
+  "download": "https://github.com/mkniller/procedural-foundryvtt/releases/latest/download/system.zip",
+  "url": "https://github.com/mkniller/procedural-foundryvtt/",
   "authors": [{ "name": "mkniller" }],
   "compatibility": {
     "minimum": "14",
@@ -12,6 +15,29 @@
   "styles": ["css/procedural.css"],
   "languages": [
     { "lang": "en", "name": "English", "path": "lang/en.json" }
+  ],
+  "packs": [
+    {
+      "name": "procedural-tropes",
+      "label": "Procedural: Tropes",
+      "path": "packs/procedural-tropes",
+      "type": "Item",
+      "system": "procedural"
+    },
+    {
+      "name": "procedural-second-talents",
+      "label": "Procedural: Second Talents",
+      "path": "packs/procedural-second-talents",
+      "type": "Item",
+      "system": "procedural"
+    },
+    {
+      "name": "procedural-desk-items",
+      "label": "Procedural: Desk Items",
+      "path": "packs/procedural-desk-items",
+      "type": "Item",
+      "system": "procedural"
+    }
   ],
   "documentTypes": {
     "Actor": {

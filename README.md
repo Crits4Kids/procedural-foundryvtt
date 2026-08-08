@@ -10,9 +10,10 @@ mechanics of *PROCEDURAL!*, a tabletop crime-procedural RPG.
 - Fully automated skill rolls: 2d6 + modifier, Advantage/Disadvantage,
   Critical Failure/Success, "Hurt" status effects, and Rerun Point rerolls
   via a chat card button
-- Compendiums auto-populated on first world launch with all 11 Tropes,
+- Compendiums shipped as pre-built system packs with all 11 Tropes,
   18 second Talents, and 42 Desk Items (12 from the rulebook's "What's on
-  Your Desk?" table plus 30 new ones)
+  Your Desk?" table plus 30 new ones), present as soon as the system is
+  installed — no world-launch seeding step required
 - A GM-only Case Tracker app (scene controls) for tracking act/scene,
   interludes, the arrest phase, evidence, and interrogations over the
   course of a session
@@ -29,18 +30,33 @@ for the full scope rationale.
    ```bash
    ln -s /path/to/this/repo "<UserData>/Data/systems/procedural"
    ```
-3. Launch Foundry VTT (v14), and on the Setup screen confirm "PROCEDURAL!"
+3. Run `npm run build:packs` from the repo to compile the source data into
+   the LevelDB packs `system.json` expects at `packs/` (this directory is
+   gitignored and isn't present in a fresh clone).
+4. Launch Foundry VTT (v14), and on the Setup screen confirm "PROCEDURAL!"
    appears in the systems list.
-4. Create a new World using the PROCEDURAL! system, then launch it.
-5. On first launch, three world compendiums — "Procedural: Tropes",
-   "Procedural: Second Talents", and "Procedural: Desk Items" — are created
-   automatically. Check the Compendium Packs sidebar tab to confirm.
-6. Create a `trope` Actor, drag a Trope item onto it from the compendium,
+5. Create a new World using the PROCEDURAL! system, then launch it.
+6. The three compendiums — "Procedural: Tropes", "Procedural: Second
+   Talents", and "Procedural: Desk Items" — are already present as system
+   packs. Check the Compendium Packs sidebar tab to confirm.
+7. Create a `trope` Actor, drag a Trope item onto it from the compendium,
    allocate skill points, and start rolling. Drag a Desk Item onto the
    sheet's dedicated "Desk Item" section to give them something personal at
    HQ (dragging a new one replaces the old one) — the separate "Desk Item
    Note" free-text field stays for a short flashback note. Randomize and
    the Trope builder wizard both pick/set a desk item automatically too.
+
+## Installing from GitHub
+
+For anyone other than the maintainer: in Foundry VTT's Setup screen, go to
+the "Game Systems" tab, click "Install System", and paste this manifest URL:
+
+```
+https://github.com/mkniller/procedural-foundryvtt/releases/latest/download/system.json
+```
+
+This always installs the latest tagged release, with compendiums (Tropes,
+Second Talents, Desk Items) already packed in — no extra setup needed.
 
 ## Running the automated tests
 
@@ -52,6 +68,6 @@ npm test
 ```
 
 Everything else in this system is Foundry-runtime UI code (sheets, document
-classes, compendium seeding) with no equivalent outside a running Foundry
-client — that's verified by hand per the smoke-test checklist in
+classes) with no equivalent outside a running Foundry client — that's
+verified by hand per the smoke-test checklist in
 `docs/superpowers/plans/2026-08-05-procedural-system-v1.md` (Task 15).

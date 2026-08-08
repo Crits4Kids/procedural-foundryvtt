@@ -6,3 +6,5 @@ Rulebook/*.md
 .worktrees/
 .superpowers/
 .claude/
+packs/
+.pack-src/

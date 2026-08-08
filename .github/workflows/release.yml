@@ -1,0 +1,42 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - run: npm ci
+
+      - run: npm test
+
+      - name: Verify tag matches system.json version
+        run: node scripts/check-version-tag.mjs "${{ github.ref_name }}"
+
+      - name: Build compendium packs
+        run: npm run build:packs
+
+      - name: Zip release payload
+        run: |
+          FILES="module css lang templates packs data system.json"
+          if [ -f template.json ]; then FILES="$FILES template.json"; fi
+          zip -r system.zip $FILES
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            system.json
+            system.zip
+          generate_release_notes: true

@@ -8,7 +8,6 @@ import ProceduralActor from "./documents/actor.mjs";
 import TropeBuilderApplication from "./apps/trope-builder.mjs";
 import CaseTrackerApplication from "./apps/case-tracker.mjs";
 import { registerChatListeners } from "./helpers/chat-listeners.mjs";
-import { seedCompendiums } from "./helpers/seed-compendiums.mjs";
 import ProceduralTropeActorSheet from "./sheets/actor-trope-sheet.mjs";
 import ProceduralNpcActorSheet from "./sheets/actor-npc-sheet.mjs";
 import {
@@ -49,10 +48,6 @@ Hooks.once("init", () => {
   Items.registerSheet("procedural", ProceduralTropeItemSheet, { types: ["trope"], makeDefault: true });
   Items.registerSheet("procedural", ProceduralTalentItemSheet, { types: ["talent"], makeDefault: true });
   Items.registerSheet("procedural", ProceduralEquipmentItemSheet, { types: ["equipment"], makeDefault: true });
-});
-
-Hooks.once("ready", () => {
-  seedCompendiums().catch(err => console.error("PROCEDURAL | Compendium seeding failed", err));
 });
 
 Hooks.on("renderActorDirectory", (app, element) => {
