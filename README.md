@@ -13,15 +13,18 @@ mechanics of *PROCEDURAL!*, a tabletop crime-procedural RPG.
 - Compendiums auto-populated on first world launch with all 11 Tropes,
   18 second Talents, and 42 Desk Items (12 from the rulebook's "What's on
   Your Desk?" table plus 30 new ones)
+- Quality, Quirk, HQ, and Agency Name are rolled automatically via Randomize
+  or the Trope builder wizard, using the rulebook's own roll tables
 - A GM-only Case Tracker app (scene controls) for tracking act/scene,
   interludes, the arrest phase, evidence, and interrogations over the
   course of a session — changing the Act field automatically clears every
   Talent's "Used" checkbox (including each Trope's own built-in Talent) for
   every actor in the Actors directory
 
-Flavor roll-tables (Quality/Quirk/HQ/etc) are intentionally out of scope for
-this v1 — see `docs/superpowers/specs/2026-08-05-procedural-system-v1-design.md`
-for the full scope rationale.
+Rerun Point pooling to generate new leads stays Showrunner-narrated rather
+than automated, by design — see
+`docs/superpowers/specs/2026-08-05-procedural-system-v1-design.md` for the
+full scope rationale behind this and other early v1 boundaries.
 
 ## Installing locally to test
 
