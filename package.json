@@ -4,6 +4,10 @@
   "version": "0.5.2",
   "type": "module",
   "scripts": {
-    "test": "node --test module/**/*.test.mjs"
+    "test": "node --test module/**/*.test.mjs scripts/**/*.test.mjs",
+    "build:packs": "node scripts/build-packs.mjs"
+  },
+  "devDependencies": {
+    "@foundryvtt/foundryvtt-cli": "^3.0.4"
   }
 }
