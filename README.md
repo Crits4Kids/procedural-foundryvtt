@@ -42,6 +42,18 @@ for the full scope rationale.
    Note" free-text field stays for a short flashback note. Randomize and
    the Trope builder wizard both pick/set a desk item automatically too.
 
+## Installing from GitHub
+
+For anyone other than the maintainer: in Foundry VTT's Setup screen, go to
+the "Game Systems" tab, click "Install System", and paste this manifest URL:
+
+```
+https://github.com/mkniller/procedural-foundryvtt/releases/latest/download/system.json
+```
+
+This always installs the latest tagged release, with compendiums (Tropes,
+Second Talents, Desk Items) already packed in — no extra setup needed.
+
 ## Running the automated tests
 
 The dice engine (`module/helpers/dice-rules.mjs`) is pure, dependency-free
