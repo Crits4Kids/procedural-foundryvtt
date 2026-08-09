@@ -7,6 +7,7 @@ import CaseTrackerData from "./data/case-tracker.mjs";
 import SeasonTrackerData from "./data/season-tracker.mjs";
 import ProceduralActor from "./documents/actor.mjs";
 import TropeBuilderApplication from "./apps/trope-builder.mjs";
+import NpcBuilderApplication from "./apps/npc-builder.mjs";
 import CaseTrackerApplication from "./apps/case-tracker.mjs";
 import SeasonTrackerApplication from "./apps/season-tracker.mjs";
 import { registerChatListeners } from "./helpers/chat-listeners.mjs";
@@ -75,6 +76,20 @@ Hooks.on("renderActorDirectory", (app, element) => {
     new TropeBuilderApplication().render(true);
   });
   header.appendChild(button);
+
+  const npcButton = document.createElement("button");
+  npcButton.type = "button";
+  npcButton.classList.add("procedural-npc-builder-launch");
+  npcButton.innerHTML = `<i class="fa-solid fa-user-plus"></i> ${game.i18n.localize("PROCEDURAL.NpcBuilder.Launch")}`;
+  npcButton.addEventListener("click", () => {
+    const existing = foundry.applications.instances.get("procedural-npc-builder");
+    if (existing) {
+      existing.bringToFront();
+      return;
+    }
+    new NpcBuilderApplication().render(true);
+  });
+  header.appendChild(npcButton);
 });
 
 Hooks.on("getSceneControlButtons", controls => {
