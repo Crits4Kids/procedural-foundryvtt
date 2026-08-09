@@ -4,9 +4,11 @@ import TropeItemData from "./data/item-trope.mjs";
 import TalentItemData from "./data/item-talent.mjs";
 import EquipmentItemData from "./data/item-equipment.mjs";
 import CaseTrackerData from "./data/case-tracker.mjs";
+import SeasonTrackerData from "./data/season-tracker.mjs";
 import ProceduralActor from "./documents/actor.mjs";
 import TropeBuilderApplication from "./apps/trope-builder.mjs";
 import CaseTrackerApplication from "./apps/case-tracker.mjs";
+import SeasonTrackerApplication from "./apps/season-tracker.mjs";
 import { registerChatListeners } from "./helpers/chat-listeners.mjs";
 import ProceduralTropeActorSheet from "./sheets/actor-trope-sheet.mjs";
 import ProceduralNpcActorSheet from "./sheets/actor-npc-sheet.mjs";
@@ -26,6 +28,11 @@ Hooks.once("init", () => {
     scope: "world",
     config: false,
     type: CaseTrackerData
+  });
+  game.settings.register("procedural", "seasonTracker", {
+    scope: "world",
+    config: false,
+    type: SeasonTrackerData
   });
 
   CONFIG.Actor.documentClass = ProceduralActor;
@@ -85,6 +92,23 @@ Hooks.on("getSceneControlButtons", controls => {
         return;
       }
       new CaseTrackerApplication().render(true);
+    }
+  };
+
+  controls.tokens.tools.proceduralSeasonTracker = {
+    name: "proceduralSeasonTracker",
+    title: "PROCEDURAL.SeasonTracker.Title",
+    icon: "fa-solid fa-star",
+    order: Object.keys(controls.tokens.tools).length,
+    button: true,
+    visible: game.user.isGM,
+    onChange: () => {
+      const existing = foundry.applications.instances.get("procedural-season-tracker");
+      if (existing) {
+        existing.bringToFront();
+        return;
+      }
+      new SeasonTrackerApplication().render(true);
     }
   };
 });

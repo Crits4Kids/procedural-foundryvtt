@@ -1,0 +1,22 @@
+<section class="procedural-sheet procedural-season-tracker">
+  <div class="procedural-season-tracker-rating">
+    <strong>{{localize "PROCEDURAL.SeasonTracker.Rating"}}:</strong> {{rating}}
+  </div>
+
+  <ol class="procedural-season-tracker-episodes">
+    {{#each episodes as |episode|}}
+      <li class="procedural-season-tracker-episode-row">
+        <label>{{localize "PROCEDURAL.SeasonTracker.Episode"}} {{episode.number}}
+          <select name="episodes.{{episode.index}}.outcome">
+            {{#each episode.outcomeOptions as |opt|}}
+              <option value="{{opt.value}}" {{#if opt.selected}}selected{{/if}}>{{opt.label}}</option>
+            {{/each}}
+          </select>
+        </label>
+        {{#if episode.recorded}}
+          <p class="procedural-season-tracker-reaction">{{localize episode.reactionKey}}</p>
+        {{/if}}
+      </li>
+    {{/each}}
+  </ol>
+</section>

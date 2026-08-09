@@ -101,6 +101,23 @@
         "bad": "Bad",
         "unknown": "Unknown"
       }
+    },
+    "SeasonTracker": {
+      "Title": "Season Tracker",
+      "Rating": "Agency Rating",
+      "Episode": "Episode",
+      "OutcomeUnset": "Not recorded",
+      "Outcome": {
+        "successful": "Successful (+2)",
+        "neutral": "Neutral (0)",
+        "unsuccessful": "Unsuccessful (−1)"
+      },
+      "Ep1Reaction": "The Director reacts to the outcome (optional).",
+      "Ep2Reaction": "The Director reacts; if the rating is less than 2, they may issue a warning.",
+      "Ep3Reaction": "The Director reacts; if the rating is 6, all players gain 1 Rerun Point. If the rating is 0 or less, the Director freaks out and all players may level up.",
+      "Ep4Reaction": "The Director reacts; if the rating is less than 4, they may issue another warning.",
+      "Ep5Reaction": "The Director reacts; if the rating is 10, all players gain 1 Rerun Point. If the rating is 4 or less, the Director issues an ultimatum.",
+      "Ep6Reaction": "The Director reacts; the season is over. A perfect rating of 12 earns a medal of valorous service. If playing another season, another Level Up session happens here."
     }
   },
   "TYPES": {
