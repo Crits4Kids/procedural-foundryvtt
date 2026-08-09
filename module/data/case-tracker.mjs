@@ -10,6 +10,7 @@ export default class CaseTrackerData extends foundry.abstract.DataModel {
       arrestPhaseTriggered: new BooleanField({ initial: false }),
       arrestPhaseNotes: new StringField({ initial: "" }),
       epilogueNotes: new StringField({ initial: "" }),
+      drama: new StringField({ initial: "" }),
       evidence: new ArrayField(
         new SchemaField({
           id: new StringField({ required: true }),

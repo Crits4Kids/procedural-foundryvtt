@@ -1,3 +1,5 @@
+import { rollD6 } from "../helpers/dice-rules.mjs";
+
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ActorSheetV2 } = foundry.applications.sheets;
 
@@ -9,6 +11,8 @@ export default class ProceduralTropeActorSheet extends HandlebarsApplicationMixi
     actions: {
       rollSkill: ProceduralTropeActorSheet.#onRollSkill,
       toggleHurt: ProceduralTropeActorSheet.#onToggleHurt,
+      hurtAgain: ProceduralTropeActorSheet.#onHurtAgain,
+      resolveBStory: ProceduralTropeActorSheet.#onResolveBStory,
       createItem: ProceduralTropeActorSheet.#onCreateItem,
       editItem: ProceduralTropeActorSheet.#onEditItem,
       deleteItem: ProceduralTropeActorSheet.#onDeleteItem,
@@ -93,6 +97,20 @@ export default class ProceduralTropeActorSheet extends HandlebarsApplicationMixi
 
   static async #onToggleHurt() {
     await this.actor.update({ "system.hurt": !this.actor.system.hurt });
+  }
+
+  static async #onHurtAgain() {
+    if (!this.actor.system.hurt) return;
+    const hours = rollD6();
+    await this.actor.update({ "system.knockedOut": true });
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+      content: `<p>${game.i18n.format("PROCEDURAL.Actor.HurtAgainMessage", { name: this.actor.name, hours })}</p>`
+    });
+  }
+
+  static async #onResolveBStory() {
+    await this.actor.update({ "system.rerunPoints": this.actor.system.rerunPoints + 1 });
   }
 
   static async #onCreateItem(event, target) {

@@ -21,9 +21,13 @@
     "Actor": {
       "RerunPoints": "Rerun Points",
       "Hurt": "Hurt",
+      "HurtAgain": "Hurt Again (Knock Out)",
+      "KnockedOut": "Knocked Out",
+      "HurtAgainMessage": "{name} is hurt again and knocked out for {hours} hours!",
       "Qualities": "Qualities",
       "Quirks": "Quirks",
       "BStory": "B-Story",
+      "ResolveBStory": "Resolve (+1 Rerun Point)",
       "HQ": "HQ",
       "AgencyName": "Agency Name",
       "DeskItem": "Desk Item",
@@ -90,6 +94,8 @@
       "StartInterrogation": "Start Interrogation",
       "InterrogationSuspect": "Suspect",
       "InterrogationNotes": "Notes",
+      "Drama": "Team Drama",
+      "RollForDrama": "Roll for Drama",
       "Status": {
         "good": "Good",
         "bad": "Bad",
