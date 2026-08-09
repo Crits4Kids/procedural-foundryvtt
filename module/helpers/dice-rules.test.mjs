@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { resolveDice, resolveTier, computeRoll } from "./dice-rules.mjs";
+import { resolveDice, resolveTier, computeRoll, rollD6 } from "./dice-rules.mjs";
 
 function queue(values) {
   let i = 0;
@@ -160,4 +160,16 @@ test("computeRoll includes the dice breakdown from resolveDice", () => {
     { value: 3, kept: true },
     { value: 4, kept: true }
   ]);
+});
+
+test("rollD6 returns a value in the 1-6 range driven by the rng", () => {
+  const rng = queue([1, 6, 3]);
+  assert.equal(rollD6(rng), 1);
+  assert.equal(rollD6(rng), 6);
+  assert.equal(rollD6(rng), 3);
+});
+
+test("rollD6 defaults to Math.random when no rng is passed", () => {
+  const value = rollD6();
+  assert.ok(value >= 1 && value <= 6);
 });

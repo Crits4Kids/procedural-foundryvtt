@@ -3,6 +3,14 @@ function rollDie(rng) {
 }
 
 /**
+ * @param {() => number} rng - returns a float in [0,1), like Math.random
+ * @returns {number} 1-6
+ */
+export function rollD6(rng = Math.random) {
+  return rollDie(rng);
+}
+
+/**
  * @param {"normal"|"advantage"|"disadvantage"} mode
  * @param {() => number} rng - returns a float in [0,1), like Math.random
  * @returns {{die1: number, die2: number, rawTotal: number, dice: Array<{ value: number, kept: boolean }>}}
