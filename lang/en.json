@@ -35,7 +35,14 @@
       "DeskItemEmpty": "Drag a Desk Item here from the Procedural: Desk Items compendium.",
       "Randomize": "Randomize",
       "RandomizeConfirm": "This will overwrite the current Trope, skills, and flavor fields. Continue?",
-      "Confirm": "Confirm"
+      "Confirm": "Confirm",
+      "LevelUp": "Level Up",
+      "LevelUpStat": "Choose a stat to improve by 1",
+      "LevelUpSkill": "Divest the point into a skill (max 3)",
+      "LevelUpTalentSwap": "Optionally swap your second Talent",
+      "LevelUpKeepTalent": "Keep current Talent",
+      "LevelUpConfirm": "Confirm Level Up",
+      "LevelUpInvalid": "That skill doesn't match the chosen stat, or is already at the cap. Reopen Level Up and pick again."
     },
     "Item": {
       "StatBlock": "Suggested Stats (Mental / Physical / Social)",
