@@ -91,7 +91,8 @@ export default class ProceduralActor extends Actor {
       "system.hq": result.hq,
       "system.agencyName": result.agencyName,
       "system.rerunPoints": result.rerunPoints,
-      "system.hurt": false
+      "system.hurt": false,
+      "system.knockedOut": false
     });
 
     const [, , deskItem] = await Item.createDocuments([
