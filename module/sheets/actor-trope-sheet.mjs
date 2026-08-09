@@ -89,7 +89,7 @@ export default class ProceduralTropeActorSheet extends HandlebarsApplicationMixi
             situationalModifier: Number(button.form.elements.situationalModifier.value) || 0
           })
         },
-        { action: "cancel", label: game.i18n.localize("PROCEDURAL.Roll.Cancel"), callback: () => null }
+        { action: "cancel", label: game.i18n.localize("PROCEDURAL.Roll.Cancel"), callback: () => false }
       ],
       rejectClose: false
     });
