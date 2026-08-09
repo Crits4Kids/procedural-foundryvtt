@@ -22,6 +22,14 @@ mechanics of *PROCEDURAL!*, a tabletop crime-procedural RPG.
   field automatically clears every Talent's "Used" checkbox (including each
   Trope's own built-in Talent) and heals every Hurt/Knocked Out actor, for
   every actor in the Actors directory
+- A GM-only Season Tracker app (scene controls) for Season Mode: records
+  each of a season's 6 episode outcomes, computes the running Agency
+  Rating, shows the matching rulebook Director-reaction text, and offers
+  one-click (double-grant-guarded) buttons to award the party's Rerun
+  Point and Level Up benchmarks. Leveling Up is a dialog on the Trope
+  sheet (appears once a Level Up is available) for the +1 stat / divested
+  skill / optional second-Talent swap. Villains are tracked as a simple
+  list with a 3-or-more warning
 
 Rerun Point pooling to generate new leads stays Showrunner-narrated rather
 than automated, by design — see

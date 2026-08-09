@@ -5,6 +5,11 @@
     <button type="button" class="procedural-randomize-btn" data-action="randomizeTrope">
       {{localize "PROCEDURAL.Actor.Randomize"}}
     </button>
+    {{#if system.levelUpsAvailable}}
+      <button type="button" class="procedural-level-up-btn" data-action="levelUp">
+        {{localize "PROCEDURAL.Actor.LevelUp"}} ({{system.levelUpsAvailable}})
+      </button>
+    {{/if}}
   </header>
 
   <section class="procedural-stats-grid">

@@ -1,0 +1,64 @@
+<section class="procedural-sheet procedural-season-tracker">
+  <div class="procedural-season-tracker-rating">
+    <strong>{{localize "PROCEDURAL.SeasonTracker.Rating"}}:</strong> {{rating}}
+  </div>
+
+  <ol class="procedural-season-tracker-episodes">
+    {{#each episodes as |episode|}}
+      <li class="procedural-season-tracker-episode-row">
+        <label>{{localize "PROCEDURAL.SeasonTracker.Episode"}} {{episode.number}}
+          <select name="episodes.{{episode.index}}.outcome">
+            {{#each episode.outcomeOptions as |opt|}}
+              <option value="{{opt.value}}" {{#if opt.selected}}selected{{/if}}>{{opt.label}}</option>
+            {{/each}}
+          </select>
+        </label>
+        {{#if episode.recorded}}
+          <p class="procedural-season-tracker-reaction">{{localize episode.reactionKey}}</p>
+        {{/if}}
+        {{#if (eq episode.number 3)}}
+          {{#if ../ep3RerunEligible}}
+            <button type="button" data-action="grantEp3Rerun">{{localize "PROCEDURAL.SeasonTracker.GrantRerun"}}</button>
+          {{/if}}
+          {{#if ../ep3LevelUpEligible}}
+            <button type="button" data-action="grantEp3LevelUp">{{localize "PROCEDURAL.SeasonTracker.GrantLevelUp"}}</button>
+          {{/if}}
+        {{/if}}
+        {{#if (eq episode.number 5)}}
+          {{#if ../ep5RerunEligible}}
+            <button type="button" data-action="grantEp5Rerun">{{localize "PROCEDURAL.SeasonTracker.GrantRerun"}}</button>
+          {{/if}}
+        {{/if}}
+        {{#if (eq episode.number 6)}}
+          {{#if ../ep6LevelUpEligible}}
+            <button type="button" data-action="grantEp6LevelUp">{{localize "PROCEDURAL.SeasonTracker.GrantLevelUp"}}</button>
+          {{/if}}
+        {{/if}}
+      </li>
+    {{/each}}
+  </ol>
+
+  <section class="procedural-season-tracker-villains">
+    <h2>{{localize "PROCEDURAL.SeasonTracker.Villains"}}</h2>
+    {{#if villainWarning}}
+      <p class="procedural-season-tracker-villain-warning">{{localize "PROCEDURAL.SeasonTracker.VillainWarning"}}</p>
+    {{/if}}
+
+    <ul class="procedural-season-tracker-villain-list">
+      {{#each villains as |entry index|}}
+        <li class="procedural-season-tracker-villain-row" data-villain-id="{{entry.id}}">
+          <input type="hidden" name="villains.{{index}}.id" value="{{entry.id}}">
+          <input type="text" name="villains.{{index}}.name" value="{{entry.name}}" placeholder="{{localize 'PROCEDURAL.SeasonTracker.VillainName'}}">
+          <input type="text" name="villains.{{index}}.reason" value="{{entry.reason}}" placeholder="{{localize 'PROCEDURAL.SeasonTracker.VillainReason'}}">
+          <label>
+            <input type="checkbox" name="villains.{{index}}.active" {{#if entry.active}}checked{{/if}}>
+            {{localize "PROCEDURAL.SeasonTracker.VillainActive"}}
+          </label>
+          <button type="button" data-action="deleteVillain">{{localize "PROCEDURAL.SeasonTracker.Delete"}}</button>
+        </li>
+      {{/each}}
+    </ul>
+
+    <button type="button" data-action="addVillain">{{localize "PROCEDURAL.SeasonTracker.AddVillain"}}</button>
+  </section>
+</section>

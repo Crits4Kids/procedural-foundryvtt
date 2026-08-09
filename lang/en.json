@@ -35,7 +35,14 @@
       "DeskItemEmpty": "Drag a Desk Item here from the Procedural: Desk Items compendium.",
       "Randomize": "Randomize",
       "RandomizeConfirm": "This will overwrite the current Trope, skills, and flavor fields. Continue?",
-      "Confirm": "Confirm"
+      "Confirm": "Confirm",
+      "LevelUp": "Level Up",
+      "LevelUpStat": "Choose a stat to improve by 1",
+      "LevelUpSkill": "Divest the point into a skill (max 3)",
+      "LevelUpTalentSwap": "Optionally swap your second Talent",
+      "LevelUpKeepTalent": "Keep current Talent",
+      "LevelUpConfirm": "Confirm Level Up",
+      "LevelUpInvalid": "That skill doesn't match the chosen stat, or is already at the cap. Reopen Level Up and pick again."
     },
     "Item": {
       "StatBlock": "Suggested Stats (Mental / Physical / Social)",
@@ -101,6 +108,32 @@
         "bad": "Bad",
         "unknown": "Unknown"
       }
+    },
+    "SeasonTracker": {
+      "Title": "Season Tracker",
+      "Rating": "Agency Rating",
+      "Episode": "Episode",
+      "OutcomeUnset": "Not recorded",
+      "Outcome": {
+        "successful": "Successful (+2)",
+        "neutral": "Neutral (0)",
+        "unsuccessful": "Unsuccessful (−1)"
+      },
+      "Ep1Reaction": "The Director reacts to the outcome (optional).",
+      "Ep2Reaction": "The Director reacts; if the rating is less than 2, they may issue a warning.",
+      "Ep3Reaction": "The Director reacts; if the rating is 6, all players gain 1 Rerun Point. If the rating is 0 or less, the Director freaks out and all players may level up.",
+      "Ep4Reaction": "The Director reacts; if the rating is less than 4, they may issue another warning.",
+      "Ep5Reaction": "The Director reacts; if the rating is 10, all players gain 1 Rerun Point. If the rating is 4 or less, the Director issues an ultimatum.",
+      "Ep6Reaction": "The Director reacts; the season is over. A perfect rating of 12 earns a medal of valorous service. If playing another season, another Level Up session happens here.",
+      "GrantRerun": "Grant +1 Rerun Point to the Party",
+      "GrantLevelUp": "Grant a Level Up to the Party",
+      "Villains": "Villains",
+      "VillainWarning": "The Director has noticed 3 or more active Villains and is not happy.",
+      "VillainName": "Name",
+      "VillainReason": "Reason",
+      "VillainActive": "Active",
+      "AddVillain": "Add Villain",
+      "Delete": "Delete"
     }
   },
   "TYPES": {

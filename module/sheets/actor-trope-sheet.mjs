@@ -1,4 +1,6 @@
 import { rollD6 } from "../helpers/dice-rules.mjs";
+import { validateLevelUpChoice } from "../helpers/level-up.mjs";
+import { loadGeneratorData } from "../helpers/generator-data.mjs";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ActorSheetV2 } = foundry.applications.sheets;
@@ -13,6 +15,7 @@ export default class ProceduralTropeActorSheet extends HandlebarsApplicationMixi
       toggleHurt: ProceduralTropeActorSheet.#onToggleHurt,
       hurtAgain: ProceduralTropeActorSheet.#onHurtAgain,
       resolveBStory: ProceduralTropeActorSheet.#onResolveBStory,
+      levelUp: ProceduralTropeActorSheet.#onLevelUp,
       createItem: ProceduralTropeActorSheet.#onCreateItem,
       editItem: ProceduralTropeActorSheet.#onEditItem,
       deleteItem: ProceduralTropeActorSheet.#onDeleteItem,
@@ -111,6 +114,101 @@ export default class ProceduralTropeActorSheet extends HandlebarsApplicationMixi
 
   static async #onResolveBStory() {
     await this.actor.update({ "system.rerunPoints": this.actor.system.rerunPoints + 1 });
+  }
+
+  static async #onLevelUp() {
+    if (!this.actor.system.levelUpsAvailable) return;
+
+    const generatorData = await loadGeneratorData();
+    const currentTalent = this.actor.items.find(i => i.type === "talent");
+    const heldElsewhere = new Set(
+      game.actors
+        .filter(a => a.type === "trope" && a.id !== this.actor.id)
+        .flatMap(a => a.items.filter(i => i.type === "talent").map(i => i.name))
+    );
+    const availableTalents = generatorData.secondTalents.filter(t => !heldElsewhere.has(t.name));
+    const skills = this.actor.system.skills;
+
+    const skillOption = (key) => {
+      const label = game.i18n.localize(`PROCEDURAL.Skill.${key}`);
+      const disabled = skills[key].value >= 3 ? "disabled" : "";
+      return `<option value="${key}" ${disabled}>${label}</option>`;
+    };
+
+    const config = await foundry.applications.api.DialogV2.wait({
+      window: { title: game.i18n.localize("PROCEDURAL.Actor.LevelUp") },
+      content: `
+        <div class="procedural-level-up-dialog">
+          <fieldset>
+            <legend>${game.i18n.localize("PROCEDURAL.Actor.LevelUpStat")}</legend>
+            <label><input type="radio" name="stat" value="mental" checked> ${game.i18n.localize("PROCEDURAL.Stat.mental")}</label>
+            <label><input type="radio" name="stat" value="physical"> ${game.i18n.localize("PROCEDURAL.Stat.physical")}</label>
+            <label><input type="radio" name="stat" value="social"> ${game.i18n.localize("PROCEDURAL.Stat.social")}</label>
+          </fieldset>
+          <label>${game.i18n.localize("PROCEDURAL.Actor.LevelUpSkill")}
+            <select name="skillKey">
+              <optgroup label="${game.i18n.localize("PROCEDURAL.Stat.mental")}">
+                ${skillOption("tech")}${skillOption("lab")}${skillOption("investigation")}
+              </optgroup>
+              <optgroup label="${game.i18n.localize("PROCEDURAL.Stat.physical")}">
+                ${skillOption("violence")}${skillOption("reflexes")}${skillOption("coordination")}
+              </optgroup>
+              <optgroup label="${game.i18n.localize("PROCEDURAL.Stat.social")}">
+                ${skillOption("cool")}${skillOption("intuition")}${skillOption("deception")}
+              </optgroup>
+            </select>
+          </label>
+          <label>${game.i18n.localize("PROCEDURAL.Actor.LevelUpTalentSwap")}
+            <select name="talentName">
+              <option value="">${game.i18n.localize("PROCEDURAL.Actor.LevelUpKeepTalent")}</option>
+              ${availableTalents.map(t => `<option value="${t.name}">${t.name}</option>`).join("")}
+            </select>
+          </label>
+        </div>
+      `,
+      buttons: [
+        {
+          action: "confirm",
+          label: game.i18n.localize("PROCEDURAL.Actor.LevelUpConfirm"),
+          default: true,
+          callback: (event, button) => ({
+            stat: button.form.elements.stat.value,
+            skillKey: button.form.elements.skillKey.value,
+            talentName: button.form.elements.talentName.value
+          })
+        },
+        { action: "cancel", label: game.i18n.localize("PROCEDURAL.Roll.Cancel"), callback: () => false }
+      ],
+      rejectClose: false
+    });
+
+    if (!config) return;
+
+    const currentSkills = Object.fromEntries(
+      Object.entries(skills).map(([key, skill]) => [key, skill.value])
+    );
+    const result = validateLevelUpChoice({ stat: config.stat, skillKey: config.skillKey, currentSkills });
+    if (!result.valid) {
+      ui.notifications?.error(game.i18n.localize("PROCEDURAL.Actor.LevelUpInvalid"));
+      return;
+    }
+
+    await this.actor.update({
+      [`system.stats.${config.stat}`]: this.actor.system.stats[config.stat] + 1,
+      [`system.skills.${config.skillKey}.value`]: skills[config.skillKey].value + 1,
+      "system.levelUpsAvailable": this.actor.system.levelUpsAvailable - 1
+    });
+
+    if (config.talentName) {
+      const talentSource = availableTalents.find(t => t.name === config.talentName);
+      if (talentSource) {
+        if (currentTalent) await currentTalent.delete();
+        await Item.createDocuments(
+          [{ name: talentSource.name, type: "talent", img: talentSource.img, system: { ...talentSource.system } }],
+          { parent: this.actor }
+        );
+      }
+    }
   }
 
   static async #onCreateItem(event, target) {
