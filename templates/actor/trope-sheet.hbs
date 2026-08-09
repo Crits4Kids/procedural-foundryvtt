@@ -79,6 +79,9 @@
         <button type="button" data-action="editItem">✎</button>
         <button type="button" data-action="deleteItem">✕</button>
       </div>
+      {{#unless deskItem.system.flashbackUsed}}
+        <button type="button" data-action="resolveFlashback">{{localize "PROCEDURAL.Actor.ResolveFlashback"}}</button>
+      {{/unless}}
     {{else}}
       <p class="procedural-desk-item-empty">{{localize "PROCEDURAL.Actor.DeskItemEmpty"}}</p>
     {{/if}}

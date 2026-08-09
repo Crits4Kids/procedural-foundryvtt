@@ -44,7 +44,9 @@
       "LevelUpConfirm": "Confirm Level Up",
       "LevelUpInvalid": "That skill doesn't match the chosen stat, or is already at the cap. Reopen Level Up and pick again.",
       "Personality": "Personality",
-      "RollPersonality": "Roll Personality"
+      "RollPersonality": "Roll Personality",
+      "Flashback": "Flashback",
+      "ResolveFlashback": "Have a Flashback"
     },
     "Item": {
       "StatBlock": "Suggested Stats (Mental / Physical / Social)",
