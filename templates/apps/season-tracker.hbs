@@ -37,4 +37,28 @@
       </li>
     {{/each}}
   </ol>
+
+  <section class="procedural-season-tracker-villains">
+    <h2>{{localize "PROCEDURAL.SeasonTracker.Villains"}}</h2>
+    {{#if villainWarning}}
+      <p class="procedural-season-tracker-villain-warning">{{localize "PROCEDURAL.SeasonTracker.VillainWarning"}}</p>
+    {{/if}}
+
+    <ul class="procedural-season-tracker-villain-list">
+      {{#each villains as |entry index|}}
+        <li class="procedural-season-tracker-villain-row" data-villain-id="{{entry.id}}">
+          <input type="hidden" name="villains.{{index}}.id" value="{{entry.id}}">
+          <input type="text" name="villains.{{index}}.name" value="{{entry.name}}" placeholder="{{localize 'PROCEDURAL.SeasonTracker.VillainName'}}">
+          <input type="text" name="villains.{{index}}.reason" value="{{entry.reason}}" placeholder="{{localize 'PROCEDURAL.SeasonTracker.VillainReason'}}">
+          <label>
+            <input type="checkbox" name="villains.{{index}}.active" {{#if entry.active}}checked{{/if}}>
+            {{localize "PROCEDURAL.SeasonTracker.VillainActive"}}
+          </label>
+          <button type="button" data-action="deleteVillain">{{localize "PROCEDURAL.SeasonTracker.Delete"}}</button>
+        </li>
+      {{/each}}
+    </ul>
+
+    <button type="button" data-action="addVillain">{{localize "PROCEDURAL.SeasonTracker.AddVillain"}}</button>
+  </section>
 </section>

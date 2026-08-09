@@ -119,7 +119,14 @@
       "Ep5Reaction": "The Director reacts; if the rating is 10, all players gain 1 Rerun Point. If the rating is 4 or less, the Director issues an ultimatum.",
       "Ep6Reaction": "The Director reacts; the season is over. A perfect rating of 12 earns a medal of valorous service. If playing another season, another Level Up session happens here.",
       "GrantRerun": "Grant +1 Rerun Point to the Party",
-      "GrantLevelUp": "Grant a Level Up to the Party"
+      "GrantLevelUp": "Grant a Level Up to the Party",
+      "Villains": "Villains",
+      "VillainWarning": "The Director has noticed 3 or more active Villains and is not happy.",
+      "VillainName": "Name",
+      "VillainReason": "Reason",
+      "VillainActive": "Active",
+      "AddVillain": "Add Villain",
+      "Delete": "Delete"
     }
   },
   "TYPES": {

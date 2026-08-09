@@ -72,7 +72,9 @@ export default class SeasonTrackerApplication extends HandlebarsApplicationMixin
       grantEp3Rerun: SeasonTrackerApplication.#onGrantEp3Rerun,
       grantEp5Rerun: SeasonTrackerApplication.#onGrantEp5Rerun,
       grantEp3LevelUp: SeasonTrackerApplication.#onGrantEp3LevelUp,
-      grantEp6LevelUp: SeasonTrackerApplication.#onGrantEp6LevelUp
+      grantEp6LevelUp: SeasonTrackerApplication.#onGrantEp6LevelUp,
+      addVillain: SeasonTrackerApplication.#onAddVillain,
+      deleteVillain: SeasonTrackerApplication.#onDeleteVillain
     }
   };
 
@@ -109,6 +111,9 @@ export default class SeasonTrackerApplication extends HandlebarsApplicationMixin
     context.ep5RerunEligible = data.episodes[4].outcome !== "" && ep5Rating === 10 && !data.ep5RerunGranted;
     context.ep6LevelUpEligible = data.episodes[5].outcome !== "" && !data.ep6LevelUpGranted;
 
+    context.villains = data.villains;
+    context.villainWarning = data.villains.filter(v => v.active).length >= 3;
+
     return context;
   }
 
@@ -126,7 +131,12 @@ export default class SeasonTrackerApplication extends HandlebarsApplicationMixin
       ep5RerunGranted: current.ep5RerunGranted,
       ep3LevelUpGranted: current.ep3LevelUpGranted,
       ep6LevelUpGranted: current.ep6LevelUpGranted,
-      villains: []
+      villains: Object.values(expanded.villains ?? {}).map(v => ({
+        id: v.id,
+        name: v.name ?? "",
+        reason: v.reason ?? "",
+        active: v.active ?? false
+      }))
     };
   }
 
@@ -159,6 +169,33 @@ export default class SeasonTrackerApplication extends HandlebarsApplicationMixin
     const count = await grantLevelUps("ep6LevelUpGranted");
     if (count === null) return;
     ui.notifications?.info(`PROCEDURAL! granted a Level Up to ${count} Trope${count === 1 ? "" : "s"}.`);
+    this.render();
+  }
+
+  static async #onAddVillain() {
+    const data = SeasonTrackerApplication.#formToData(this.form);
+    data.villains.push({ id: foundry.utils.randomID(), name: "", reason: "", active: true });
+    try {
+      await setSeasonTracker(data);
+    } catch (err) {
+      console.error("PROCEDURAL | Failed to add a Villain to the Season Tracker", err);
+      ui.notifications?.error("PROCEDURAL! failed to add the Villain. Check the console for details.");
+      return;
+    }
+    this.render();
+  }
+
+  static async #onDeleteVillain(event, target) {
+    const id = target.closest("[data-villain-id]").dataset.villainId;
+    const data = SeasonTrackerApplication.#formToData(this.form);
+    data.villains = data.villains.filter(entry => entry.id !== id);
+    try {
+      await setSeasonTracker(data);
+    } catch (err) {
+      console.error("PROCEDURAL | Failed to delete a Villain from the Season Tracker", err);
+      ui.notifications?.error("PROCEDURAL! failed to delete the Villain. Check the console for details.");
+      return;
+    }
     this.render();
   }
 }
