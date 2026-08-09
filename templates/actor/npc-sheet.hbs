@@ -4,6 +4,12 @@
     <input class="procedural-sheet-name" type="text" name="name" value="{{actor.name}}">
   </header>
 
+  <section class="procedural-npc-personality">
+    <h3>{{localize "PROCEDURAL.Actor.Personality"}}</h3>
+    <p class="procedural-npc-personality-text">{{system.personality}}</p>
+    <button type="button" data-action="rollPersonality">{{localize "PROCEDURAL.Actor.RollPersonality"}}</button>
+  </section>
+
   <section class="procedural-skills-grid">
     {{#each system.skills as |skill key|}}
       <div class="procedural-skill-row">

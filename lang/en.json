@@ -42,7 +42,9 @@
       "LevelUpTalentSwap": "Optionally swap your second Talent",
       "LevelUpKeepTalent": "Keep current Talent",
       "LevelUpConfirm": "Confirm Level Up",
-      "LevelUpInvalid": "That skill doesn't match the chosen stat, or is already at the cap. Reopen Level Up and pick again."
+      "LevelUpInvalid": "That skill doesn't match the chosen stat, or is already at the cap. Reopen Level Up and pick again.",
+      "Personality": "Personality",
+      "RollPersonality": "Roll Personality"
     },
     "Item": {
       "StatBlock": "Suggested Stats (Mental / Physical / Social)",
