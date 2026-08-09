@@ -116,17 +116,30 @@ export default class ProceduralTropeActorSheet extends HandlebarsApplicationMixi
     await this.actor.update({ "system.rerunPoints": this.actor.system.rerunPoints + 1 });
   }
 
+  static #getAvailableTalents(actor, generatorData) {
+    const currentTalent = actor.items.find(i => i.type === "talent");
+    const heldElsewhere = new Set(
+      game.actors
+        .filter(a => a.type === "trope" && a.id !== actor.id)
+        .flatMap(a => a.items.filter(i => i.type === "talent").map(i => i.name))
+    );
+    const availableTalents = generatorData.secondTalents.filter(t => !heldElsewhere.has(t.name));
+    return { currentTalent, availableTalents };
+  }
+
+  static async #swapTalent(actor, currentTalent, talentSource) {
+    if (currentTalent) await currentTalent.delete();
+    await Item.createDocuments(
+      [{ name: talentSource.name, type: "talent", img: talentSource.img, system: { ...talentSource.system } }],
+      { parent: actor }
+    );
+  }
+
   static async #onLevelUp() {
     if (!this.actor.system.levelUpsAvailable) return;
 
     const generatorData = await loadGeneratorData();
-    const currentTalent = this.actor.items.find(i => i.type === "talent");
-    const heldElsewhere = new Set(
-      game.actors
-        .filter(a => a.type === "trope" && a.id !== this.actor.id)
-        .flatMap(a => a.items.filter(i => i.type === "talent").map(i => i.name))
-    );
-    const availableTalents = generatorData.secondTalents.filter(t => !heldElsewhere.has(t.name));
+    const { currentTalent, availableTalents } = ProceduralTropeActorSheet.#getAvailableTalents(this.actor, generatorData);
     const skills = this.actor.system.skills;
 
     const skillOption = (key) => {
@@ -202,11 +215,7 @@ export default class ProceduralTropeActorSheet extends HandlebarsApplicationMixi
     if (config.talentName) {
       const talentSource = availableTalents.find(t => t.name === config.talentName);
       if (talentSource) {
-        if (currentTalent) await currentTalent.delete();
-        await Item.createDocuments(
-          [{ name: talentSource.name, type: "talent", img: talentSource.img, system: { ...talentSource.system } }],
-          { parent: this.actor }
-        );
+        await ProceduralTropeActorSheet.#swapTalent(this.actor, currentTalent, talentSource);
       }
     }
   }
