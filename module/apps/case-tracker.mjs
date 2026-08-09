@@ -1,5 +1,6 @@
 import { resolveDice, rollD6 } from "../helpers/dice-rules.mjs";
 import { findTalentsToReset } from "../helpers/talent-reset.mjs";
+import { findActorsToHeal } from "../helpers/hurt-reset.mjs";
 import { loadGeneratorData } from "../helpers/generator-data.mjs";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
@@ -16,6 +17,7 @@ async function setCaseTracker(data) {
   await game.settings.set("procedural", "caseTracker", data);
   if (data.act !== previousAct) {
     await resetTalentUses(data.act);
+    await healActors(data.act);
   }
 }
 
@@ -49,6 +51,28 @@ async function resetTalentUses(act) {
 
   const count = updates.length;
   ui.notifications?.info(`PROCEDURAL! reset ${count} Talent${count === 1 ? "" : "s"} for Act ${act}.`);
+}
+
+async function healActors(act) {
+  const actors = game.actors.map(actor => ({
+    id: actor.id,
+    system: { hurt: actor.system?.hurt, knockedOut: actor.system?.knockedOut }
+  }));
+  const ids = findActorsToHeal(actors);
+  if (!ids.length) return;
+
+  try {
+    for (const id of ids) {
+      await game.actors.get(id).update({ "system.hurt": false, "system.knockedOut": false });
+    }
+  } catch (err) {
+    console.error("PROCEDURAL | Failed to heal actors for the new act", err);
+    ui.notifications?.error("PROCEDURAL! failed to heal actors. Check the console for details.");
+    return;
+  }
+
+  const count = ids.length;
+  ui.notifications?.info(`PROCEDURAL! healed ${count} actor${count === 1 ? "" : "s"} for Act ${act}.`);
 }
 
 export default class CaseTrackerApplication extends HandlebarsApplicationMixin(ApplicationV2) {
