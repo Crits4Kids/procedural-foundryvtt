@@ -90,6 +90,8 @@
       "StartInterrogation": "Start Interrogation",
       "InterrogationSuspect": "Suspect",
       "InterrogationNotes": "Notes",
+      "Drama": "Team Drama",
+      "RollForDrama": "Roll for Drama",
       "Status": {
         "good": "Good",
         "bad": "Bad",
