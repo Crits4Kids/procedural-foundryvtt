@@ -55,7 +55,7 @@ For anyone other than the maintainer: in Foundry VTT's Setup screen, go to
 the "Game Systems" tab, click "Install System", and paste this manifest URL:
 
 ```
-https://github.com/mkniller/procedural-foundryvtt/releases/latest/download/system.json
+https://github.com/Crits4Kids/procedural-foundryvtt/releases/latest/download/system.json
 ```
 
 This always installs the latest tagged release, with compendiums (Tropes,
