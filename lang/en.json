@@ -21,6 +21,8 @@
     "Actor": {
       "RerunPoints": "Rerun Points",
       "Hurt": "Hurt",
+      "HurtAgain": "Hurt Again (Knock Out)",
+      "KnockedOut": "Knocked Out",
       "Qualities": "Qualities",
       "Quirks": "Quirks",
       "BStory": "B-Story",
