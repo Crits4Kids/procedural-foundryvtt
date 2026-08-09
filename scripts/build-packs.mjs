@@ -52,6 +52,7 @@ async function buildPack({ dataFile, packName, itemType }) {
     const id = stableId(`${packName}:${entry.name}`);
     const document = {
       _id: id,
+      _key: `!items!${id}`,
       name: entry.name,
       type: itemType,
       img: entry.img,
