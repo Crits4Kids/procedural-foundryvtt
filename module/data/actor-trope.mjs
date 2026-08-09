@@ -14,6 +14,7 @@ export default class TropeActorData extends foundry.abstract.TypeDataModel {
       rerunPoints: new NumberField({ required: true, integer: true, initial: 1, min: 0 }),
       hurt: new BooleanField({ initial: false }),
       knockedOut: new BooleanField({ initial: false }),
+      levelUpsAvailable: new NumberField({ required: true, integer: true, initial: 0, min: 0 }),
       qualities: new StringField({ initial: "" }),
       quirks: new StringField({ initial: "" }),
       bStory: new StringField({ initial: "" }),
