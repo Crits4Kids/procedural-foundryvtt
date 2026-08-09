@@ -111,6 +111,8 @@
     },
     "SeasonTracker": {
       "Title": "Season Tracker",
+      "Director": "Director",
+      "RollDirector": "Roll Director",
       "Rating": "Agency Rating",
       "Episode": "Episode",
       "OutcomeUnset": "Not recorded",

@@ -38,6 +38,13 @@
     {{/each}}
   </ol>
 
+  <section class="procedural-season-tracker-director">
+    <h2>{{localize "PROCEDURAL.SeasonTracker.Director"}}</h2>
+    <input type="hidden" name="director" value="{{director}}">
+    <p class="procedural-season-tracker-director-text">{{director}}</p>
+    <button type="button" data-action="rollDirector">{{localize "PROCEDURAL.SeasonTracker.RollDirector"}}</button>
+  </section>
+
   <section class="procedural-season-tracker-villains">
     <h2>{{localize "PROCEDURAL.SeasonTracker.Villains"}}</h2>
     {{#if villainWarning}}

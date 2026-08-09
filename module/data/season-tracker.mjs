@@ -13,6 +13,7 @@ export default class SeasonTrackerData extends foundry.abstract.DataModel {
       ep5RerunGranted: new BooleanField({ initial: false }),
       ep3LevelUpGranted: new BooleanField({ initial: false }),
       ep6LevelUpGranted: new BooleanField({ initial: false }),
+      director: new StringField({ initial: "" }),
       villains: new ArrayField(
         new SchemaField({
           id: new StringField({ required: true }),
