@@ -6,12 +6,17 @@
   <section class="procedural-builder-body">
     {{#if show.personality}}{{> "systems/procedural/templates/apps/trope-builder-steps/roll-choose-create.hbs" rollChooseCreate}}{{/if}}
     {{#if show.trope}}{{> "systems/procedural/templates/apps/npc-builder-steps/trope.hbs"}}{{/if}}
+    {{#if show.review}}{{> "systems/procedural/templates/apps/npc-builder-steps/review.hbs"}}{{/if}}
   </section>
 
   <footer class="procedural-builder-footer">
     {{#unless isFirstStep}}
       <button type="button" data-action="goBack">{{localize "PROCEDURAL.TropeBuilder.Back"}}</button>
     {{/unless}}
-    <button type="button" data-action="goNext" {{#unless canAdvance}}disabled{{/unless}}>{{localize "PROCEDURAL.TropeBuilder.Next"}}</button>
+    {{#if show.review}}
+      <button type="button" data-action="finish" {{#unless canAdvance}}disabled{{/unless}}>{{localize "PROCEDURAL.TropeBuilder.Finish"}}</button>
+    {{else}}
+      <button type="button" data-action="goNext" {{#unless canAdvance}}disabled{{/unless}}>{{localize "PROCEDURAL.TropeBuilder.Next"}}</button>
+    {{/if}}
   </footer>
 </form>

@@ -2,7 +2,7 @@ const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ApplicationV2 } = foundry.applications.api;
 
 import { loadGeneratorData } from "../helpers/generator-data.mjs";
-import { rollTrope, rollNpcPersonality } from "../helpers/character-generator.mjs";
+import { rollTrope, rollNpcPersonality, parseNpcName } from "../helpers/character-generator.mjs";
 
 const STEP_IDS = ["personality", "trope", "review"];
 
@@ -17,7 +17,8 @@ export default class NpcBuilderApplication extends HandlebarsApplicationMixin(Ap
       goBack: NpcBuilderApplication.#onBack,
       goToStep: NpcBuilderApplication.#onGoToStep,
       rollTable: NpcBuilderApplication.#onRollTable,
-      rollTrope: NpcBuilderApplication.#onRollTrope
+      rollTrope: NpcBuilderApplication.#onRollTrope,
+      finish: NpcBuilderApplication.#onFinish
     }
   };
 
@@ -26,7 +27,8 @@ export default class NpcBuilderApplication extends HandlebarsApplicationMixin(Ap
       template: "systems/procedural/templates/apps/npc-builder.hbs",
       templates: [
         "systems/procedural/templates/apps/trope-builder-steps/roll-choose-create.hbs",
-        "systems/procedural/templates/apps/npc-builder-steps/trope.hbs"
+        "systems/procedural/templates/apps/npc-builder-steps/trope.hbs",
+        "systems/procedural/templates/apps/npc-builder-steps/review.hbs"
       ]
     }
   };
@@ -37,6 +39,7 @@ export default class NpcBuilderApplication extends HandlebarsApplicationMixin(Ap
     personality: "",
     trope: null
   };
+  #finishing = false;
 
   get #stepId() {
     return STEP_IDS[this.#stepIndex];
@@ -72,6 +75,10 @@ export default class NpcBuilderApplication extends HandlebarsApplicationMixin(Ap
         name: t.name,
         selected: t.name === (this.#draft.trope?.name ?? "")
       }));
+    }
+
+    if (stepId === "review") {
+      context.name = parseNpcName(this.#draft.personality);
     }
 
     return context;
@@ -118,7 +125,7 @@ export default class NpcBuilderApplication extends HandlebarsApplicationMixin(Ap
     switch (stepId) {
       case "personality": return this.#draft.personality.trim().length > 0;
       case "trope": return this.#draft.trope !== null;
-      case "review": return false; // Task 3 replaces this
+      case "review": return true;
       default: return false;
     }
   }
@@ -150,5 +157,39 @@ export default class NpcBuilderApplication extends HandlebarsApplicationMixin(Ap
   static #onRollTrope() {
     this.#draft.trope = rollTrope(this.#data.tropes, Math.random);
     this.render();
+  }
+
+  static async #onFinish() {
+    if (!this.#isStepValid("review")) return;
+    if (this.#finishing) return;
+    this.#finishing = true;
+
+    try {
+      const draft = this.#draft;
+      const name = parseNpcName(draft.personality);
+      const actor = await Actor.create({ name, type: "npc" });
+
+      await actor.update({ "system.personality": draft.personality });
+
+      await Item.createDocuments([
+        { name: draft.trope.name, type: "trope", img: draft.trope.img, system: { ...draft.trope.system } },
+        {
+          name: draft.trope.system.talentName,
+          type: "talent",
+          img: draft.trope.img,
+          system: {
+            description: draft.trope.system.talentDescription,
+            usesPerAct: draft.trope.system.talentUsesPerAct
+          }
+        }
+      ], { parent: actor });
+
+      await this.close();
+      actor.sheet.render(true);
+    } catch (err) {
+      console.error("PROCEDURAL | Failed to finish the NPC builder wizard", err);
+      ui.notifications?.error("PROCEDURAL! failed to create your NPC. Check the console for details.");
+      this.#finishing = false;
+    }
   }
 }

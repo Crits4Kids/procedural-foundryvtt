@@ -88,7 +88,8 @@
       "Skills": "Skills"
     },
     "NpcBuilder": {
-      "Title": "Build an NPC Ally"
+      "Title": "Build an NPC Ally",
+      "Name": "Name"
     },
     "CaseTracker": {
       "Title": "Case Tracker",
