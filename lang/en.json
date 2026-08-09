@@ -23,6 +23,7 @@
       "Hurt": "Hurt",
       "HurtAgain": "Hurt Again (Knock Out)",
       "KnockedOut": "Knocked Out",
+      "HurtAgainMessage": "{name} is hurt again and knocked out for {hours} hours!",
       "Qualities": "Qualities",
       "Quirks": "Quirks",
       "BStory": "B-Story",

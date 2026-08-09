@@ -105,7 +105,7 @@ export default class ProceduralTropeActorSheet extends HandlebarsApplicationMixi
     await this.actor.update({ "system.knockedOut": true });
     await ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-      content: `<p>${this.actor.name} is hurt again and knocked out for ${hours} hours!</p>`
+      content: `<p>${game.i18n.format("PROCEDURAL.Actor.HurtAgainMessage", { name: this.actor.name, hours })}</p>`
     });
   }
 
