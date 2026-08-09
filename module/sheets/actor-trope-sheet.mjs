@@ -123,14 +123,20 @@ export default class ProceduralTropeActorSheet extends HandlebarsApplicationMixi
 
     const generatorData = await loadGeneratorData();
     const { currentTalent, availableTalents } = ProceduralTropeActorSheet.#getAvailableTalents(this.actor, generatorData);
+    const swappableTalents = availableTalents.filter(t => t.name !== currentTalent?.name);
+
+    if (swappableTalents.length === 0) {
+      ui.notifications?.warn(game.i18n.localize("PROCEDURAL.Actor.FlashbackNoTalents"));
+      return;
+    }
 
     const talentName = await foundry.applications.api.DialogV2.wait({
       window: { title: game.i18n.localize("PROCEDURAL.Actor.Flashback") },
       content: `
         <div class="procedural-flashback-dialog">
-          <label>${game.i18n.localize("PROCEDURAL.Actor.LevelUpTalentSwap")}
+          <label>${game.i18n.localize("PROCEDURAL.Actor.FlashbackTalentSwap")}
             <select name="talentName">
-              ${availableTalents.map(t => `<option value="${t.name}">${t.name}</option>`).join("")}
+              ${swappableTalents.map(t => `<option value="${t.name}">${t.name}</option>`).join("")}
             </select>
           </label>
         </div>
@@ -148,7 +154,7 @@ export default class ProceduralTropeActorSheet extends HandlebarsApplicationMixi
     });
 
     if (!talentName) return;
-    const talentSource = availableTalents.find(t => t.name === talentName);
+    const talentSource = swappableTalents.find(t => t.name === talentName);
     if (!talentSource) return;
 
     await deskItem.update({ "system.flashbackUsed": true });
@@ -167,11 +173,11 @@ export default class ProceduralTropeActorSheet extends HandlebarsApplicationMixi
   }
 
   static async #swapTalent(actor, currentTalent, talentSource) {
-    if (currentTalent) await currentTalent.delete();
     await Item.createDocuments(
       [{ name: talentSource.name, type: "talent", img: talentSource.img, system: { ...talentSource.system } }],
       { parent: actor }
     );
+    if (currentTalent) await currentTalent.delete();
   }
 
   static async #onLevelUp() {

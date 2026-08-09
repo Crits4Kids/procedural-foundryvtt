@@ -46,7 +46,9 @@
       "Personality": "Personality",
       "RollPersonality": "Roll Personality",
       "Flashback": "Flashback",
-      "ResolveFlashback": "Have a Flashback"
+      "ResolveFlashback": "Have a Flashback",
+      "FlashbackTalentSwap": "Choose your new second Talent",
+      "FlashbackNoTalents": "No other second Talents are available to swap to."
     },
     "Item": {
       "StatBlock": "Suggested Stats (Mental / Physical / Social)",
