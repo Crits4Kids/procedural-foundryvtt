@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { rollTrope, applyGifted, divestSkills, rollQualityOrQuirk, rollBStoryOrHq, rollAgencyName, pickRandom, generateTrope, validateSkillAllocation } from "./character-generator.mjs";
+import { rollTrope, applyGifted, divestSkills, rollQualityOrQuirk, rollBStoryOrHq, rollAgencyName, pickRandom, generateTrope, validateSkillAllocation, rollNpcPersonality, parseNpcName } from "./character-generator.mjs";
 
 function queue(values) {
   let i = 0;
@@ -269,4 +269,40 @@ test("validateSkillAllocation flags nonzero remaining points even with no cap vi
   assert.equal(result.valid, false);
   assert.deepEqual(result.violations, []);
   assert.deepEqual(result.remaining, { mental: 1, physical: 0, social: 0 });
+});
+
+const NPC_PERSONALITIES_FIXTURE = [
+  "Elias Cope, 30. Hot-headed and impulsive, Elias has a jump-first, measure later attitude.",
+  "Jennifer Thompson, 40. Measured and cautious, Jennifer is nursing an old knee injury which slows her down.",
+  "Dave Hunt, 45. Cold and detached, Dave has an obsessive drive when it comes to working cases.",
+  "Willow McClachlan, 25. Bright-eyed and eager, but naive.",
+  "Ron Briar, 32. The class clown, but out of his depth in a fight.",
+  "Cindy Huntsman, 30. Methodical and very by-the-book."
+];
+
+test("rollNpcPersonality picks the entry at 1d6 roll 1 (low boundary)", () => {
+  const rng = queue([1]);
+  assert.equal(rollNpcPersonality(NPC_PERSONALITIES_FIXTURE, rng), NPC_PERSONALITIES_FIXTURE[0]);
+});
+
+test("rollNpcPersonality picks the entry at 1d6 roll 6 (high boundary)", () => {
+  const rng = queue([6]);
+  assert.equal(rollNpcPersonality(NPC_PERSONALITIES_FIXTURE, rng), NPC_PERSONALITIES_FIXTURE[5]);
+});
+
+test("rollNpcPersonality picks the entry at a middle roll", () => {
+  const rng = queue([3]);
+  assert.equal(rollNpcPersonality(NPC_PERSONALITIES_FIXTURE, rng), NPC_PERSONALITIES_FIXTURE[2]);
+});
+
+test("parseNpcName takes the text before the first comma and trims it", () => {
+  assert.equal(parseNpcName("Elias Cope, 30. Hot-headed and impulsive..."), "Elias Cope");
+});
+
+test("parseNpcName trims surrounding whitespace around the name", () => {
+  assert.equal(parseNpcName("  Jennifer Thompson  , 40. Measured..."), "Jennifer Thompson");
+});
+
+test("parseNpcName falls back to the full trimmed string when there's no comma", () => {
+  assert.equal(parseNpcName("  A freely typed personality with no comma  "), "A freely typed personality with no comma");
 });
