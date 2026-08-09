@@ -5,7 +5,8 @@ mechanics of *PROCEDURAL!*, a tabletop crime-procedural RPG.
 
 ## What's in v1
 
-- Trope (PC) and NPC actor sheets
+- Trope (PC) and NPC actor sheets — NPC sheets include a 1d6 ally
+  personality roll table
 - Trope, Talent, and Equipment item types
 - Fully automated skill rolls: 2d6 + modifier, Advantage/Disadvantage,
   Critical Failure/Success, "Hurt" status effects, and Rerun Point rerolls
@@ -24,12 +25,14 @@ mechanics of *PROCEDURAL!*, a tabletop crime-procedural RPG.
   every actor in the Actors directory
 - A GM-only Season Tracker app (scene controls) for Season Mode: records
   each of a season's 6 episode outcomes, computes the running Agency
-  Rating, shows the matching rulebook Director-reaction text, and offers
+  Rating, shows the matching rulebook Director-reaction text, rolls a 1d6
+  Director table for the season's antagonist-boss NPC, and offers
   one-click (double-grant-guarded) buttons to award the party's Rerun
   Point and Level Up benchmarks. Leveling Up is a dialog on the Trope
   sheet (appears once a Level Up is available) for the +1 stat / divested
-  skill / optional second-Talent swap. Villains are tracked as a simple
-  list with a 3-or-more warning
+  skill / optional second-Talent swap; a season-mode "Have a Flashback"
+  button on the desk item offers the same Talent swap, once per desk
+  item. Villains are tracked as a simple list with a 3-or-more warning
 
 Rerun Point pooling to generate new leads stays Showrunner-narrated rather
 than automated, by design — see
