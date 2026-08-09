@@ -1,5 +1,7 @@
-import { resolveDice } from "../helpers/dice-rules.mjs";
+import { resolveDice, rollD6 } from "../helpers/dice-rules.mjs";
 import { findTalentsToReset } from "../helpers/talent-reset.mjs";
+import { findActorsToHeal } from "../helpers/hurt-reset.mjs";
+import { loadGeneratorData } from "../helpers/generator-data.mjs";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ApplicationV2 } = foundry.applications.api;
@@ -15,6 +17,7 @@ async function setCaseTracker(data) {
   await game.settings.set("procedural", "caseTracker", data);
   if (data.act !== previousAct) {
     await resetTalentUses(data.act);
+    await healActors(data.act);
   }
 }
 
@@ -50,6 +53,28 @@ async function resetTalentUses(act) {
   ui.notifications?.info(`PROCEDURAL! reset ${count} Talent${count === 1 ? "" : "s"} for Act ${act}.`);
 }
 
+async function healActors(act) {
+  const actors = game.actors.map(actor => ({
+    id: actor.id,
+    system: { hurt: actor.system?.hurt, knockedOut: actor.system?.knockedOut }
+  }));
+  const ids = findActorsToHeal(actors);
+  if (!ids.length) return;
+
+  try {
+    for (const id of ids) {
+      await game.actors.get(id).update({ "system.hurt": false, "system.knockedOut": false });
+    }
+  } catch (err) {
+    console.error("PROCEDURAL | Failed to heal actors for the new act", err);
+    ui.notifications?.error("PROCEDURAL! failed to heal actors. Check the console for details.");
+    return;
+  }
+
+  const count = ids.length;
+  ui.notifications?.info(`PROCEDURAL! healed ${count} actor${count === 1 ? "" : "s"} for Act ${act}.`);
+}
+
 export default class CaseTrackerApplication extends HandlebarsApplicationMixin(ApplicationV2) {
   static DEFAULT_OPTIONS = {
     id: "procedural-case-tracker",
@@ -70,7 +95,8 @@ export default class CaseTrackerApplication extends HandlebarsApplicationMixin(A
       deleteEvidence: CaseTrackerApplication.#onDeleteEvidence,
       startInterrogation: CaseTrackerApplication.#onStartInterrogation,
       decrementInterrogation: CaseTrackerApplication.#onDecrementInterrogation,
-      deleteInterrogation: CaseTrackerApplication.#onDeleteInterrogation
+      deleteInterrogation: CaseTrackerApplication.#onDeleteInterrogation,
+      rollForDrama: CaseTrackerApplication.#onRollForDrama
     }
   };
 
@@ -94,6 +120,7 @@ export default class CaseTrackerApplication extends HandlebarsApplicationMixin(A
     context.arrestPhaseTriggered = data.arrestPhaseTriggered;
     context.arrestPhaseNotes = data.arrestPhaseNotes;
     context.epilogueNotes = data.epilogueNotes;
+    context.drama = data.drama;
 
     context.evidence = data.evidence.map(entry => ({
       id: entry.id,
@@ -123,6 +150,7 @@ export default class CaseTrackerApplication extends HandlebarsApplicationMixin(A
       arrestPhaseTriggered: expanded.arrestPhaseTriggered ?? false,
       arrestPhaseNotes: expanded.arrestPhaseNotes ?? "",
       epilogueNotes: expanded.epilogueNotes ?? "",
+      drama: expanded.drama ?? "",
       evidence: Object.values(expanded.evidence ?? {}),
       interrogations: Object.values(expanded.interrogations ?? {})
     };
@@ -175,6 +203,29 @@ export default class CaseTrackerApplication extends HandlebarsApplicationMixin(A
       ui.notifications?.error("PROCEDURAL! failed to start the interrogation. Check the console for details.");
       return;
     }
+    this.render();
+  }
+
+  static async #onRollForDrama() {
+    const generatorData = await loadGeneratorData();
+    const tableRoll = rollD6();
+    const entryRoll = rollD6();
+    const table = tableRoll % 2 === 1 ? generatorData.drama.odds : generatorData.drama.evens;
+    const text = table[entryRoll - 1];
+
+    const data = CaseTrackerApplication.#formToData(this.form);
+    data.drama = text;
+    try {
+      await setCaseTracker(data);
+    } catch (err) {
+      console.error("PROCEDURAL | Failed to save the Roll for Drama result", err);
+      ui.notifications?.error("PROCEDURAL! failed to save the Drama roll. Check the console for details.");
+      return;
+    }
+
+    await ChatMessage.create({
+      content: `<p><strong>${game.i18n.localize("PROCEDURAL.CaseTracker.RollForDrama")}</strong> (${tableRoll}, ${entryRoll}): ${text}</p>`
+    });
     this.render();
   }
 

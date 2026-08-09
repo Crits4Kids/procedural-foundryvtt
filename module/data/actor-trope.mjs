@@ -13,6 +13,7 @@ export default class TropeActorData extends foundry.abstract.TypeDataModel {
       skills: buildSkillsSchema(0),
       rerunPoints: new NumberField({ required: true, integer: true, initial: 1, min: 0 }),
       hurt: new BooleanField({ initial: false }),
+      knockedOut: new BooleanField({ initial: false }),
       qualities: new StringField({ initial: "" }),
       quirks: new StringField({ initial: "" }),
       bStory: new StringField({ initial: "" }),

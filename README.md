@@ -9,15 +9,18 @@ mechanics of *PROCEDURAL!*, a tabletop crime-procedural RPG.
 - Trope, Talent, and Equipment item types
 - Fully automated skill rolls: 2d6 + modifier, Advantage/Disadvantage,
   Critical Failure/Success, "Hurt" status effects, and Rerun Point rerolls
-  via a chat card button
+  via a chat card button — plus a "Hurt Again" action that flags a Trope
+  Knocked Out when they're hurt while already Hurt, and a one-click button
+  that awards the rulebook's +1 Rerun Point for resolving a B-story
 - Compendiums shipped as pre-built system packs with all 11 Tropes,
   18 second Talents, and 42 Desk Items (12 from the rulebook's "What's on
   Your Desk?" table plus 30 new ones), present as soon as the system is
   installed — no world-launch seeding step required
 - A GM-only Case Tracker app (scene controls) for tracking act/scene,
-  interludes, the arrest phase, evidence, and interrogations over the
-  course of a session — changing the Act field automatically clears every
-  Talent's "Used" checkbox (including each Trope's own built-in Talent) for
+  interludes, the arrest phase, evidence, interrogations, and a "Roll for
+  Drama" team-flavor table over the course of a session — changing the Act
+  field automatically clears every Talent's "Used" checkbox (including each
+  Trope's own built-in Talent) and heals every Hurt/Knocked Out actor, for
   every actor in the Actors directory
 
 Rerun Point pooling to generate new leads stays Showrunner-narrated rather

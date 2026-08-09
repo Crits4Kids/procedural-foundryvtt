@@ -20,6 +20,12 @@
         <input type="checkbox" data-action="toggleHurt" {{#if system.hurt}}checked{{/if}}>
         {{localize "PROCEDURAL.Actor.Hurt"}}
       </label>
+      {{#if system.hurt}}
+        <button type="button" data-action="hurtAgain">{{localize "PROCEDURAL.Actor.HurtAgain"}}</button>
+      {{/if}}
+      {{#if system.knockedOut}}
+        <span class="procedural-knocked-out-badge">{{localize "PROCEDURAL.Actor.KnockedOut"}}</span>
+      {{/if}}
     </div>
   </section>
 
@@ -43,6 +49,7 @@
     </label>
     <label>{{localize "PROCEDURAL.Actor.BStory"}}
       <textarea name="system.bStory">{{system.bStory}}</textarea>
+      <button type="button" data-action="resolveBStory">{{localize "PROCEDURAL.Actor.ResolveBStory"}}</button>
     </label>
     <label>{{localize "PROCEDURAL.Actor.HQ"}}
       <textarea name="system.hq">{{system.hq}}</textarea>
