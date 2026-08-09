@@ -87,6 +87,9 @@
       "Word": "Word",
       "Skills": "Skills"
     },
+    "NpcBuilder": {
+      "Title": "Build an NPC Ally"
+    },
     "CaseTracker": {
       "Title": "Case Tracker",
       "Act": "Act",
