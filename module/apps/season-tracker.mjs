@@ -13,6 +13,46 @@ async function setSeasonTracker(data) {
   await game.settings.set("procedural", "seasonTracker", data);
 }
 
+async function grantRerunPoints(flagKey) {
+  const data = getSeasonTracker().toObject();
+  if (data[flagKey]) return null;
+
+  const actors = game.actors.filter(a => a.type === "trope");
+  try {
+    for (const actor of actors) {
+      await actor.update({ "system.rerunPoints": actor.system.rerunPoints + 1 });
+    }
+  } catch (err) {
+    console.error("PROCEDURAL | Failed to grant Rerun Points", err);
+    ui.notifications?.error("PROCEDURAL! failed to grant Rerun Points. Check the console for details.");
+    return null;
+  }
+
+  data[flagKey] = true;
+  await setSeasonTracker(data);
+  return actors.length;
+}
+
+async function grantLevelUps(flagKey) {
+  const data = getSeasonTracker().toObject();
+  if (data[flagKey]) return null;
+
+  const actors = game.actors.filter(a => a.type === "trope");
+  try {
+    for (const actor of actors) {
+      await actor.update({ "system.levelUpsAvailable": actor.system.levelUpsAvailable + 1 });
+    }
+  } catch (err) {
+    console.error("PROCEDURAL | Failed to grant Level Ups", err);
+    ui.notifications?.error("PROCEDURAL! failed to grant Level Ups. Check the console for details.");
+    return null;
+  }
+
+  data[flagKey] = true;
+  await setSeasonTracker(data);
+  return actors.length;
+}
+
 export default class SeasonTrackerApplication extends HandlebarsApplicationMixin(ApplicationV2) {
   static DEFAULT_OPTIONS = {
     id: "procedural-season-tracker",
@@ -28,7 +68,12 @@ export default class SeasonTrackerApplication extends HandlebarsApplicationMixin
       submitOnChange: true,
       closeOnSubmit: false
     },
-    actions: {}
+    actions: {
+      grantEp3Rerun: SeasonTrackerApplication.#onGrantEp3Rerun,
+      grantEp5Rerun: SeasonTrackerApplication.#onGrantEp5Rerun,
+      grantEp3LevelUp: SeasonTrackerApplication.#onGrantEp3LevelUp,
+      grantEp6LevelUp: SeasonTrackerApplication.#onGrantEp6LevelUp
+    }
   };
 
   static PARTS = {
@@ -57,6 +102,13 @@ export default class SeasonTrackerApplication extends HandlebarsApplicationMixin
     context.rating = computeRating(data.episodes);
     context.recordedCount = countRecordedEpisodes(data.episodes);
 
+    const ep3Rating = computeRating(data.episodes.slice(0, 3));
+    const ep5Rating = computeRating(data.episodes.slice(0, 5));
+    context.ep3RerunEligible = data.episodes[2].outcome !== "" && ep3Rating === 6 && !data.ep3RerunGranted;
+    context.ep3LevelUpEligible = data.episodes[2].outcome !== "" && ep3Rating <= 0 && !data.ep3LevelUpGranted;
+    context.ep5RerunEligible = data.episodes[4].outcome !== "" && ep5Rating === 10 && !data.ep5RerunGranted;
+    context.ep6LevelUpEligible = data.episodes[5].outcome !== "" && !data.ep6LevelUpGranted;
+
     return context;
   }
 
@@ -80,5 +132,33 @@ export default class SeasonTrackerApplication extends HandlebarsApplicationMixin
 
   static async #onSubmit(event, form) {
     await setSeasonTracker(SeasonTrackerApplication.#formToData(form));
+  }
+
+  static async #onGrantEp3Rerun() {
+    const count = await grantRerunPoints("ep3RerunGranted");
+    if (!count) return;
+    ui.notifications?.info(`PROCEDURAL! granted 1 Rerun Point to ${count} Trope${count === 1 ? "" : "s"}.`);
+    this.render();
+  }
+
+  static async #onGrantEp5Rerun() {
+    const count = await grantRerunPoints("ep5RerunGranted");
+    if (!count) return;
+    ui.notifications?.info(`PROCEDURAL! granted 1 Rerun Point to ${count} Trope${count === 1 ? "" : "s"}.`);
+    this.render();
+  }
+
+  static async #onGrantEp3LevelUp() {
+    const count = await grantLevelUps("ep3LevelUpGranted");
+    if (!count) return;
+    ui.notifications?.info(`PROCEDURAL! granted a Level Up to ${count} Trope${count === 1 ? "" : "s"}.`);
+    this.render();
+  }
+
+  static async #onGrantEp6LevelUp() {
+    const count = await grantLevelUps("ep6LevelUpGranted");
+    if (!count) return;
+    ui.notifications?.info(`PROCEDURAL! granted a Level Up to ${count} Trope${count === 1 ? "" : "s"}.`);
+    this.render();
   }
 }

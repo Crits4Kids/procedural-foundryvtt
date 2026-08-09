@@ -16,6 +16,24 @@
         {{#if episode.recorded}}
           <p class="procedural-season-tracker-reaction">{{localize episode.reactionKey}}</p>
         {{/if}}
+        {{#if (eq episode.number 3)}}
+          {{#if ../ep3RerunEligible}}
+            <button type="button" data-action="grantEp3Rerun">{{localize "PROCEDURAL.SeasonTracker.GrantRerun"}}</button>
+          {{/if}}
+          {{#if ../ep3LevelUpEligible}}
+            <button type="button" data-action="grantEp3LevelUp">{{localize "PROCEDURAL.SeasonTracker.GrantLevelUp"}}</button>
+          {{/if}}
+        {{/if}}
+        {{#if (eq episode.number 5)}}
+          {{#if ../ep5RerunEligible}}
+            <button type="button" data-action="grantEp5Rerun">{{localize "PROCEDURAL.SeasonTracker.GrantRerun"}}</button>
+          {{/if}}
+        {{/if}}
+        {{#if (eq episode.number 6)}}
+          {{#if ../ep6LevelUpEligible}}
+            <button type="button" data-action="grantEp6LevelUp">{{localize "PROCEDURAL.SeasonTracker.GrantLevelUp"}}</button>
+          {{/if}}
+        {{/if}}
       </li>
     {{/each}}
   </ol>
