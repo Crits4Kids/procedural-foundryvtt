@@ -15,6 +15,7 @@ export default class ProceduralTropeActorSheet extends HandlebarsApplicationMixi
       toggleHurt: ProceduralTropeActorSheet.#onToggleHurt,
       hurtAgain: ProceduralTropeActorSheet.#onHurtAgain,
       resolveBStory: ProceduralTropeActorSheet.#onResolveBStory,
+      resolveFlashback: ProceduralTropeActorSheet.#onResolveFlashback,
       levelUp: ProceduralTropeActorSheet.#onLevelUp,
       createItem: ProceduralTropeActorSheet.#onCreateItem,
       editItem: ProceduralTropeActorSheet.#onEditItem,
@@ -116,17 +117,74 @@ export default class ProceduralTropeActorSheet extends HandlebarsApplicationMixi
     await this.actor.update({ "system.rerunPoints": this.actor.system.rerunPoints + 1 });
   }
 
+  static async #onResolveFlashback() {
+    const deskItem = this.actor.items.get(this.actor.system.deskItemId);
+    if (!deskItem || deskItem.system.flashbackUsed) return;
+
+    const generatorData = await loadGeneratorData();
+    const { currentTalent, availableTalents } = ProceduralTropeActorSheet.#getAvailableTalents(this.actor, generatorData);
+    const swappableTalents = availableTalents.filter(t => t.name !== currentTalent?.name);
+
+    if (swappableTalents.length === 0) {
+      ui.notifications?.warn(game.i18n.localize("PROCEDURAL.Actor.FlashbackNoTalents"));
+      return;
+    }
+
+    const talentName = await foundry.applications.api.DialogV2.wait({
+      window: { title: game.i18n.localize("PROCEDURAL.Actor.Flashback") },
+      content: `
+        <div class="procedural-flashback-dialog">
+          <label>${game.i18n.localize("PROCEDURAL.Actor.FlashbackTalentSwap")}
+            <select name="talentName">
+              ${swappableTalents.map(t => `<option value="${t.name}">${t.name}</option>`).join("")}
+            </select>
+          </label>
+        </div>
+      `,
+      buttons: [
+        {
+          action: "confirm",
+          label: game.i18n.localize("PROCEDURAL.Actor.LevelUpConfirm"),
+          default: true,
+          callback: (event, button) => button.form.elements.talentName.value
+        },
+        { action: "cancel", label: game.i18n.localize("PROCEDURAL.Roll.Cancel"), callback: () => false }
+      ],
+      rejectClose: false
+    });
+
+    if (!talentName) return;
+    const talentSource = swappableTalents.find(t => t.name === talentName);
+    if (!talentSource) return;
+
+    await deskItem.update({ "system.flashbackUsed": true });
+    await ProceduralTropeActorSheet.#swapTalent(this.actor, currentTalent, talentSource);
+  }
+
+  static #getAvailableTalents(actor, generatorData) {
+    const currentTalent = actor.items.find(i => i.type === "talent");
+    const heldElsewhere = new Set(
+      game.actors
+        .filter(a => a.type === "trope" && a.id !== actor.id)
+        .flatMap(a => a.items.filter(i => i.type === "talent").map(i => i.name))
+    );
+    const availableTalents = generatorData.secondTalents.filter(t => !heldElsewhere.has(t.name));
+    return { currentTalent, availableTalents };
+  }
+
+  static async #swapTalent(actor, currentTalent, talentSource) {
+    await Item.createDocuments(
+      [{ name: talentSource.name, type: "talent", img: talentSource.img, system: { ...talentSource.system } }],
+      { parent: actor }
+    );
+    if (currentTalent) await currentTalent.delete();
+  }
+
   static async #onLevelUp() {
     if (!this.actor.system.levelUpsAvailable) return;
 
     const generatorData = await loadGeneratorData();
-    const currentTalent = this.actor.items.find(i => i.type === "talent");
-    const heldElsewhere = new Set(
-      game.actors
-        .filter(a => a.type === "trope" && a.id !== this.actor.id)
-        .flatMap(a => a.items.filter(i => i.type === "talent").map(i => i.name))
-    );
-    const availableTalents = generatorData.secondTalents.filter(t => !heldElsewhere.has(t.name));
+    const { currentTalent, availableTalents } = ProceduralTropeActorSheet.#getAvailableTalents(this.actor, generatorData);
     const skills = this.actor.system.skills;
 
     const skillOption = (key) => {
@@ -202,11 +260,7 @@ export default class ProceduralTropeActorSheet extends HandlebarsApplicationMixi
     if (config.talentName) {
       const talentSource = availableTalents.find(t => t.name === config.talentName);
       if (talentSource) {
-        if (currentTalent) await currentTalent.delete();
-        await Item.createDocuments(
-          [{ name: talentSource.name, type: "talent", img: talentSource.img, system: { ...talentSource.system } }],
-          { parent: this.actor }
-        );
+        await ProceduralTropeActorSheet.#swapTalent(this.actor, currentTalent, talentSource);
       }
     }
   }

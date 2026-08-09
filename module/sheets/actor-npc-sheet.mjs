@@ -1,3 +1,6 @@
+import { rollD6 } from "../helpers/dice-rules.mjs";
+import { loadGeneratorData } from "../helpers/generator-data.mjs";
+
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ActorSheetV2 } = foundry.applications.sheets;
 
@@ -7,6 +10,7 @@ export default class ProceduralNpcActorSheet extends HandlebarsApplicationMixin(
     position: { width: 480, height: 480 },
     window: { resizable: true },
     actions: {
+      rollPersonality: ProceduralNpcActorSheet.#onRollPersonality,
       createItem: ProceduralNpcActorSheet.#onCreateItem,
       editItem: ProceduralNpcActorSheet.#onEditItem,
       deleteItem: ProceduralNpcActorSheet.#onDeleteItem
@@ -26,6 +30,12 @@ export default class ProceduralNpcActorSheet extends HandlebarsApplicationMixin(
       talent: this.actor.items.filter(i => i.type === "talent")
     };
     return context;
+  }
+
+  static async #onRollPersonality() {
+    const generatorData = await loadGeneratorData();
+    const roll = rollD6();
+    await this.actor.update({ "system.personality": generatorData.npcPersonalities[roll - 1] });
   }
 
   static async #onCreateItem(event, target) {

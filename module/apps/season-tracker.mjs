@@ -1,4 +1,6 @@
 import { computeRating, countRecordedEpisodes } from "../helpers/season-benchmarks.mjs";
+import { rollD6 } from "../helpers/dice-rules.mjs";
+import { loadGeneratorData } from "../helpers/generator-data.mjs";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ApplicationV2 } = foundry.applications.api;
@@ -87,6 +89,7 @@ export default class SeasonTrackerApplication extends HandlebarsApplicationMixin
       grantEp5Rerun: SeasonTrackerApplication.#onGrantEp5Rerun,
       grantEp3LevelUp: SeasonTrackerApplication.#onGrantEp3LevelUp,
       grantEp6LevelUp: SeasonTrackerApplication.#onGrantEp6LevelUp,
+      rollDirector: SeasonTrackerApplication.#onRollDirector,
       addVillain: SeasonTrackerApplication.#onAddVillain,
       deleteVillain: SeasonTrackerApplication.#onDeleteVillain
     }
@@ -125,6 +128,7 @@ export default class SeasonTrackerApplication extends HandlebarsApplicationMixin
     context.ep5RerunEligible = data.episodes[4].outcome !== "" && ep5Rating === 10 && !data.ep5RerunGranted;
     context.ep6LevelUpEligible = data.episodes[5].outcome !== "" && !data.ep6LevelUpGranted;
 
+    context.director = data.director;
     context.villains = data.villains;
     context.villainWarning = data.villains.filter(v => v.active).length >= 3;
 
@@ -145,6 +149,7 @@ export default class SeasonTrackerApplication extends HandlebarsApplicationMixin
       ep5RerunGranted: current.ep5RerunGranted,
       ep3LevelUpGranted: current.ep3LevelUpGranted,
       ep6LevelUpGranted: current.ep6LevelUpGranted,
+      director: expanded.director ?? "",
       villains: Object.values(expanded.villains ?? {}).map(v => ({
         id: v.id,
         name: v.name ?? "",
@@ -184,6 +189,23 @@ export default class SeasonTrackerApplication extends HandlebarsApplicationMixin
     const count = await grantLevelUps("ep6LevelUpGranted");
     if (count === null) return;
     ui.notifications?.info(`PROCEDURAL! granted a Level Up to ${count} Trope${count === 1 ? "" : "s"}.`);
+    this.render();
+  }
+
+  static async #onRollDirector() {
+    const generatorData = await loadGeneratorData();
+    const roll = rollD6();
+    const text = generatorData.directors[Math.ceil(roll / 2) - 1];
+
+    const data = SeasonTrackerApplication.#formToData(this.form);
+    data.director = text;
+    try {
+      await setSeasonTracker(data);
+    } catch (err) {
+      console.error("PROCEDURAL | Failed to save the Director roll result", err);
+      ui.notifications?.error("PROCEDURAL! failed to save the Director roll. Check the console for details.");
+      return;
+    }
     this.render();
   }
 
