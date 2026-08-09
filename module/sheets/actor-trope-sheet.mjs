@@ -9,6 +9,7 @@ export default class ProceduralTropeActorSheet extends HandlebarsApplicationMixi
     actions: {
       rollSkill: ProceduralTropeActorSheet.#onRollSkill,
       toggleHurt: ProceduralTropeActorSheet.#onToggleHurt,
+      resolveBStory: ProceduralTropeActorSheet.#onResolveBStory,
       createItem: ProceduralTropeActorSheet.#onCreateItem,
       editItem: ProceduralTropeActorSheet.#onEditItem,
       deleteItem: ProceduralTropeActorSheet.#onDeleteItem,
@@ -93,6 +94,10 @@ export default class ProceduralTropeActorSheet extends HandlebarsApplicationMixi
 
   static async #onToggleHurt() {
     await this.actor.update({ "system.hurt": !this.actor.system.hurt });
+  }
+
+  static async #onResolveBStory() {
+    await this.actor.update({ "system.rerunPoints": this.actor.system.rerunPoints + 1 });
   }
 
   static async #onCreateItem(event, target) {
