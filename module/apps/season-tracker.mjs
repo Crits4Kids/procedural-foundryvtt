@@ -136,28 +136,28 @@ export default class SeasonTrackerApplication extends HandlebarsApplicationMixin
 
   static async #onGrantEp3Rerun() {
     const count = await grantRerunPoints("ep3RerunGranted");
-    if (!count) return;
+    if (count === null) return;
     ui.notifications?.info(`PROCEDURAL! granted 1 Rerun Point to ${count} Trope${count === 1 ? "" : "s"}.`);
     this.render();
   }
 
   static async #onGrantEp5Rerun() {
     const count = await grantRerunPoints("ep5RerunGranted");
-    if (!count) return;
+    if (count === null) return;
     ui.notifications?.info(`PROCEDURAL! granted 1 Rerun Point to ${count} Trope${count === 1 ? "" : "s"}.`);
     this.render();
   }
 
   static async #onGrantEp3LevelUp() {
     const count = await grantLevelUps("ep3LevelUpGranted");
-    if (!count) return;
+    if (count === null) return;
     ui.notifications?.info(`PROCEDURAL! granted a Level Up to ${count} Trope${count === 1 ? "" : "s"}.`);
     this.render();
   }
 
   static async #onGrantEp6LevelUp() {
     const count = await grantLevelUps("ep6LevelUpGranted");
-    if (!count) return;
+    if (count === null) return;
     ui.notifications?.info(`PROCEDURAL! granted a Level Up to ${count} Trope${count === 1 ? "" : "s"}.`);
     this.render();
   }
