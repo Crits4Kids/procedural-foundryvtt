@@ -1,0 +1,38 @@
+name: Feature Request
+description: Suggest an idea or improvement for PROCEDURAL!
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting an improvement. Please fill out as much of this as you can — it helps evaluate and scope the request.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: What's missing or awkward today? Is this tied to a specific rulebook mechanic?
+      placeholder: There's currently no way to track Partner Bonus during a scene...
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: What would you like to see happen?
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Any other approaches you thought about, and why you preferred the one above.
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+      description: Mockups, rulebook references, or anything else that might help.
