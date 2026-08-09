@@ -127,6 +127,12 @@
   gap: 0.5rem;
 }
 
+.procedural-level-up-dialog {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
 .procedural-trope-builder {
   display: flex;
   flex-direction: column;
@@ -302,4 +308,20 @@
   color: #888;
   font-style: italic;
   margin: 0;
+}
+
+.procedural-season-tracker {
+  height: 100%;
+  overflow-y: auto;
+}
+
+.procedural-season-tracker-episode-row,
+.procedural-season-tracker-villain-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid #666;
+  border-radius: 4px;
+  padding: 0.5rem;
 }

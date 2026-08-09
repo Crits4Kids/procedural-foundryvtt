@@ -13,44 +13,58 @@ async function setSeasonTracker(data) {
   await game.settings.set("procedural", "seasonTracker", data);
 }
 
+const grantsInFlight = new Set();
+
 async function grantRerunPoints(flagKey) {
-  const data = getSeasonTracker().toObject();
-  if (data[flagKey]) return null;
-
-  const actors = game.actors.filter(a => a.type === "trope");
+  if (grantsInFlight.has(flagKey)) return null;
+  grantsInFlight.add(flagKey);
   try {
-    for (const actor of actors) {
-      await actor.update({ "system.rerunPoints": actor.system.rerunPoints + 1 });
-    }
-  } catch (err) {
-    console.error("PROCEDURAL | Failed to grant Rerun Points", err);
-    ui.notifications?.error("PROCEDURAL! failed to grant Rerun Points. Check the console for details.");
-    return null;
-  }
+    const data = getSeasonTracker().toObject();
+    if (data[flagKey]) return null;
 
-  data[flagKey] = true;
-  await setSeasonTracker(data);
-  return actors.length;
+    const actors = game.actors.filter(a => a.type === "trope");
+    try {
+      for (const actor of actors) {
+        await actor.update({ "system.rerunPoints": actor.system.rerunPoints + 1 });
+      }
+    } catch (err) {
+      console.error("PROCEDURAL | Failed to grant Rerun Points", err);
+      ui.notifications?.error("PROCEDURAL! failed to grant Rerun Points. Check the console for details.");
+      return null;
+    }
+
+    data[flagKey] = true;
+    await setSeasonTracker(data);
+    return actors.length;
+  } finally {
+    grantsInFlight.delete(flagKey);
+  }
 }
 
 async function grantLevelUps(flagKey) {
-  const data = getSeasonTracker().toObject();
-  if (data[flagKey]) return null;
-
-  const actors = game.actors.filter(a => a.type === "trope");
+  if (grantsInFlight.has(flagKey)) return null;
+  grantsInFlight.add(flagKey);
   try {
-    for (const actor of actors) {
-      await actor.update({ "system.levelUpsAvailable": actor.system.levelUpsAvailable + 1 });
-    }
-  } catch (err) {
-    console.error("PROCEDURAL | Failed to grant Level Ups", err);
-    ui.notifications?.error("PROCEDURAL! failed to grant Level Ups. Check the console for details.");
-    return null;
-  }
+    const data = getSeasonTracker().toObject();
+    if (data[flagKey]) return null;
 
-  data[flagKey] = true;
-  await setSeasonTracker(data);
-  return actors.length;
+    const actors = game.actors.filter(a => a.type === "trope");
+    try {
+      for (const actor of actors) {
+        await actor.update({ "system.levelUpsAvailable": actor.system.levelUpsAvailable + 1 });
+      }
+    } catch (err) {
+      console.error("PROCEDURAL | Failed to grant Level Ups", err);
+      ui.notifications?.error("PROCEDURAL! failed to grant Level Ups. Check the console for details.");
+      return null;
+    }
+
+    data[flagKey] = true;
+    await setSeasonTracker(data);
+    return actors.length;
+  } finally {
+    grantsInFlight.delete(flagKey);
+  }
 }
 
 export default class SeasonTrackerApplication extends HandlebarsApplicationMixin(ApplicationV2) {
@@ -79,7 +93,7 @@ export default class SeasonTrackerApplication extends HandlebarsApplicationMixin
   };
 
   static PARTS = {
-    form: { template: "systems/procedural/templates/apps/season-tracker.hbs" }
+    form: { template: "systems/procedural/templates/apps/season-tracker.hbs", scrollable: [""] }
   };
 
   async _prepareContext(options) {
@@ -142,6 +156,7 @@ export default class SeasonTrackerApplication extends HandlebarsApplicationMixin
 
   static async #onSubmit(event, form) {
     await setSeasonTracker(SeasonTrackerApplication.#formToData(form));
+    this.render();
   }
 
   static async #onGrantEp3Rerun() {
