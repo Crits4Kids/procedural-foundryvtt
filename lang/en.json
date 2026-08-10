@@ -73,6 +73,19 @@
       "Title": "Build a Trope",
       "Launch": "Build Trope Character",
       "StepIndicator": "Step",
+      "StepTitles": {
+        "name": "Name",
+        "trope": "Trope",
+        "skills": "Skills",
+        "quality": "Qualities",
+        "quirk": "Quirks",
+        "bstory": "B-Story",
+        "secondTalent": "Second Talent",
+        "hq": "HQ",
+        "deskItem": "Desk Item",
+        "agencyName": "Agency Name",
+        "review": "Review"
+      },
       "Back": "Back",
       "Next": "Next",
       "Finish": "Finish",
@@ -151,6 +164,10 @@
     }
   },
   "TYPES": {
+    "Actor": {
+      "trope": "Trope",
+      "npc": "NPC"
+    },
     "Item": {
       "trope": "Trope",
       "talent": "Talent",

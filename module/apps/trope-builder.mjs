@@ -104,6 +104,7 @@ export default class TropeBuilderApplication extends HandlebarsApplicationMixin(
 
     const stepId = this.#stepId;
     context.stepId = stepId;
+    context.stepTitle = game.i18n.localize(`PROCEDURAL.TropeBuilder.StepTitles.${stepId}`);
     context.stepNumber = this.#stepIndex + 1;
     context.stepCount = STEP_IDS.length;
     context.isFirstStep = this.#stepIndex === 0;
@@ -395,12 +396,13 @@ export default class TropeBuilderApplication extends HandlebarsApplicationMixin(
         "system.rerunPoints": 1
       });
 
-      const [, , deskItem] = await Item.createDocuments([
+      const created = await Item.createDocuments([
         { name: draft.trope.name, type: "trope", img: draft.trope.img, system: { ...draft.trope.system, statBlock: draft.stats } },
         { name: draft.secondTalent.name, type: "talent", img: draft.secondTalent.img, system: { ...draft.secondTalent.system } },
         { name: draft.deskItem.name, type: "equipment", img: draft.deskItem.img, system: { ...draft.deskItem.system } }
       ], { parent: actor });
 
+      const deskItem = created.find(i => i.type === "equipment");
       await actor.update({ "system.deskItemId": deskItem.id });
 
       await this.close();
