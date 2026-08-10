@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { buildRollTableResults } from "./build-packs.mjs";
+import { buildRollTableResults, buildRollTableDocument } from "./build-packs.mjs";
 
 test("buildRollTableResults creates one result per entry with sequential ranges", () => {
   const results = buildRollTableResults(["Alpha", "Beta", "Gamma"], "test-pack");
@@ -27,4 +27,18 @@ test("buildRollTableResults handles a single-entry table", () => {
   const results = buildRollTableResults(["OnlyOne"], "test-pack");
   assert.equal(results.length, 1);
   assert.deepEqual(results[0].range, [1, 1]);
+});
+
+test("buildRollTableDocument sets a formula matching the entry count", () => {
+  const document = buildRollTableDocument("test-pack", "Test Table", ["Alpha", "Beta", "Gamma"]);
+  assert.equal(document.formula, "1d3");
+});
+
+test("buildRollTableDocument's top-level _key starts with \"!tables!\"", () => {
+  const document = buildRollTableDocument("test-pack", "Test Table", ["Alpha", "Beta"]);
+  assert.ok(document._key.startsWith("!tables!"), `expected _key "${document._key}" to start with "!tables!"`);
+});
+
+test("buildRollTableDocument throws on an empty entries array", () => {
+  assert.throws(() => buildRollTableDocument("test-pack", "Test Table", []));
 });

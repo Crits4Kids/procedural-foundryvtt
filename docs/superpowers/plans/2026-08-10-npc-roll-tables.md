@@ -26,7 +26,7 @@
 **Interfaces:**
 - Produces: three flat JSON arrays of strings, read by Task 2's build script. No code interface — pure data.
 
-- [ ] **Step 1: Write `data/npc-first-names.json`**
+- [x] **Step 1: Write `data/npc-first-names.json`**
 
 ```json
 [
@@ -37,7 +37,7 @@
 ]
 ```
 
-- [ ] **Step 2: Write `data/npc-last-names.json`**
+- [x] **Step 2: Write `data/npc-last-names.json`**
 
 ```json
 [
@@ -48,7 +48,7 @@
 ]
 ```
 
-- [ ] **Step 3: Replace `data/npc-personalities.json` with pronoun/name-free traits**
+- [x] **Step 3: Replace `data/npc-personalities.json` with pronoun/name-free traits**
 
 The old 6 entries embedded a specific name in the sentence (e.g. "...Elias has a jump-first..."). Since traits now pair with an independently-rolled name, every entry must stand alone without a name or pronoun reference.
 
@@ -82,7 +82,7 @@ The old 6 entries embedded a specific name in the sentence (e.g. "...Elias has a
 ]
 ```
 
-- [ ] **Step 4: Verify all three files are valid JSON arrays of the expected length**
+- [x] **Step 4: Verify all three files are valid JSON arrays of the expected length**
 
 Run:
 ```bash
@@ -96,7 +96,7 @@ for (const f of ['data/npc-first-names.json', 'data/npc-last-names.json', 'data/
 ```
 Expected: each file prints `true`, a length of 25, and `no dupes`.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add data/npc-first-names.json data/npc-last-names.json data/npc-personalities.json
@@ -116,13 +116,13 @@ git commit -m "data: add NPC first/last name lists, rewrite personality traits n
 - Consumes: `data/npc-first-names.json`, `data/npc-last-names.json`, `data/npc-personalities.json` (Task 1) — flat string arrays.
 - Produces: `buildRollTableResults(entries, packName)` — exported pure function, `(string[], string) => object[]`, used by Task 2's own test. `packs/procedural-npc-first-names/`, `packs/procedural-npc-last-names/`, `packs/procedural-npc-personalities/` — compiled RollTable compendium packs on disk, consumed by Task 3's runtime code via `game.packs.get("procedural.<packName>")`.
 
-- [ ] **Step 1: Read the current script to confirm the exact existing shape before editing**
+- [x] **Step 1: Read the current script to confirm the exact existing shape before editing**
 
 Run: `cat scripts/build-packs.mjs`
 
 The current script has a top-level `for` loop that runs immediately on import — this must be guarded before Step 4's test can import from it without triggering a full compendium build.
 
-- [ ] **Step 2: Write the failing test for `buildRollTableResults`**
+- [x] **Step 2: Write the failing test for `buildRollTableResults`**
 
 Create `scripts/build-packs.test.mjs`:
 
@@ -159,12 +159,12 @@ test("buildRollTableResults handles a single-entry table", () => {
 });
 ```
 
-- [ ] **Step 3: Run the test to verify it fails**
+- [x] **Step 3: Run the test to verify it fails**
 
 Run: `node --test scripts/build-packs.test.mjs`
 Expected: FAIL — `buildRollTableResults` is not exported yet (current `build-packs.mjs` has no exports and would also attempt to run its full build loop on import, likely failing or side-effecting before the test even runs).
 
-- [ ] **Step 4: Rewrite `scripts/build-packs.mjs`**
+- [x] **Step 4: Rewrite `scripts/build-packs.mjs`**
 
 ```js
 import { compilePack } from "@foundryvtt/foundryvtt-cli";
@@ -309,12 +309,12 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
 
 Note the entry-point guard at the bottom (`if (process.argv[1] === ...)`) — this is the same idiom already used in `scripts/check-version-tag.mjs`. Without it, Task 2's test importing `buildRollTableResults` would trigger the entire compendium build as a side effect of the import.
 
-- [ ] **Step 5: Run the test to verify it passes**
+- [x] **Step 5: Run the test to verify it passes**
 
 Run: `node --test scripts/build-packs.test.mjs`
 Expected: PASS, all 4 tests.
 
-- [ ] **Step 6: Add the three new pack declarations to `system.json`**
+- [x] **Step 6: Add the three new pack declarations to `system.json`**
 
 Find the `"packs"` array in `system.json` (currently 3 entries: `procedural-tropes`, `procedural-second-talents`, `procedural-desk-items`) and add:
 
@@ -342,7 +342,7 @@ Find the `"packs"` array in `system.json` (currently 3 entries: `procedural-trop
 }
 ```
 
-- [ ] **Step 7: Run the full build and inspect the output**
+- [x] **Step 7: Run the full build and inspect the output**
 
 Run: `npm run build:packs`
 Expected: console output showing all 6 packs built, including:
@@ -355,12 +355,12 @@ Then verify the LevelDB output exists: `ls packs/procedural-npc-first-names/` sh
 
 **This step cannot fully confirm the compiled document matches Foundry's actual `RollTable`/`TableResult` schema** — `compilePack` serializes what it's given; it does not validate against Foundry's client-side data model. The real confirmation happens in Task 8's manual Foundry smoke test, when the pack is actually loaded into a running world. If that fails with a schema error, revisit the `type`/`img`/`description` field names in `buildRollTableDocument` and `buildRollTableResults` against the installed Foundry v14 `foundry.documents.BaseRollTable`/`BaseTableResult` schema (or `CONFIG.RollTable.resultTypes`) before re-running this step.
 
-- [ ] **Step 8: Run the full test suite to confirm nothing else broke**
+- [x] **Step 8: Run the full test suite to confirm nothing else broke**
 
 Run: `npm test`
 Expected: all existing tests still pass, plus the 4 new `build-packs.test.mjs` tests.
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 ```bash
 git add scripts/build-packs.mjs scripts/build-packs.test.mjs system.json packs/
@@ -384,7 +384,7 @@ git commit -m "feat: compile NPC name/personality data into RollTable compendium
   - `rollPersonalityTrait(): Promise<string>`
   - `getPersonalityTraitOptions(): Promise<string[]>`
 
-- [ ] **Step 1: Write the module**
+- [x] **Step 1: Write the module**
 
 ```js
 const PACK_IDS = {
@@ -438,14 +438,14 @@ export async function getPersonalityTraitOptions() {
 }
 ```
 
-- [ ] **Step 2: Manual verification (no automated test — `game.packs`/`Roll` are Foundry runtime globals not available under `node --test`)**
+- [x] **Step 2: Manual verification (no automated test — `game.packs`/`Roll` are Foundry runtime globals not available under `node --test`)**
 
 This can't be exercised standalone yet since nothing calls it — Task 8 covers full manual verification once Tasks 4-6 wire it up. For now, confirm the file has no syntax errors:
 
 Run: `node --check module/helpers/npc-name-generator.mjs`
 Expected: no output (success).
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add module/helpers/npc-name-generator.mjs
@@ -467,7 +467,7 @@ git commit -m "feat: add Foundry-dependent NPC name/personality roll-table helpe
 - Consumes: `rollFullName`, `rollNpcAge`, `rollPersonalityTrait`, `getPersonalityTraitOptions` from `module/helpers/npc-name-generator.mjs` (Task 3). `parseNpcName` from `module/helpers/character-generator.mjs` (unchanged, still exported from there — Task 7 only removes `rollNpcPersonality`, not `parseNpcName`).
 - Produces: `#draft.name` (string, e.g. `"Elias Cope, 30"`) and `#draft.trait` (string) replace the old single `#draft.personality` field. No other task depends on this app's internals.
 
-- [ ] **Step 1: Add the new localization key**
+- [x] **Step 1: Add the new localization key**
 
 In `lang/en.json`, inside the existing `"NpcBuilder"` block (currently `Title`, `Launch`, `Name`), add:
 
@@ -480,7 +480,7 @@ In `lang/en.json`, inside the existing `"NpcBuilder"` block (currently `Title`, 
 }
 ```
 
-- [ ] **Step 2: Create `templates/apps/npc-builder-steps/personality.hbs`**
+- [x] **Step 2: Create `templates/apps/npc-builder-steps/personality.hbs`**
 
 ```html
 <div class="procedural-builder-step procedural-npc-personality-step">
@@ -496,7 +496,7 @@ In `lang/en.json`, inside the existing `"NpcBuilder"` block (currently `Title`, 
 </div>
 ```
 
-- [ ] **Step 3: Update `templates/apps/npc-builder.hbs` to render the new template**
+- [x] **Step 3: Update `templates/apps/npc-builder.hbs` to render the new template**
 
 Change:
 ```html
@@ -507,7 +507,7 @@ to:
 {{#if show.personality}}{{> "systems/procedural/templates/apps/npc-builder-steps/personality.hbs"}}{{/if}}
 ```
 
-- [ ] **Step 4: Update `templates/apps/npc-builder-steps/review.hbs`**
+- [x] **Step 4: Update `templates/apps/npc-builder-steps/review.hbs`**
 
 Replace the single "Personality" row with separate "Name & Age" and "Personality" rows, both editing the same `personality` step:
 
@@ -538,7 +538,7 @@ Replace the single "Personality" row with separate "Name & Age" and "Personality
 </div>
 ```
 
-- [ ] **Step 5: Rewrite `module/apps/npc-builder.mjs`**
+- [x] **Step 5: Rewrite `module/apps/npc-builder.mjs`**
 
 ```js
 const { HandlebarsApplicationMixin } = foundry.applications.api;
@@ -763,12 +763,12 @@ export default class NpcBuilderApplication extends HandlebarsApplicationMixin(Ap
 }
 ```
 
-- [ ] **Step 6: Syntax-check the changed files**
+- [x] **Step 6: Syntax-check the changed files**
 
 Run: `node --check module/apps/npc-builder.mjs`
 Expected: no output (success).
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add module/apps/npc-builder.mjs templates/apps/npc-builder.hbs templates/apps/npc-builder-steps/personality.hbs templates/apps/npc-builder-steps/review.hbs lang/en.json
@@ -785,7 +785,7 @@ git commit -m "feat: split NPC builder's personality step into Name/Age and Trai
 **Interfaces:**
 - Consumes: `rollFullName`, `rollNpcAge`, `rollPersonalityTrait` from `module/helpers/npc-name-generator.mjs` (Task 3).
 
-- [ ] **Step 1: Rewrite the imports and `#onRollPersonality`**
+- [x] **Step 1: Rewrite the imports and `#onRollPersonality`**
 
 Current file (from the earlier name-sync bugfix, PR #23):
 
@@ -820,12 +820,12 @@ import { rollFullName, rollNpcAge, rollPersonalityTrait } from "../helpers/npc-n
 
 The `loadGeneratorData` import is removed entirely — nothing else in this file uses it.
 
-- [ ] **Step 2: Syntax-check**
+- [x] **Step 2: Syntax-check**
 
 Run: `node --check module/sheets/actor-npc-sheet.mjs`
 Expected: no output (success).
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add module/sheets/actor-npc-sheet.mjs
@@ -843,7 +843,7 @@ git commit -m "feat: NPC sheet's Roll Personality rerolls name, age, and trait f
 **Interfaces:**
 - Consumes: `rollFullName` from `module/helpers/npc-name-generator.mjs` (Task 3).
 
-- [ ] **Step 1: Update `templates/apps/trope-builder-steps/name.hbs`**
+- [x] **Step 1: Update `templates/apps/trope-builder-steps/name.hbs`**
 
 ```html
 <div class="procedural-builder-step">
@@ -855,7 +855,7 @@ git commit -m "feat: NPC sheet's Roll Personality rerolls name, age, and trait f
 </div>
 ```
 
-- [ ] **Step 2: Add the import and action to `module/apps/trope-builder.mjs`**
+- [x] **Step 2: Add the import and action to `module/apps/trope-builder.mjs`**
 
 Add to the existing import line:
 
@@ -873,12 +873,12 @@ Add `rollName: TropeBuilderApplication.#onRollName` to `DEFAULT_OPTIONS.actions`
   }
 ```
 
-- [ ] **Step 3: Syntax-check**
+- [x] **Step 3: Syntax-check**
 
 Run: `node --check module/apps/trope-builder.mjs`
 Expected: no output (success).
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add module/apps/trope-builder.mjs templates/apps/trope-builder-steps/name.hbs
@@ -897,7 +897,7 @@ git commit -m "feat: add Roll button to Trope builder's name step"
 **Interfaces:**
 - No producer/consumer interface — this is deletion-only. Safe now because Tasks 4-6 already migrated every call site off `rollNpcPersonality` and `data.npcPersonalities`.
 
-- [ ] **Step 1: Confirm nothing still references the code being removed**
+- [x] **Step 1: Confirm nothing still references the code being removed**
 
 Run:
 ```bash
@@ -905,7 +905,7 @@ grep -rn "rollNpcPersonality\|npcPersonalities" module/ templates/ scripts/
 ```
 Expected: no matches other than inside `character-generator.mjs`, `character-generator.test.mjs`, and `generator-data.mjs` themselves (the files this task is about to edit).
 
-- [ ] **Step 2: Remove `rollNpcPersonality` from `module/helpers/character-generator.mjs`**
+- [x] **Step 2: Remove `rollNpcPersonality` from `module/helpers/character-generator.mjs`**
 
 Delete this block:
 
@@ -921,7 +921,7 @@ export function rollNpcPersonality(personalities, rng) {
 
 `parseNpcName` (immediately below it in the file) stays — it's still used by Task 4's `npc-builder.mjs` and is not Foundry-dependent.
 
-- [ ] **Step 3: Remove the corresponding tests from `module/helpers/character-generator.test.mjs`**
+- [x] **Step 3: Remove the corresponding tests from `module/helpers/character-generator.test.mjs`**
 
 Delete the `rollNpcPersonality` import from the top-of-file import list, and delete these three tests:
 
@@ -941,7 +941,7 @@ test("rollNpcPersonality picks the entry at a middle roll", () => {
 
 Leave the `parseNpcName` tests and the `NPC_PERSONALITIES_FIXTURE` constant alone unless `NPC_PERSONALITIES_FIXTURE` is now unused (check with `grep -n "NPC_PERSONALITIES_FIXTURE" module/helpers/character-generator.test.mjs` — if its only remaining use was in the deleted tests, delete the fixture too).
 
-- [ ] **Step 4: Remove `npcPersonalities` from `GENERATOR_DATA_PATHS` in `module/helpers/generator-data.mjs`**
+- [x] **Step 4: Remove `npcPersonalities` from `GENERATOR_DATA_PATHS` in `module/helpers/generator-data.mjs`**
 
 ```js
 export const GENERATOR_DATA_PATHS = {
@@ -960,12 +960,12 @@ export const GENERATOR_DATA_PATHS = {
 
 (the `npcPersonalities` line is removed; everything else is unchanged)
 
-- [ ] **Step 5: Run the full test suite**
+- [x] **Step 5: Run the full test suite**
 
 Run: `npm test`
 Expected: all tests pass, with 3 fewer tests than before this task (the removed `rollNpcPersonality` tests) plus the 4 `build-packs.test.mjs` tests added in Task 2.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add module/helpers/character-generator.mjs module/helpers/character-generator.test.mjs module/helpers/generator-data.mjs
@@ -982,7 +982,7 @@ git commit -m "refactor: remove flat-array NPC personality code, superseded by r
 
 **Interfaces:** None — this is the final verification and version-bump task.
 
-- [ ] **Step 1: Run the full automated test suite one more time**
+- [x] **Step 1: Run the full automated test suite one more time**
 
 Run: `npm test`
 Expected: all tests pass.
@@ -996,14 +996,16 @@ Launch Foundry with this system loaded and check each of the following:
 2. From the Actor Directory, click "Generate NPC" to launch the wizard. On the Personality step, click Roll under "Name & Age" — confirm it fills in a "First Last, Age" value with age roughly in the 22-40 range. Click Roll under "Personality" — confirm the dropdown-eligible trait list is populated and a random trait fills the text field. Complete the wizard and confirm the created NPC actor's name matches the rolled first+last name (no age suffix) and the sheet's personality field shows the full combined sentence.
 3. On that new NPC's sheet, click "Roll Personality" several times — confirm the actor's name (header) updates each time to match a newly-rolled name, and the personality text updates to a new name+age+trait combination each time.
 4. Click "Build Trope Character" to launch the PC wizard. On the name step, click the new Roll button — confirm it fills in a "First Last" name (no age) and the field stays editable afterward.
+5. Log in as a non-GM player who has actor-create permission (not just a GM) and click Roll on the Trope builder's name step — this is the first runtime code path in this system that reads a compendium pack, and the Trope builder buttons are gated on `Actor.canUserCreate`, not `game.user.isGM`, so a regular player might hit a permissions wall a GM-only test wouldn't reveal. Confirm the roll succeeds for that player.
+6. When testing personality trait draws (Steps 2-3 above), confirm the drawn text is actually the trait sentence (not undefined/blank) — this is the point where the build's guessed `type: 0` field name and `text` property either work or don't; opening the compendium in the sidebar isn't sufficient confirmation, an actual Roll must return real text.
 
 If step 1 fails with a schema/validation error, revisit `buildRollTableDocument`/`buildRollTableResults` in `scripts/build-packs.mjs` (Task 2) against the actual Foundry v14 `RollTable`/`TableResult` data model and re-run `npm run build:packs`.
 
-- [ ] **Step 3: Bump the version**
+- [x] **Step 3: Bump the version**
 
 In `system.json` and `package.json`, bump `"version"` from `0.11.1` to `0.12.0` (minor bump — this adds new player/GM-facing functionality, not just a fix).
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add system.json package.json

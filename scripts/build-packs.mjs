@@ -42,6 +42,9 @@ export function buildRollTableResults(entries, packName) {
 }
 
 export function buildRollTableDocument(packName, tableName, entries) {
+  if (entries.length === 0) {
+    throw new Error(`Cannot build RollTable "${tableName}" (pack "${packName}") from an empty entries array`);
+  }
   const id = stableId(`${packName}:table`);
   return {
     _id: id,
