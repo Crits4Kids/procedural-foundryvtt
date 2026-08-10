@@ -306,3 +306,7 @@ test("parseNpcName trims surrounding whitespace around the name", () => {
 test("parseNpcName falls back to the full trimmed string when there's no comma", () => {
   assert.equal(parseNpcName("  A freely typed personality with no comma  "), "A freely typed personality with no comma");
 });
+
+test("parseNpcName falls back to the full trimmed string when the text before the first comma is blank", () => {
+  assert.equal(parseNpcName("  , 30. Some description"), ", 30. Some description");
+});

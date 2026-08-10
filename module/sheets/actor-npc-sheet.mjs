@@ -1,5 +1,5 @@
-import { rollD6 } from "../helpers/dice-rules.mjs";
 import { loadGeneratorData } from "../helpers/generator-data.mjs";
+import { rollNpcPersonality } from "../helpers/character-generator.mjs";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ActorSheetV2 } = foundry.applications.sheets;
@@ -34,8 +34,8 @@ export default class ProceduralNpcActorSheet extends HandlebarsApplicationMixin(
 
   static async #onRollPersonality() {
     const generatorData = await loadGeneratorData();
-    const roll = rollD6();
-    await this.actor.update({ "system.personality": generatorData.npcPersonalities[roll - 1] });
+    const personality = rollNpcPersonality(generatorData.npcPersonalities, Math.random);
+    await this.actor.update({ "system.personality": personality });
   }
 
   static async #onCreateItem(event, target) {

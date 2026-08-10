@@ -178,7 +178,7 @@ export function rollNpcPersonality(personalities, rng) {
  */
 export function parseNpcName(personality) {
   const [name] = personality.split(",");
-  return name.trim();
+  return name.trim() || personality.trim();
 }
 
 export function pickRandom(list, rng) {

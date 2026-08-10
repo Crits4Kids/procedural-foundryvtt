@@ -115,8 +115,8 @@ export default class NpcBuilderApplication extends HandlebarsApplicationMixin(Ap
     }
   }
 
-  #refreshNextEnabled(forcedValue) {
-    const enabled = forcedValue ?? this.#isStepValid(this.#stepId);
+  #refreshNextEnabled() {
+    const enabled = this.#isStepValid(this.#stepId);
     const nextBtn = this.element.querySelector('[data-action="goNext"], [data-action="finish"]');
     if (nextBtn) nextBtn.disabled = !enabled;
   }
@@ -125,7 +125,7 @@ export default class NpcBuilderApplication extends HandlebarsApplicationMixin(Ap
     switch (stepId) {
       case "personality": return this.#draft.personality.trim().length > 0;
       case "trope": return this.#draft.trope !== null;
-      case "review": return true;
+      case "review": return this.#isStepValid("personality") && this.#isStepValid("trope");
       default: return false;
     }
   }
@@ -172,7 +172,12 @@ export default class NpcBuilderApplication extends HandlebarsApplicationMixin(Ap
       await actor.update({ "system.personality": draft.personality });
 
       await Item.createDocuments([
-        { name: draft.trope.name, type: "trope", img: draft.trope.img, system: { ...draft.trope.system } },
+        {
+          name: draft.trope.name,
+          type: "trope",
+          img: draft.trope.img,
+          system: { ...draft.trope.system, talentName: "", talentDescription: "", talentUsesPerAct: null }
+        },
         {
           name: draft.trope.system.talentName,
           type: "talent",
