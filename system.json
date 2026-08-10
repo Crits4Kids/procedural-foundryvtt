@@ -37,6 +37,27 @@
       "path": "packs/procedural-desk-items",
       "type": "Item",
       "system": "procedural"
+    },
+    {
+      "name": "procedural-npc-first-names",
+      "label": "Procedural: NPC First Names",
+      "path": "packs/procedural-npc-first-names",
+      "type": "RollTable",
+      "system": "procedural"
+    },
+    {
+      "name": "procedural-npc-last-names",
+      "label": "Procedural: NPC Last Names",
+      "path": "packs/procedural-npc-last-names",
+      "type": "RollTable",
+      "system": "procedural"
+    },
+    {
+      "name": "procedural-npc-personalities",
+      "label": "Procedural: NPC Personality Traits",
+      "path": "packs/procedural-npc-personalities",
+      "type": "RollTable",
+      "system": "procedural"
     }
   ],
   "documentTypes": {
