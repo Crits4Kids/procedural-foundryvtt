@@ -3,9 +3,15 @@
     <dt>{{localize "PROCEDURAL.NpcBuilder.Name"}}</dt>
     <dd>{{name}}</dd>
 
+    <dt>{{localize "PROCEDURAL.NpcBuilder.NameAndAge"}}</dt>
+    <dd>
+      {{draft.name}}
+      <button type="button" data-action="goToStep" data-step="personality">{{localize "PROCEDURAL.TropeBuilder.Edit"}}</button>
+    </dd>
+
     <dt>{{localize "PROCEDURAL.Actor.Personality"}}</dt>
     <dd>
-      {{draft.personality}}
+      {{draft.trait}}
       <button type="button" data-action="goToStep" data-step="personality">{{localize "PROCEDURAL.TropeBuilder.Edit"}}</button>
     </dd>
 

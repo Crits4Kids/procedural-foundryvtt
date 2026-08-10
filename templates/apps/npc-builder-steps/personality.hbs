@@ -1,0 +1,11 @@
+<div class="procedural-builder-step procedural-npc-personality-step">
+  <div class="procedural-builder-rcc-label-wrapper">
+    <label class="procedural-builder-rcc-label">{{localize "PROCEDURAL.NpcBuilder.NameAndAge"}}</label>
+    <div class="procedural-builder-row">
+      <button type="button" data-action="rollName">{{localize "PROCEDURAL.TropeBuilder.Roll"}}</button>
+    </div>
+    <input type="text" name="nameValue" class="procedural-builder-freetext" value="{{nameValue}}" placeholder="{{localize 'PROCEDURAL.TropeBuilder.OrTypeYourOwn'}}">
+  </div>
+
+  {{> "systems/procedural/templates/apps/trope-builder-steps/roll-choose-create.hbs" rollChooseCreate}}
+</div>

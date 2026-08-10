@@ -90,7 +90,8 @@
     "NpcBuilder": {
       "Title": "Build an NPC Ally",
       "Launch": "Generate NPC",
-      "Name": "Name"
+      "Name": "Name",
+      "NameAndAge": "Name & Age"
     },
     "CaseTracker": {
       "Title": "Case Tracker",

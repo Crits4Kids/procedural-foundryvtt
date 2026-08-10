@@ -5,12 +5,15 @@ mechanics of *PROCEDURAL!*, a tabletop crime-procedural RPG.
 
 ## What's in v1
 
-- Trope (PC) and NPC actor sheets — NPC sheets include a 1d6 ally
-  personality roll table. Both actor types also have a guided,
-  multi-step "builder" wizard (Actor Directory buttons) that rolls or
-  lets you choose your way through the relevant tables and creates the
-  finished actor on Finish — for NPCs, that's the ally's personality and
-  a Trope-derived Talent
+- Trope (PC) and NPC actor sheets — NPC sheets roll a name, age, and
+  personality trait for the ally from three Foundry `RollTable`
+  compendiums (first names, last names, personality traits) plus a
+  dice-formula age, and can reroll all three at once from a "Roll
+  Personality" button. Both actor types also have a guided, multi-step
+  "builder" wizard (Actor Directory buttons) that rolls or lets you
+  choose your way through the relevant tables and creates the finished
+  actor on Finish — for NPCs, that's the ally's name, age, personality,
+  and a Trope-derived Talent
 - Trope, Talent, and Equipment item types
 - Fully automated skill rolls: 2d6 + modifier, Advantage/Disadvantage,
   Critical Failure/Success, "Hurt" status effects, and Rerun Point rerolls
@@ -19,8 +22,10 @@ mechanics of *PROCEDURAL!*, a tabletop crime-procedural RPG.
   that awards the rulebook's +1 Rerun Point for resolving a B-story
 - Compendiums shipped as pre-built system packs with all 11 Tropes,
   18 second Talents, and 42 Desk Items (12 from the rulebook's "What's on
-  Your Desk?" table plus 30 new ones), present as soon as the system is
-  installed — no world-launch seeding step required
+  Your Desk?" table plus 30 new ones), plus three NPC RollTable
+  compendiums (25 first names, 25 last names, 25 personality traits),
+  present as soon as the system is installed — no world-launch seeding
+  step required
 - A GM-only Case Tracker app (scene controls) for tracking act/scene,
   interludes, the arrest phase, evidence, interrogations, and a "Roll for
   Drama" team-flavor table over the course of a session — changing the Act
@@ -57,9 +62,11 @@ full scope rationale behind this and other early v1 boundaries.
 4. Launch Foundry VTT (v14), and on the Setup screen confirm "PROCEDURAL!"
    appears in the systems list.
 5. Create a new World using the PROCEDURAL! system, then launch it.
-6. The three compendiums — "Procedural: Tropes", "Procedural: Second
-   Talents", and "Procedural: Desk Items" — are already present as system
-   packs. Check the Compendium Packs sidebar tab to confirm.
+6. The six compendiums — "Procedural: Tropes", "Procedural: Second
+   Talents", "Procedural: Desk Items", "Procedural: NPC First Names",
+   "Procedural: NPC Last Names", and "Procedural: NPC Personality
+   Traits" — are already present as system packs. Check the Compendium
+   Packs sidebar tab to confirm.
 7. Create a `trope` Actor, drag a Trope item onto it from the compendium,
    allocate skill points, and start rolling. Drag a Desk Item onto the
    sheet's dedicated "Desk Item" section to give them something personal at
@@ -77,7 +84,8 @@ https://github.com/Crits4Kids/procedural-foundryvtt/releases/latest/download/sys
 ```
 
 This always installs the latest tagged release, with compendiums (Tropes,
-Second Talents, Desk Items) already packed in — no extra setup needed.
+Second Talents, Desk Items, NPC First Names, NPC Last Names, NPC
+Personality Traits) already packed in — no extra setup needed.
 
 ## Running the automated tests
 
