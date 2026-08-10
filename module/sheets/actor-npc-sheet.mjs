@@ -1,5 +1,4 @@
-import { loadGeneratorData } from "../helpers/generator-data.mjs";
-import { rollNpcPersonality, parseNpcName } from "../helpers/character-generator.mjs";
+import { rollFullName, rollNpcAge, rollPersonalityTrait } from "../helpers/npc-name-generator.mjs";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ActorSheetV2 } = foundry.applications.sheets;
@@ -33,9 +32,13 @@ export default class ProceduralNpcActorSheet extends HandlebarsApplicationMixin(
   }
 
   static async #onRollPersonality() {
-    const generatorData = await loadGeneratorData();
-    const personality = rollNpcPersonality(generatorData.npcPersonalities, Math.random);
-    await this.actor.update({ name: parseNpcName(personality), "system.personality": personality });
+    const [fullName, age, trait] = await Promise.all([
+      rollFullName(),
+      rollNpcAge(),
+      rollPersonalityTrait()
+    ]);
+    const personality = `${fullName}, ${age}. ${trait}`;
+    await this.actor.update({ name: fullName, "system.personality": personality });
   }
 
   static async #onCreateItem(event, target) {
