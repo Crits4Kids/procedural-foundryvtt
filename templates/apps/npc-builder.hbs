@@ -4,7 +4,7 @@
   </header>
 
   <section class="procedural-builder-body">
-    {{#if show.personality}}{{> "systems/procedural/templates/apps/trope-builder-steps/roll-choose-create.hbs" rollChooseCreate}}{{/if}}
+    {{#if show.personality}}{{> "systems/procedural/templates/apps/npc-builder-steps/personality.hbs"}}{{/if}}
     {{#if show.trope}}{{> "systems/procedural/templates/apps/npc-builder-steps/trope.hbs"}}{{/if}}
     {{#if show.review}}{{> "systems/procedural/templates/apps/npc-builder-steps/review.hbs"}}{{/if}}
   </section>

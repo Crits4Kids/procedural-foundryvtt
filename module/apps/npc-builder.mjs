@@ -2,7 +2,8 @@ const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ApplicationV2 } = foundry.applications.api;
 
 import { loadGeneratorData } from "../helpers/generator-data.mjs";
-import { rollTrope, rollNpcPersonality, parseNpcName } from "../helpers/character-generator.mjs";
+import { rollTrope, parseNpcName } from "../helpers/character-generator.mjs";
+import { rollFullName, rollNpcAge, rollPersonalityTrait, getPersonalityTraitOptions } from "../helpers/npc-name-generator.mjs";
 
 const STEP_IDS = ["personality", "trope", "review"];
 
@@ -16,6 +17,7 @@ export default class NpcBuilderApplication extends HandlebarsApplicationMixin(Ap
       goNext: NpcBuilderApplication.#onNext,
       goBack: NpcBuilderApplication.#onBack,
       goToStep: NpcBuilderApplication.#onGoToStep,
+      rollName: NpcBuilderApplication.#onRollName,
       rollTable: NpcBuilderApplication.#onRollTable,
       rollTrope: NpcBuilderApplication.#onRollTrope,
       finish: NpcBuilderApplication.#onFinish
@@ -26,6 +28,7 @@ export default class NpcBuilderApplication extends HandlebarsApplicationMixin(Ap
     form: {
       template: "systems/procedural/templates/apps/npc-builder.hbs",
       templates: [
+        "systems/procedural/templates/apps/npc-builder-steps/personality.hbs",
         "systems/procedural/templates/apps/trope-builder-steps/roll-choose-create.hbs",
         "systems/procedural/templates/apps/npc-builder-steps/trope.hbs",
         "systems/procedural/templates/apps/npc-builder-steps/review.hbs"
@@ -36,7 +39,8 @@ export default class NpcBuilderApplication extends HandlebarsApplicationMixin(Ap
   #stepIndex = 0;
   #data = null;
   #draft = {
-    personality: "",
+    name: "",
+    trait: "",
     trope: null
   };
   #finishing = false;
@@ -63,10 +67,11 @@ export default class NpcBuilderApplication extends HandlebarsApplicationMixin(Ap
     };
 
     if (stepId === "personality") {
+      context.nameValue = this.#draft.name;
       context.rollChooseCreate = {
         label: game.i18n.localize("PROCEDURAL.Actor.Personality"),
-        options: this.#data.npcPersonalities,
-        value: this.#draft.personality
+        options: await getPersonalityTraitOptions(),
+        value: this.#draft.trait
       };
     }
 
@@ -78,7 +83,7 @@ export default class NpcBuilderApplication extends HandlebarsApplicationMixin(Ap
     }
 
     if (stepId === "review") {
-      context.name = parseNpcName(this.#draft.personality);
+      context.name = parseNpcName(this.#draft.name);
     }
 
     return context;
@@ -88,10 +93,18 @@ export default class NpcBuilderApplication extends HandlebarsApplicationMixin(Ap
     super._onRender(context, options);
     const stepId = this.#stepId;
 
+    const nameInput = this.element.querySelector('[name="nameValue"]');
+    if (nameInput) {
+      nameInput.addEventListener("input", () => {
+        this.#draft.name = nameInput.value;
+        this.#refreshNextEnabled();
+      });
+    }
+
     const textInput = this.element.querySelector('[name="stepValue"]');
     if (textInput) {
       textInput.addEventListener("input", () => {
-        this.#draft.personality = textInput.value;
+        this.#draft.trait = textInput.value;
         this.#refreshNextEnabled();
       });
     }
@@ -123,7 +136,7 @@ export default class NpcBuilderApplication extends HandlebarsApplicationMixin(Ap
 
   #isStepValid(stepId) {
     switch (stepId) {
-      case "personality": return this.#draft.personality.trim().length > 0;
+      case "personality": return this.#draft.name.trim().length > 0 && this.#draft.trait.trim().length > 0;
       case "trope": return this.#draft.trope !== null;
       case "review": return this.#isStepValid("personality") && this.#isStepValid("trope");
       default: return false;
@@ -149,8 +162,14 @@ export default class NpcBuilderApplication extends HandlebarsApplicationMixin(Ap
     }
   }
 
-  static #onRollTable() {
-    this.#draft.personality = rollNpcPersonality(this.#data.npcPersonalities, Math.random);
+  static async #onRollName() {
+    const [fullName, age] = await Promise.all([rollFullName(), rollNpcAge()]);
+    this.#draft.name = `${fullName}, ${age}`;
+    this.render();
+  }
+
+  static async #onRollTable() {
+    this.#draft.trait = await rollPersonalityTrait();
     this.render();
   }
 
@@ -166,10 +185,11 @@ export default class NpcBuilderApplication extends HandlebarsApplicationMixin(Ap
 
     try {
       const draft = this.#draft;
-      const name = parseNpcName(draft.personality);
+      const name = parseNpcName(draft.name);
+      const personality = `${draft.name}. ${draft.trait}`;
       const actor = await Actor.create({ name, type: "npc" });
 
-      await actor.update({ "system.personality": draft.personality });
+      await actor.update({ "system.personality": personality });
 
       await Item.createDocuments([
         {
