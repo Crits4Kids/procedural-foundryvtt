@@ -95,12 +95,13 @@ export default class ProceduralActor extends Actor {
       "system.knockedOut": false
     });
 
-    const [, , deskItem] = await Item.createDocuments([
+    const created = await Item.createDocuments([
       { name: result.trope.name, type: "trope", img: result.trope.img, system: result.trope.system },
       { name: result.secondTalent.name, type: "talent", img: result.secondTalent.img, system: { ...result.secondTalent.system } },
       { name: result.deskItem.name, type: "equipment", img: result.deskItem.img, system: { ...result.deskItem.system } }
     ], { parent: this });
 
+    const deskItem = created.find(i => i.type === "equipment");
     await this.update({ "system.deskItemId": deskItem.id });
 
     return result;
