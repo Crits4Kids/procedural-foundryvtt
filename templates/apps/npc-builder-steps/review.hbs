@@ -1,0 +1,18 @@
+<div class="procedural-builder-step procedural-builder-review">
+  <dl>
+    <dt>{{localize "PROCEDURAL.NpcBuilder.Name"}}</dt>
+    <dd>{{name}}</dd>
+
+    <dt>{{localize "PROCEDURAL.Actor.Personality"}}</dt>
+    <dd>
+      {{draft.personality}}
+      <button type="button" data-action="goToStep" data-step="personality">{{localize "PROCEDURAL.TropeBuilder.Edit"}}</button>
+    </dd>
+
+    <dt>{{localize "TYPES.Item.trope"}}</dt>
+    <dd>
+      {{draft.trope.name}} ({{draft.trope.system.talentName}})
+      <button type="button" data-action="goToStep" data-step="trope">{{localize "PROCEDURAL.TropeBuilder.Edit"}}</button>
+    </dd>
+  </dl>
+</div>

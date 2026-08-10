@@ -325,3 +325,14 @@
   border-radius: 4px;
   padding: 0.5rem;
 }
+
+.procedural-npc-builder {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.procedural-npc-builder-launch {
+  width: 100%;
+  margin-top: 0.25rem;
+}

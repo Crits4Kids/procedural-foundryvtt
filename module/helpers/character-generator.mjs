@@ -163,6 +163,24 @@ export function rollAgencyName(tables, rng) {
   return `${part1} ${part2} ${part3}`;
 }
 
+/**
+ * NPC ally personality table: a flat 1d6 roll (data/npc-personalities.json),
+ * unlike the qualities/quirks/bstory/hq tables' odds/evens split.
+ */
+export function rollNpcPersonality(personalities, rng) {
+  return personalities[roll1d6(rng) - 1];
+}
+
+/**
+ * Parses the name out of a personality string, e.g.
+ * "Elias Cope, 30. Hot-headed..." -> "Elias Cope". Falls back to the full
+ * trimmed string if there's no comma (free-typed personality text).
+ */
+export function parseNpcName(personality) {
+  const [name] = personality.split(",");
+  return name.trim() || personality.trim();
+}
+
 export function pickRandom(list, rng) {
   return list[Math.floor(rng() * list.length)];
 }

@@ -6,7 +6,11 @@ mechanics of *PROCEDURAL!*, a tabletop crime-procedural RPG.
 ## What's in v1
 
 - Trope (PC) and NPC actor sheets — NPC sheets include a 1d6 ally
-  personality roll table
+  personality roll table. Both actor types also have a guided,
+  multi-step "builder" wizard (Actor Directory buttons) that rolls or
+  lets you choose your way through the relevant tables and creates the
+  finished actor on Finish — for NPCs, that's the ally's personality and
+  a Trope-derived Talent
 - Trope, Talent, and Equipment item types
 - Fully automated skill rolls: 2d6 + modifier, Advantage/Disadvantage,
   Critical Failure/Success, "Hurt" status effects, and Rerun Point rerolls
