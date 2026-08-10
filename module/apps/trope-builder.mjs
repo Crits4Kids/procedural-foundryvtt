@@ -3,6 +3,7 @@ const { ApplicationV2 } = foundry.applications.api;
 
 import { loadGeneratorData } from "../helpers/generator-data.mjs";
 import { rollTrope, validateSkillAllocation, rollQualityOrQuirk, rollBStoryOrHq } from "../helpers/character-generator.mjs";
+import { rollFullName } from "../helpers/npc-name-generator.mjs";
 
 const STEP_IDS = [
   "name", "trope", "skills", "quality", "quirk", "bstory",
@@ -51,6 +52,7 @@ export default class TropeBuilderApplication extends HandlebarsApplicationMixin(
       goToStep: TropeBuilderApplication.#onGoToStep,
       rollTrope: TropeBuilderApplication.#onRollTrope,
       rollTable: TropeBuilderApplication.#onRollTable,
+      rollName: TropeBuilderApplication.#onRollName,
       rollAgencyName: TropeBuilderApplication.#onRollAgencyName,
       finish: TropeBuilderApplication.#onFinish
     }
@@ -342,6 +344,11 @@ export default class TropeBuilderApplication extends HandlebarsApplicationMixin(
   static #onRollTrope() {
     const trope = rollTrope(this.#data.tropes, Math.random);
     this.#setTrope(trope);
+  }
+
+  static async #onRollName() {
+    this.#draft.name = await rollFullName();
+    this.render();
   }
 
   static #onRollTable() {
