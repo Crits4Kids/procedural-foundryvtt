@@ -2,7 +2,7 @@ import { resolveDice, rollD6 } from "../helpers/dice-rules.mjs";
 import { findTalentsToReset } from "../helpers/talent-reset.mjs";
 import { findActorsToHeal } from "../helpers/hurt-reset.mjs";
 import { loadGeneratorData } from "../helpers/generator-data.mjs";
-import { isValidPool } from "../helpers/lead-pool.mjs";
+import { isValidPool, canAffordPledges } from "../helpers/lead-pool.mjs";
 import { tallyEvidence } from "../helpers/evidence-tally.mjs";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
@@ -290,13 +290,21 @@ export default class CaseTrackerApplication extends HandlebarsApplicationMixin(A
     });
     if (!contributions) return;
 
-    for (const [actorId, amount] of Object.entries(contributions)) {
-      const actor = game.actors.get(actorId);
-      const available = actor?.system?.rerunPoints ?? 0;
-      if (!actor || amount < 0 || amount > available) {
-        ui.notifications?.error(game.i18n.localize("PROCEDURAL.CaseTracker.PoolRerunPointsOverPledged"));
-        return;
-      }
+    // Re-snapshot the form: the pledge dialog is non-modal, so the GM may have
+    // edited (and auto-submitted) other Case Tracker fields while it was open.
+    // Everything from here on must use this fresh snapshot, not the stale
+    // pre-dialog `data`/`actIndex`, or we'd silently revert those edits.
+    const freshData = CaseTrackerApplication.#formToData(this.form);
+    const freshActIndex = freshData.act - 1;
+    if (freshData.leadsPooled[freshActIndex]) {
+      ui.notifications?.warn(game.i18n.localize("PROCEDURAL.CaseTracker.PoolRerunPointsUsed"));
+      return;
+    }
+
+    const available = Object.fromEntries(tropeActors.map(actor => [actor.id, actor.system.rerunPoints]));
+    if (!canAffordPledges(contributions, available)) {
+      ui.notifications?.error(game.i18n.localize("PROCEDURAL.CaseTracker.PoolRerunPointsOverPledged"));
+      return;
     }
 
     if (!isValidPool(contributions, cost)) {
@@ -305,13 +313,15 @@ export default class CaseTrackerApplication extends HandlebarsApplicationMixin(A
     }
 
     try {
-      for (const [actorId, amount] of Object.entries(contributions)) {
-        if (amount <= 0) continue;
-        const actor = game.actors.get(actorId);
-        await actor.update({ "system.rerunPoints": actor.system.rerunPoints - amount });
-      }
-      data.leadsPooled[actIndex] = true;
-      await setCaseTracker(data);
+      const updates = Object.entries(contributions)
+        .filter(([, amount]) => amount > 0)
+        .map(([actorId, amount]) => ({
+          _id: actorId,
+          "system.rerunPoints": game.actors.get(actorId).system.rerunPoints - amount
+        }));
+      if (updates.length) await Actor.updateDocuments(updates);
+      freshData.leadsPooled[freshActIndex] = true;
+      await setCaseTracker(freshData);
     } catch (err) {
       console.error("PROCEDURAL | Failed to pool Rerun Points for a new lead", err);
       ui.notifications?.error("PROCEDURAL! failed to pool Rerun Points. Check the console for details.");
