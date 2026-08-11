@@ -100,3 +100,45 @@ Everything else in this system is Foundry-runtime UI code (sheets, document
 classes) with no equivalent outside a running Foundry client — that's
 verified by hand per the smoke-test checklist in
 `docs/superpowers/plans/2026-08-05-procedural-system-v1.md` (Task 15).
+
+## Local Docker test instance
+
+For manual QA against a real Foundry client without touching your live
+install or waiting for a tagged release, `docker-compose.yml` runs a second,
+disposable Foundry instance with this repo mounted directly as the
+`procedural` system.
+
+1. Copy `.env.example` to `.env` and fill in your Foundry account credentials
+   (or a timed release URL if you have 2FA — see the comments in
+   `docker-compose.yml`) plus an admin key.
+2. `npm run build:packs` (needed before first launch too — `packs/` is
+   gitignored and doesn't exist in a fresh clone).
+3. `docker compose up -d`, then open `http://localhost:30001` (first run only:
+   accept the EULA, then create one persistent World using the PROCEDURAL!
+   system — reuse it for every future test rather than recreating it).
+4. After editing code: rerun `npm run build:packs` if compendium/pack source
+   data changed, then relaunch the World in the browser (Foundry doesn't
+   hot-reload system code, so a relaunch is needed after `.mjs`/template
+   changes too).
+
+`.docker-data/` (the container's Foundry user-data directory, including its
+license and world data) is gitignored and safe to delete any time to reset
+the test instance from scratch.
+
+**Troubleshooting:** if the container exits immediately with "Foundry VTT
+cannot start in this directory which is already locked by another process"
+(can happen after `docker compose up` recreates the container right after a
+config change), remove the stale lock and restart:
+```bash
+rm -rf .docker-data/Config/options.json.lock
+docker compose up -d
+```
+
+## Before tagging a release
+
+1. `npm test`
+2. `npm run build:packs`
+3. Walk the relevant parts of the smoke-test checklist above against the
+   Docker test instance, focused on whatever changed
+4. Bump the version in both `system.json` and `package.json`
+5. Tag and push

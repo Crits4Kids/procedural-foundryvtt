@@ -9,3 +9,5 @@ Rulebook/*.md
 packs/
 .pack-src/
 package-lock.json
+.env
+.docker-data/
