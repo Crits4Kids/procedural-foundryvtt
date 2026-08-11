@@ -8,6 +8,7 @@ export default class CaseTrackerData extends foundry.abstract.DataModel {
       turnOrder: new StringField({ initial: "" }),
       interludes: new ArrayField(new BooleanField({ initial: false }), { initial: [false, false, false] }),
       arrestPhaseTriggered: new BooleanField({ initial: false }),
+      culpritEscaped: new BooleanField({ initial: false }),
       arrestPhaseNotes: new StringField({ initial: "" }),
       epilogueNotes: new StringField({ initial: "" }),
       drama: new StringField({ initial: "" }),

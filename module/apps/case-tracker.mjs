@@ -122,12 +122,13 @@ export default class CaseTrackerApplication extends HandlebarsApplicationMixin(A
       label: `${game.i18n.localize("PROCEDURAL.CaseTracker.Interlude")} ${index + 1}`
     }));
     context.arrestPhaseTriggered = data.arrestPhaseTriggered;
+    context.culpritEscaped = data.culpritEscaped;
     context.arrestPhaseNotes = data.arrestPhaseNotes;
     context.epilogueNotes = data.epilogueNotes;
     context.drama = data.drama;
     context.leadsPooled = data.leadsPooled;
     context.leadPooledThisAct = data.leadsPooled[data.act - 1] ?? false;
-    context.evidenceTally = tallyEvidence(data.evidence);
+    context.evidenceTally = tallyEvidence(data.evidence, { culpritEscaped: data.culpritEscaped });
     context.epilogueTiebreakRoll = data.epilogueTiebreakRoll;
     context.epilogueTiebreakOutcome = data.epilogueTiebreakOutcome;
     context.epilogueTiebreakOutcomeLabel = data.epilogueTiebreakOutcome
@@ -160,6 +161,7 @@ export default class CaseTrackerApplication extends HandlebarsApplicationMixin(A
       turnOrder: expanded.turnOrder ?? "",
       interludes: Object.values(expanded.interludes ?? {}),
       arrestPhaseTriggered: expanded.arrestPhaseTriggered ?? false,
+      culpritEscaped: !!expanded.culpritEscaped,
       arrestPhaseNotes: expanded.arrestPhaseNotes ?? "",
       epilogueNotes: expanded.epilogueNotes ?? "",
       drama: expanded.drama ?? "",
@@ -336,7 +338,7 @@ export default class CaseTrackerApplication extends HandlebarsApplicationMixin(A
 
   static async #onRollEpilogueTiebreak() {
     const data = CaseTrackerApplication.#formToData(this.form);
-    const { tied } = tallyEvidence(data.evidence);
+    const { tied } = tallyEvidence(data.evidence, { culpritEscaped: data.culpritEscaped });
     if (!tied) return;
 
     const roll = rollD6();
