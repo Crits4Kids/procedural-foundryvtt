@@ -13,8 +13,24 @@ function roll1d6(rng) {
 /**
  * @param {Array<object>} tropes - 11 entries ordered for 2d6 sums 2-12 (same order as data/tropes.json)
  * @param {() => number} rng
+ * @param {string[]} [excludeNames] - Trope names to reroll away from (e.g. Tropes other
+ *   players already hold). Uses rejection sampling, not array filtering, so the weighted
+ *   2d6 table stays intact. Falls back to an unrestricted roll if every Trope is excluded,
+ *   or after 30 rerolls, rather than looping forever or blocking character creation.
  */
-export function rollTrope(tropes, rng) {
+export function rollTrope(tropes, rng, excludeNames = []) {
+  const excluded = new Set(excludeNames);
+  if (excluded.size >= tropes.length) {
+    const sum = roll1d6(rng) + roll1d6(rng);
+    return tropes[sum - 2];
+  }
+
+  for (let attempt = 0; attempt < 30; attempt++) {
+    const sum = roll1d6(rng) + roll1d6(rng);
+    const candidate = tropes[sum - 2];
+    if (!excluded.has(candidate.name)) return candidate;
+  }
+
   const sum = roll1d6(rng) + roll1d6(rng);
   return tropes[sum - 2];
 }
@@ -192,13 +208,21 @@ export function pickRandom(list, rng) {
  * @param {{table1: string[], table2: string[], table3: string[]}} data.agencyNames - data/agency-names.json shape
  * @param {Array<object>} data.deskItems - data/desk-items.json shape
  * @param {() => number} [rng]
+ * @param {{tropeNames?: string[], secondTalentNames?: string[]}} [exclude] - names already
+ *   held by other characters, to avoid duplicating. Falls back to the unfiltered list for
+ *   second Talent if excluding would leave no options.
  */
-export function generateTrope(data, rng = Math.random) {
+export function generateTrope(data, rng = Math.random, exclude = {}) {
   const { tropes, secondTalents, qualities, quirks, bstories, hq, agencyNames, deskItems } = data;
+  const { tropeNames = [], secondTalentNames = [] } = exclude;
 
-  const rolledTrope = rollTrope(tropes, rng);
+  const rolledTrope = rollTrope(tropes, rng, tropeNames);
   const stats = applyGifted(rolledTrope, { ...rolledTrope.system.statBlock }, rng);
   const skills = divestSkills(stats, rolledTrope.system.statNotes, rng);
+
+  const excludedSecondTalents = new Set(secondTalentNames);
+  const availableSecondTalents = secondTalents.filter(t => !excludedSecondTalents.has(t.name));
+  const secondTalentPool = availableSecondTalents.length ? availableSecondTalents : secondTalents;
 
   return {
     trope: {
@@ -212,7 +236,7 @@ export function generateTrope(data, rng = Math.random) {
     bStory: rollBStoryOrHq(bstories, rng),
     hq: rollBStoryOrHq(hq, rng),
     agencyName: rollAgencyName(agencyNames, rng),
-    secondTalent: pickRandom(secondTalents, rng),
+    secondTalent: pickRandom(secondTalentPool, rng),
     deskItem: pickRandom(deskItems, rng),
     rerunPoints: 1
   };
