@@ -3,6 +3,7 @@ import { findTalentsToReset } from "../helpers/talent-reset.mjs";
 import { findActorsToHeal } from "../helpers/hurt-reset.mjs";
 import { loadGeneratorData } from "../helpers/generator-data.mjs";
 import { isValidPool } from "../helpers/lead-pool.mjs";
+import { tallyEvidence } from "../helpers/evidence-tally.mjs";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ApplicationV2 } = foundry.applications.api;
@@ -98,7 +99,8 @@ export default class CaseTrackerApplication extends HandlebarsApplicationMixin(A
       decrementInterrogation: CaseTrackerApplication.#onDecrementInterrogation,
       deleteInterrogation: CaseTrackerApplication.#onDeleteInterrogation,
       rollForDrama: CaseTrackerApplication.#onRollForDrama,
-      poolRerunPoints: CaseTrackerApplication.#onPoolRerunPoints
+      poolRerunPoints: CaseTrackerApplication.#onPoolRerunPoints,
+      rollEpilogueTiebreak: CaseTrackerApplication.#onRollEpilogueTiebreak
     }
   };
 
@@ -124,6 +126,12 @@ export default class CaseTrackerApplication extends HandlebarsApplicationMixin(A
     context.epilogueNotes = data.epilogueNotes;
     context.drama = data.drama;
     context.leadsPooled = data.leadsPooled;
+    context.evidenceTally = tallyEvidence(data.evidence);
+    context.epilogueTiebreakRoll = data.epilogueTiebreakRoll;
+    context.epilogueTiebreakOutcome = data.epilogueTiebreakOutcome;
+    context.epilogueTiebreakOutcomeLabel = data.epilogueTiebreakOutcome
+      ? game.i18n.localize(`PROCEDURAL.CaseTracker.EpilogueTiebreak.${data.epilogueTiebreakOutcome}`)
+      : "";
 
     context.evidence = data.evidence.map(entry => ({
       id: entry.id,
@@ -155,6 +163,8 @@ export default class CaseTrackerApplication extends HandlebarsApplicationMixin(A
       epilogueNotes: expanded.epilogueNotes ?? "",
       drama: expanded.drama ?? "",
       leadsPooled: Object.values(expanded.leadsPooled ?? {}),
+      epilogueTiebreakRoll: Number(expanded.epilogueTiebreakRoll) || 0,
+      epilogueTiebreakOutcome: expanded.epilogueTiebreakOutcome ?? "",
       evidence: Object.values(expanded.evidence ?? {}),
       interrogations: Object.values(expanded.interrogations ?? {})
     };
@@ -309,6 +319,31 @@ export default class CaseTrackerApplication extends HandlebarsApplicationMixin(A
 
     await ChatMessage.create({
       content: `<p>${game.i18n.format("PROCEDURAL.CaseTracker.PoolRerunPointsAnnounce", { cost })}</p>`
+    });
+    this.render();
+  }
+
+  static async #onRollEpilogueTiebreak() {
+    const data = CaseTrackerApplication.#formToData(this.form);
+    const { tied } = tallyEvidence(data.evidence);
+    if (!tied) return;
+
+    const roll = rollD6();
+    const outcome = roll % 2 === 1 ? "against" : "for";
+
+    data.epilogueTiebreakRoll = roll;
+    data.epilogueTiebreakOutcome = outcome;
+    try {
+      await setCaseTracker(data);
+    } catch (err) {
+      console.error("PROCEDURAL | Failed to save the Epilogue tie-break roll", err);
+      ui.notifications?.error("PROCEDURAL! failed to save the tie-break roll. Check the console for details.");
+      return;
+    }
+
+    const outcomeLabel = game.i18n.localize(`PROCEDURAL.CaseTracker.EpilogueTiebreak.${outcome}`);
+    await ChatMessage.create({
+      content: `<p><strong>${game.i18n.localize("PROCEDURAL.CaseTracker.EpilogueTiebreak.Title")}</strong> (${roll}): ${outcomeLabel}</p>`
     });
     this.render();
   }

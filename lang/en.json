@@ -140,6 +140,13 @@
         "good": "Good",
         "bad": "Bad",
         "unknown": "Unknown"
+      },
+      "EvidenceTally": "Good / Bad Evidence",
+      "EpilogueTiebreak": {
+        "Title": "Epilogue Tie-break Roll",
+        "Roll": "Roll Tie-break",
+        "against": "Against the players",
+        "for": "For the players"
       }
     },
     "SeasonTracker": {
