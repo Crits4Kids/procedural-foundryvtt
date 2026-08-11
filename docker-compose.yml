@@ -1,0 +1,39 @@
+services:
+  foundry-test:
+    image: ghcr.io/felddy/foundryvtt:${FOUNDRY_VERSION:-14}
+    container_name: procedural-foundry-test
+    # Foundry ties its license check to the container hostname. Without a
+    # stable one, Docker assigns a random ID each restart and licensing fails.
+    hostname: procedural-foundry-test
+    restart: "no"
+    ports:
+      - "${FOUNDRY_TEST_PORT:-30001}:30000"
+    volumes:
+      # Plain host bind mount (not a Docker-managed named volume) — avoids
+      # Docker auto-creating root-owned directories inside the volume when
+      # Foundry initializes Data/systems on first boot. This folder is
+      # gitignored.
+      - ./.docker-data:/data
+      # The repo itself, mounted directly as the "procedural" system. A host
+      # symlink doesn't work here since Docker Desktop bind mounts don't
+      # expose paths outside what's explicitly mounted.
+      - .:/data/Data/systems/procedural:ro
+      # LevelDB (the compendium pack format) writes a LOCK file and temp
+      # files even when just opening a pack for reading, so packs/ can't be
+      # part of the read-only mount above — it needs its own read-write one.
+      # Run `npm run build:packs` on the host first; this directory is
+      # gitignored and doesn't exist in a fresh clone.
+      - ./packs:/data/Data/systems/procedural/packs
+    environment:
+      # Auth method 1: Foundry account credentials (doesn't work if 2FA is
+      # enabled on your Foundry account). Leave these two set and comment out
+      # FOUNDRY_RELEASE_URL below.
+      - FOUNDRY_USERNAME=${FOUNDRY_USERNAME:-}
+      - FOUNDRY_PASSWORD=${FOUNDRY_PASSWORD:-}
+      # Auth method 2: if you have 2FA on, get a timed download link instead
+      # from https://foundryvtt.com/community/<your-username>/licenses (pick
+      # the Node.js build) and set it here in your .env — comment out
+      # USERNAME/PASSWORD above.
+      # - FOUNDRY_RELEASE_URL=${FOUNDRY_RELEASE_URL}
+      - FOUNDRY_ADMIN_KEY=${FOUNDRY_ADMIN_KEY:-}
+      - CONTAINER_PRESERVE_CONFIG=false
