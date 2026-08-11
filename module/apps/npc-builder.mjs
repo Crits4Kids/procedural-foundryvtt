@@ -4,6 +4,7 @@ const { ApplicationV2 } = foundry.applications.api;
 import { loadGeneratorData } from "../helpers/generator-data.mjs";
 import { rollTrope, parseNpcName } from "../helpers/character-generator.mjs";
 import { rollFullName, rollNpcAge, rollPersonalityTrait, getPersonalityTraitOptions } from "../helpers/npc-name-generator.mjs";
+import { heldNames } from "../helpers/held-names.mjs";
 
 const STEP_IDS = ["personality", "trope", "review"];
 
@@ -49,6 +50,15 @@ export default class NpcBuilderApplication extends HandlebarsApplicationMixin(Ap
     return STEP_IDS[this.#stepIndex];
   }
 
+  #heldTropeNames() {
+    const actors = game.actors.map(a => ({
+      id: a.id,
+      type: a.type,
+      items: a.items.map(i => ({ type: i.type, name: i.name }))
+    }));
+    return heldNames(actors).tropeNames;
+  }
+
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
     this.#data ??= await loadGeneratorData();
@@ -76,7 +86,10 @@ export default class NpcBuilderApplication extends HandlebarsApplicationMixin(Ap
     }
 
     if (stepId === "trope") {
-      context.tropeOptions = this.#data.tropes.map(t => ({
+      const excludedTropes = new Set(this.#heldTropeNames());
+      const availableTropes = this.#data.tropes.filter(t => !excludedTropes.has(t.name));
+      const tropePool = availableTropes.length ? availableTropes : this.#data.tropes;
+      context.tropeOptions = tropePool.map(t => ({
         name: t.name,
         selected: t.name === (this.#draft.trope?.name ?? "")
       }));
@@ -174,7 +187,7 @@ export default class NpcBuilderApplication extends HandlebarsApplicationMixin(Ap
   }
 
   static #onRollTrope() {
-    this.#draft.trope = rollTrope(this.#data.tropes, Math.random);
+    this.#draft.trope = rollTrope(this.#data.tropes, Math.random, this.#heldTropeNames());
     this.render();
   }
 
