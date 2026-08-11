@@ -279,6 +279,15 @@ export default class CaseTrackerApplication extends HandlebarsApplicationMixin(A
     });
     if (!contributions) return;
 
+    for (const [actorId, amount] of Object.entries(contributions)) {
+      const actor = game.actors.get(actorId);
+      const available = actor?.system?.rerunPoints ?? 0;
+      if (!actor || amount < 0 || amount > available) {
+        ui.notifications?.error(game.i18n.localize("PROCEDURAL.CaseTracker.PoolRerunPointsOverPledged"));
+        return;
+      }
+    }
+
     if (!isValidPool(contributions, cost)) {
       ui.notifications?.error(game.i18n.format("PROCEDURAL.CaseTracker.PoolRerunPointsInvalid", { cost }));
       return;
