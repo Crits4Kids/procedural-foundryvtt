@@ -5,7 +5,7 @@ export default class SeasonTrackerData extends foundry.abstract.DataModel {
     return {
       episodes: new ArrayField(
         new SchemaField({
-          outcome: new StringField({ initial: "", choices: ["", "successful", "neutral", "unsuccessful"] })
+          outcome: new StringField({ initial: "", blank: true, choices: ["", "successful", "neutral", "unsuccessful"] })
         }),
         { initial: [{ outcome: "" }, { outcome: "" }, { outcome: "" }, { outcome: "" }, { outcome: "" }, { outcome: "" }] }
       ),
