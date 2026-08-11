@@ -11,3 +11,4 @@ packs/
 package-lock.json
 .env
 .docker-data/
+graphify-out/
