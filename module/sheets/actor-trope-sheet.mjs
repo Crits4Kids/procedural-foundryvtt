@@ -1,6 +1,7 @@
 import { rollD6 } from "../helpers/dice-rules.mjs";
 import { validateLevelUpChoice } from "../helpers/level-up.mjs";
 import { loadGeneratorData } from "../helpers/generator-data.mjs";
+import { heldNames } from "../helpers/held-names.mjs";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ActorSheetV2 } = foundry.applications.sheets;
@@ -163,11 +164,12 @@ export default class ProceduralTropeActorSheet extends HandlebarsApplicationMixi
 
   static #getAvailableTalents(actor, generatorData) {
     const currentTalent = actor.items.find(i => i.type === "talent");
-    const heldElsewhere = new Set(
-      game.actors
-        .filter(a => a.type === "trope" && a.id !== actor.id)
-        .flatMap(a => a.items.filter(i => i.type === "talent").map(i => i.name))
-    );
+    const actors = game.actors.map(a => ({
+      id: a.id,
+      type: a.type,
+      items: a.items.map(i => ({ type: i.type, name: i.name }))
+    }));
+    const heldElsewhere = new Set(heldNames(actors, actor.id).secondTalentNames);
     const availableTalents = generatorData.secondTalents.filter(t => !heldElsewhere.has(t.name));
     return { currentTalent, availableTalents };
   }
