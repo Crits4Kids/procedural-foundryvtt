@@ -2,6 +2,8 @@ import { resolveDice, rollD6 } from "../helpers/dice-rules.mjs";
 import { findTalentsToReset } from "../helpers/talent-reset.mjs";
 import { findActorsToHeal } from "../helpers/hurt-reset.mjs";
 import { loadGeneratorData } from "../helpers/generator-data.mjs";
+import { isValidPool, canAffordPledges } from "../helpers/lead-pool.mjs";
+import { tallyEvidence } from "../helpers/evidence-tally.mjs";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ApplicationV2 } = foundry.applications.api;
@@ -96,7 +98,9 @@ export default class CaseTrackerApplication extends HandlebarsApplicationMixin(A
       startInterrogation: CaseTrackerApplication.#onStartInterrogation,
       decrementInterrogation: CaseTrackerApplication.#onDecrementInterrogation,
       deleteInterrogation: CaseTrackerApplication.#onDeleteInterrogation,
-      rollForDrama: CaseTrackerApplication.#onRollForDrama
+      rollForDrama: CaseTrackerApplication.#onRollForDrama,
+      poolRerunPoints: CaseTrackerApplication.#onPoolRerunPoints,
+      rollEpilogueTiebreak: CaseTrackerApplication.#onRollEpilogueTiebreak
     }
   };
 
@@ -121,6 +125,14 @@ export default class CaseTrackerApplication extends HandlebarsApplicationMixin(A
     context.arrestPhaseNotes = data.arrestPhaseNotes;
     context.epilogueNotes = data.epilogueNotes;
     context.drama = data.drama;
+    context.leadsPooled = data.leadsPooled;
+    context.leadPooledThisAct = data.leadsPooled[data.act - 1] ?? false;
+    context.evidenceTally = tallyEvidence(data.evidence);
+    context.epilogueTiebreakRoll = data.epilogueTiebreakRoll;
+    context.epilogueTiebreakOutcome = data.epilogueTiebreakOutcome;
+    context.epilogueTiebreakOutcomeLabel = data.epilogueTiebreakOutcome
+      ? game.i18n.localize(`PROCEDURAL.CaseTracker.EpilogueTiebreak.${data.epilogueTiebreakOutcome}`)
+      : "";
 
     context.evidence = data.evidence.map(entry => ({
       id: entry.id,
@@ -151,6 +163,9 @@ export default class CaseTrackerApplication extends HandlebarsApplicationMixin(A
       arrestPhaseNotes: expanded.arrestPhaseNotes ?? "",
       epilogueNotes: expanded.epilogueNotes ?? "",
       drama: expanded.drama ?? "",
+      leadsPooled: Object.values(expanded.leadsPooled ?? {}),
+      epilogueTiebreakRoll: Number(expanded.epilogueTiebreakRoll) || 0,
+      epilogueTiebreakOutcome: expanded.epilogueTiebreakOutcome ?? "",
       evidence: Object.values(expanded.evidence ?? {}),
       interrogations: Object.values(expanded.interrogations ?? {})
     };
@@ -225,6 +240,121 @@ export default class CaseTrackerApplication extends HandlebarsApplicationMixin(A
 
     await ChatMessage.create({
       content: `<p><strong>${game.i18n.localize("PROCEDURAL.CaseTracker.RollForDrama")}</strong> (${tableRoll}, ${entryRoll}): ${text}</p>`
+    });
+    this.render();
+  }
+
+  static async #onPoolRerunPoints() {
+    const data = CaseTrackerApplication.#formToData(this.form);
+    const actIndex = data.act - 1;
+    if (data.leadsPooled[actIndex]) {
+      ui.notifications?.warn(game.i18n.localize("PROCEDURAL.CaseTracker.PoolRerunPointsUsed"));
+      return;
+    }
+
+    const tropeActors = game.actors.filter(actor => actor.type === "trope");
+    const cost = tropeActors.length;
+    if (cost === 0) {
+      ui.notifications?.warn(game.i18n.localize("PROCEDURAL.CaseTracker.PoolRerunPointsNoPlayers"));
+      return;
+    }
+
+    const content = `
+      <p>${game.i18n.format("PROCEDURAL.CaseTracker.PoolRerunPointsPrompt", { cost })}</p>
+      <ul class="procedural-case-tracker-pool-list">
+        ${tropeActors.map(actor => `
+          <li>
+            <label>${actor.name} (${actor.system.rerunPoints})
+              <input type="number" name="contribution-${actor.id}" value="0" min="0" max="${actor.system.rerunPoints}" step="1">
+            </label>
+          </li>
+        `).join("")}
+      </ul>
+    `;
+
+    const contributions = await foundry.applications.api.DialogV2.wait({
+      window: { title: game.i18n.localize("PROCEDURAL.CaseTracker.PoolRerunPoints") },
+      content,
+      buttons: [
+        {
+          action: "confirm",
+          label: game.i18n.localize("PROCEDURAL.CaseTracker.PoolRerunPointsConfirm"),
+          default: true,
+          callback: (event, button) => Object.fromEntries(
+            tropeActors.map(actor => [actor.id, Number(button.form.elements[`contribution-${actor.id}`].value) || 0])
+          )
+        },
+        { action: "cancel", label: game.i18n.localize("PROCEDURAL.Roll.Cancel"), callback: () => null }
+      ],
+      rejectClose: false
+    });
+    if (!contributions) return;
+
+    // Re-snapshot the form: the pledge dialog is non-modal, so the GM may have
+    // edited (and auto-submitted) other Case Tracker fields while it was open.
+    // Everything from here on must use this fresh snapshot, not the stale
+    // pre-dialog `data`/`actIndex`, or we'd silently revert those edits.
+    const freshData = CaseTrackerApplication.#formToData(this.form);
+    const freshActIndex = freshData.act - 1;
+    if (freshData.leadsPooled[freshActIndex]) {
+      ui.notifications?.warn(game.i18n.localize("PROCEDURAL.CaseTracker.PoolRerunPointsUsed"));
+      return;
+    }
+
+    const available = Object.fromEntries(tropeActors.map(actor => [actor.id, actor.system.rerunPoints]));
+    if (!canAffordPledges(contributions, available)) {
+      ui.notifications?.error(game.i18n.localize("PROCEDURAL.CaseTracker.PoolRerunPointsOverPledged"));
+      return;
+    }
+
+    if (!isValidPool(contributions, cost)) {
+      ui.notifications?.error(game.i18n.format("PROCEDURAL.CaseTracker.PoolRerunPointsInvalid", { cost }));
+      return;
+    }
+
+    try {
+      const updates = Object.entries(contributions)
+        .filter(([, amount]) => amount > 0)
+        .map(([actorId, amount]) => ({
+          _id: actorId,
+          "system.rerunPoints": game.actors.get(actorId).system.rerunPoints - amount
+        }));
+      if (updates.length) await Actor.updateDocuments(updates);
+      freshData.leadsPooled[freshActIndex] = true;
+      await setCaseTracker(freshData);
+    } catch (err) {
+      console.error("PROCEDURAL | Failed to pool Rerun Points for a new lead", err);
+      ui.notifications?.error("PROCEDURAL! failed to pool Rerun Points. Check the console for details.");
+      return;
+    }
+
+    await ChatMessage.create({
+      content: `<p>${game.i18n.format("PROCEDURAL.CaseTracker.PoolRerunPointsAnnounce", { cost })}</p>`
+    });
+    this.render();
+  }
+
+  static async #onRollEpilogueTiebreak() {
+    const data = CaseTrackerApplication.#formToData(this.form);
+    const { tied } = tallyEvidence(data.evidence);
+    if (!tied) return;
+
+    const roll = rollD6();
+    const outcome = roll % 2 === 1 ? "against" : "for";
+
+    data.epilogueTiebreakRoll = roll;
+    data.epilogueTiebreakOutcome = outcome;
+    try {
+      await setCaseTracker(data);
+    } catch (err) {
+      console.error("PROCEDURAL | Failed to save the Epilogue tie-break roll", err);
+      ui.notifications?.error("PROCEDURAL! failed to save the tie-break roll. Check the console for details.");
+      return;
+    }
+
+    const outcomeLabel = game.i18n.localize(`PROCEDURAL.CaseTracker.EpilogueTiebreak.${outcome}`);
+    await ChatMessage.create({
+      content: `<p><strong>${game.i18n.localize("PROCEDURAL.CaseTracker.EpilogueTiebreak.Title")}</strong> (${roll}): ${outcomeLabel}</p>`
     });
     this.render();
   }

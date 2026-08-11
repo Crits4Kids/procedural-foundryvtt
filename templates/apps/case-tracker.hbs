@@ -23,6 +23,18 @@
     {{/each}}
   </fieldset>
 
+  <section class="procedural-case-tracker-lead-pool">
+    <h2>{{localize "PROCEDURAL.CaseTracker.PoolRerunPoints"}}</h2>
+    {{#each leadsPooled as |used index|}}
+      <input type="checkbox" name="leadsPooled.{{index}}" {{#if used}}checked{{/if}} hidden>
+    {{/each}}
+    {{#if leadPooledThisAct}}
+      <p>{{localize "PROCEDURAL.CaseTracker.PoolRerunPointsUsed"}}</p>
+    {{else}}
+      <button type="button" data-action="poolRerunPoints">{{localize "PROCEDURAL.CaseTracker.PoolRerunPoints"}}</button>
+    {{/if}}
+  </section>
+
   <fieldset class="procedural-case-tracker-arrest-phase">
     <legend>
       <label>
@@ -56,6 +68,20 @@
         </li>
       {{/each}}
     </ul>
+
+    <p class="procedural-case-tracker-evidence-tally">
+      {{localize "PROCEDURAL.CaseTracker.EvidenceTally"}}: {{evidenceTally.good}} / {{evidenceTally.bad}}
+    </p>
+    <input type="hidden" name="epilogueTiebreakRoll" value="{{epilogueTiebreakRoll}}">
+    <input type="hidden" name="epilogueTiebreakOutcome" value="{{epilogueTiebreakOutcome}}">
+    {{#if evidenceTally.tied}}
+      <button type="button" data-action="rollEpilogueTiebreak">{{localize "PROCEDURAL.CaseTracker.EpilogueTiebreak.Roll"}}</button>
+    {{/if}}
+    {{#if epilogueTiebreakOutcome}}
+      <p class="procedural-case-tracker-tiebreak-result">
+        {{localize "PROCEDURAL.CaseTracker.EpilogueTiebreak.Title"}} ({{epilogueTiebreakRoll}}): {{epilogueTiebreakOutcomeLabel}}
+      </p>
+    {{/if}}
 
     <button type="button" data-action="addEvidence">{{localize "PROCEDURAL.CaseTracker.AddEvidence"}}</button>
   </section>

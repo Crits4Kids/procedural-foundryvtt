@@ -128,10 +128,25 @@
       "InterrogationNotes": "Notes",
       "Drama": "Team Drama",
       "RollForDrama": "Roll for Drama",
+      "PoolRerunPoints": "Pool Rerun Points for a Lead",
+      "PoolRerunPointsPrompt": "Pool {cost} Rerun Points total (in any combination) to obtain a new clue from the Showrunner.",
+      "PoolRerunPointsConfirm": "Pool Points",
+      "PoolRerunPointsInvalid": "Pledged Rerun Points must total exactly {cost}.",
+      "PoolRerunPointsOverPledged": "Each character can only pledge Rerun Points they actually have. Check the amounts and try again.",
+      "PoolRerunPointsAnnounce": "The players pool {cost} Rerun Points to obtain a new clue from the Showrunner!",
+      "PoolRerunPointsUsed": "Already pooled for a lead this act.",
+      "PoolRerunPointsNoPlayers": "There are no player characters to pool Rerun Points.",
       "Status": {
         "good": "Good",
         "bad": "Bad",
         "unknown": "Unknown"
+      },
+      "EvidenceTally": "Good / Bad Evidence",
+      "EpilogueTiebreak": {
+        "Title": "Epilogue Tie-break Roll",
+        "Roll": "Roll Tie-break",
+        "against": "Against the players",
+        "for": "For the players"
       }
     },
     "SeasonTracker": {
