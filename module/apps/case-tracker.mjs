@@ -126,6 +126,7 @@ export default class CaseTrackerApplication extends HandlebarsApplicationMixin(A
     context.epilogueNotes = data.epilogueNotes;
     context.drama = data.drama;
     context.leadsPooled = data.leadsPooled;
+    context.leadPooledThisAct = data.leadsPooled[data.act - 1] ?? false;
     context.evidenceTally = tallyEvidence(data.evidence);
     context.epilogueTiebreakRoll = data.epilogueTiebreakRoll;
     context.epilogueTiebreakOutcome = data.epilogueTiebreakOutcome;
