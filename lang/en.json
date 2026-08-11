@@ -128,6 +128,13 @@
       "InterrogationNotes": "Notes",
       "Drama": "Team Drama",
       "RollForDrama": "Roll for Drama",
+      "PoolRerunPoints": "Pool Rerun Points for a Lead",
+      "PoolRerunPointsPrompt": "Pool {cost} Rerun Points total (in any combination) to obtain a new clue from the Showrunner.",
+      "PoolRerunPointsConfirm": "Pool Points",
+      "PoolRerunPointsInvalid": "Pledged Rerun Points must total exactly {cost}.",
+      "PoolRerunPointsAnnounce": "The players pool {cost} Rerun Points to obtain a new clue from the Showrunner!",
+      "PoolRerunPointsUsed": "Already pooled for a lead this act.",
+      "PoolRerunPointsNoPlayers": "There are no player characters to pool Rerun Points.",
       "Status": {
         "good": "Good",
         "bad": "Bad",
