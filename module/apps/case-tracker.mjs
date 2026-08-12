@@ -151,6 +151,12 @@ export default class CaseTrackerApplication extends HandlebarsApplicationMixin(A
     return context;
   }
 
+  _onRender(context, options) {
+    super._onRender(context, options);
+    const culpritEscapedInput = this.element.querySelector('[name="culpritEscaped"]');
+    culpritEscapedInput?.addEventListener("change", CaseTrackerApplication.#onCulpritEscapedChange.bind(this));
+  }
+
   static #formToData(form) {
     const expanded = foundry.utils.expandObject(
       new foundry.applications.ux.FormDataExtended(form).object
@@ -175,6 +181,18 @@ export default class CaseTrackerApplication extends HandlebarsApplicationMixin(A
 
   static async #onSubmit(event, form) {
     await setCaseTracker(CaseTrackerApplication.#formToData(form));
+  }
+
+  static async #onCulpritEscapedChange() {
+    const data = CaseTrackerApplication.#formToData(this.form);
+    try {
+      await setCaseTracker(data);
+    } catch (err) {
+      console.error("PROCEDURAL | Failed to save the culprit-escaped flag", err);
+      ui.notifications?.error("PROCEDURAL! failed to save. Check the console for details.");
+      return;
+    }
+    this.render();
   }
 
   static async #onAddEvidence() {
