@@ -30,3 +30,22 @@ test("tallyEvidence is not tied for a 0-0 tally", () => {
   const evidence = [{ status: "unknown" }];
   assert.deepEqual(tallyEvidence(evidence), { good: 0, bad: 0, tied: false });
 });
+
+test("tallyEvidence adds 2 bad when culpritEscaped is true, even with no evidence", () => {
+  assert.deepEqual(tallyEvidence([], { culpritEscaped: true }), { good: 0, bad: 2, tied: false });
+});
+
+test("tallyEvidence's culpritEscaped bonus can create a tie", () => {
+  const evidence = [{ status: "good" }, { status: "good" }];
+  assert.deepEqual(tallyEvidence(evidence, { culpritEscaped: true }), { good: 2, bad: 2, tied: true });
+});
+
+test("tallyEvidence's culpritEscaped bonus can break an existing tie", () => {
+  const evidence = [{ status: "good" }, { status: "bad" }];
+  assert.deepEqual(tallyEvidence(evidence, { culpritEscaped: true }), { good: 1, bad: 3, tied: false });
+});
+
+test("tallyEvidence defaults culpritEscaped to false, matching pre-existing call sites", () => {
+  const evidence = [{ status: "good" }, { status: "bad" }];
+  assert.deepEqual(tallyEvidence(evidence), { good: 1, bad: 1, tied: true });
+});

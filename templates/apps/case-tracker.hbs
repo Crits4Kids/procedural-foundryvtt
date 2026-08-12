@@ -42,6 +42,10 @@
         {{localize "PROCEDURAL.CaseTracker.ArrestPhaseTriggered"}}
       </label>
     </legend>
+    <label>
+      <input type="checkbox" name="culpritEscaped" {{#if culpritEscaped}}checked{{/if}}>
+      {{localize "PROCEDURAL.CaseTracker.CulpritEscaped"}}
+    </label>
     <textarea name="arrestPhaseNotes" class="procedural-builder-freetext" placeholder="{{localize 'PROCEDURAL.CaseTracker.ArrestPhaseNotes'}}">{{arrestPhaseNotes}}</textarea>
   </fieldset>
 

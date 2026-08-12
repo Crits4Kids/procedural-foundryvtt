@@ -122,12 +122,13 @@ export default class CaseTrackerApplication extends HandlebarsApplicationMixin(A
       label: `${game.i18n.localize("PROCEDURAL.CaseTracker.Interlude")} ${index + 1}`
     }));
     context.arrestPhaseTriggered = data.arrestPhaseTriggered;
+    context.culpritEscaped = data.culpritEscaped;
     context.arrestPhaseNotes = data.arrestPhaseNotes;
     context.epilogueNotes = data.epilogueNotes;
     context.drama = data.drama;
     context.leadsPooled = data.leadsPooled;
     context.leadPooledThisAct = data.leadsPooled[data.act - 1] ?? false;
-    context.evidenceTally = tallyEvidence(data.evidence);
+    context.evidenceTally = tallyEvidence(data.evidence, { culpritEscaped: data.culpritEscaped });
     context.epilogueTiebreakRoll = data.epilogueTiebreakRoll;
     context.epilogueTiebreakOutcome = data.epilogueTiebreakOutcome;
     context.epilogueTiebreakOutcomeLabel = data.epilogueTiebreakOutcome
@@ -150,6 +151,12 @@ export default class CaseTrackerApplication extends HandlebarsApplicationMixin(A
     return context;
   }
 
+  _onRender(context, options) {
+    super._onRender(context, options);
+    const culpritEscapedInput = this.element.querySelector('[name="culpritEscaped"]');
+    culpritEscapedInput?.addEventListener("change", CaseTrackerApplication.#onCulpritEscapedChange.bind(this));
+  }
+
   static #formToData(form) {
     const expanded = foundry.utils.expandObject(
       new foundry.applications.ux.FormDataExtended(form).object
@@ -160,6 +167,7 @@ export default class CaseTrackerApplication extends HandlebarsApplicationMixin(A
       turnOrder: expanded.turnOrder ?? "",
       interludes: Object.values(expanded.interludes ?? {}),
       arrestPhaseTriggered: expanded.arrestPhaseTriggered ?? false,
+      culpritEscaped: !!expanded.culpritEscaped,
       arrestPhaseNotes: expanded.arrestPhaseNotes ?? "",
       epilogueNotes: expanded.epilogueNotes ?? "",
       drama: expanded.drama ?? "",
@@ -173,6 +181,18 @@ export default class CaseTrackerApplication extends HandlebarsApplicationMixin(A
 
   static async #onSubmit(event, form) {
     await setCaseTracker(CaseTrackerApplication.#formToData(form));
+  }
+
+  static async #onCulpritEscapedChange() {
+    const data = CaseTrackerApplication.#formToData(this.form);
+    try {
+      await setCaseTracker(data);
+    } catch (err) {
+      console.error("PROCEDURAL | Failed to save the culprit-escaped flag", err);
+      ui.notifications?.error("PROCEDURAL! failed to save. Check the console for details.");
+      return;
+    }
+    this.render();
   }
 
   static async #onAddEvidence() {
@@ -336,7 +356,7 @@ export default class CaseTrackerApplication extends HandlebarsApplicationMixin(A
 
   static async #onRollEpilogueTiebreak() {
     const data = CaseTrackerApplication.#formToData(this.form);
-    const { tied } = tallyEvidence(data.evidence);
+    const { tied } = tallyEvidence(data.evidence, { culpritEscaped: data.culpritEscaped });
     if (!tied) return;
 
     const roll = rollD6();

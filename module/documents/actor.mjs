@@ -2,6 +2,7 @@ import { computeRoll } from "../helpers/dice-rules.mjs";
 import { showDiceSoNice } from "../helpers/dice-so-nice.mjs";
 import { generateTrope } from "../helpers/character-generator.mjs";
 import { loadGeneratorData } from "../helpers/generator-data.mjs";
+import { heldNames } from "../helpers/held-names.mjs";
 
 const PHYSICAL_SKILLS = new Set(["violence", "reflexes", "coordination"]);
 
@@ -66,7 +67,13 @@ export default class ProceduralActor extends Actor {
 
   async generateRandomTrope() {
     const data = await loadGeneratorData();
-    const result = generateTrope(data);
+    const actors = game.actors.map(a => ({
+      id: a.id,
+      type: a.type,
+      items: a.items.map(i => ({ type: i.type, name: i.name }))
+    }));
+    const { tropeNames, secondTalentNames } = heldNames(actors, this.id);
+    const result = generateTrope(data, Math.random, { tropeNames, secondTalentNames });
 
     const currentDeskItem = this.items.get(this.system.deskItemId);
     const staleItems = this.items.filter(i => i.type === "trope" || i.type === "talent" || i.id === currentDeskItem?.id);

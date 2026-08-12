@@ -60,6 +60,27 @@ test("rollTrope picks the Trope at a middle sum", () => {
   assert.equal(rollTrope(FIXTURE_TROPES, rng).name, "Lab Tech");
 });
 
+test("rollTrope rerolls away from a single excluded name", () => {
+  const rng = queue([1, 1, 3, 4]); // sum 2 (Rookie, excluded) -> reroll -> sum 7 (Lab Tech)
+  assert.equal(rollTrope(FIXTURE_TROPES, rng, ["Rookie"]).name, "Lab Tech");
+});
+
+test("rollTrope rerolls past multiple consecutive excluded results", () => {
+  const rng = queue([1, 1, 6, 6, 3, 4]); // Rookie, then Shades, both excluded -> Lab Tech
+  assert.equal(rollTrope(FIXTURE_TROPES, rng, ["Rookie", "Shades"]).name, "Lab Tech");
+});
+
+test("rollTrope falls back to an unrestricted roll when every Trope is excluded", () => {
+  const rng = queue([1, 1]);
+  const allNames = FIXTURE_TROPES.map(t => t.name);
+  assert.equal(rollTrope(FIXTURE_TROPES, rng, allNames).name, "Rookie");
+});
+
+test("rollTrope gives up after 30 rerolls and returns the colliding result rather than looping forever", () => {
+  const rng = queue([1, 1]); // always sum 2 -> Rookie, which is excluded every time
+  assert.equal(rollTrope(FIXTURE_TROPES, rng, ["Rookie"]).name, "Rookie");
+});
+
 test("applyGifted adds +3 to the randomly picked stat when the Talent is Gifted", () => {
   const rng = fixedRng([0.99]); // floor(0.99*3) = 2 -> "social"
   const result = applyGifted(ROOKIE, { mental: 1, physical: 1, social: 1 }, rng);
@@ -223,6 +244,38 @@ test("generateTrope wires every roll together into one result", () => {
   assert.equal(result.secondTalent.name, "Sentinel");
   assert.equal(result.deskItem.name, "A Sad Little Cactus");
   assert.equal(result.rerunPoints, 1);
+});
+
+test("generateTrope excludes a held second Talent from the possible outputs", () => {
+  const rng = fixedRng([0]); // would normally pick the first option everywhere
+  const result = generateTrope({
+    tropes: FIXTURE_TROPES,
+    secondTalents: SECOND_TALENTS_FIXTURE,
+    qualities: QUALITIES_FIXTURE,
+    quirks: QUIRKS_FIXTURE,
+    bstories: BSTORIES_FIXTURE,
+    hq: HQ_FIXTURE,
+    agencyNames: AGENCY_NAMES_FIXTURE,
+    deskItems: DESK_ITEMS_FIXTURE
+  }, rng, { secondTalentNames: ["Sentinel"] });
+
+  assert.equal(result.secondTalent.name, "Drama Queen");
+});
+
+test("generateTrope falls back to the full second Talent list when every option is excluded", () => {
+  const rng = fixedRng([0]);
+  const result = generateTrope({
+    tropes: FIXTURE_TROPES,
+    secondTalents: SECOND_TALENTS_FIXTURE,
+    qualities: QUALITIES_FIXTURE,
+    quirks: QUIRKS_FIXTURE,
+    bstories: BSTORIES_FIXTURE,
+    hq: HQ_FIXTURE,
+    agencyNames: AGENCY_NAMES_FIXTURE,
+    deskItems: DESK_ITEMS_FIXTURE
+  }, rng, { secondTalentNames: ["Sentinel", "Drama Queen"] });
+
+  assert.equal(result.secondTalent.name, "Sentinel");
 });
 
 const ZERO_SKILLS = {

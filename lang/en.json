@@ -115,6 +115,7 @@
       "Interludes": "Interludes",
       "Interlude": "Interlude",
       "ArrestPhaseTriggered": "Arrest Phase Triggered",
+      "CulpritEscaped": "Culprit Escaped (adds 2 bad evidence at Epilogue)",
       "ArrestPhaseNotes": "Arrest Phase Notes",
       "EpilogueNotes": "Epilogue Notes",
       "EvidenceLog": "Evidence Log",

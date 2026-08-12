@@ -4,6 +4,7 @@ const { ApplicationV2 } = foundry.applications.api;
 import { loadGeneratorData } from "../helpers/generator-data.mjs";
 import { rollTrope, validateSkillAllocation, rollQualityOrQuirk, rollBStoryOrHq } from "../helpers/character-generator.mjs";
 import { rollFullName } from "../helpers/npc-name-generator.mjs";
+import { heldNames } from "../helpers/held-names.mjs";
 
 const STEP_IDS = [
   "name", "trope", "skills", "quality", "quirk", "bstory",
@@ -98,6 +99,15 @@ export default class TropeBuilderApplication extends HandlebarsApplicationMixin(
     return STEP_IDS[this.#stepIndex];
   }
 
+  #heldNames() {
+    const actors = game.actors.map(a => ({
+      id: a.id,
+      type: a.type,
+      items: a.items.map(i => ({ type: i.type, name: i.name }))
+    }));
+    return heldNames(actors);
+  }
+
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
     this.#data ??= await loadGeneratorData();
@@ -122,7 +132,11 @@ export default class TropeBuilderApplication extends HandlebarsApplicationMixin(
     };
 
     if (stepId === "trope") {
-      context.tropeOptions = this.#data.tropes.map(t => ({
+      const { tropeNames: heldTropeNames } = this.#heldNames();
+      const excludedTropes = new Set(heldTropeNames);
+      const availableTropes = this.#data.tropes.filter(t => !excludedTropes.has(t.name));
+      const tropePool = availableTropes.length ? availableTropes : this.#data.tropes;
+      context.tropeOptions = tropePool.map(t => ({
         name: t.name,
         selected: t.name === (this.#draft.trope?.name ?? "")
       }));
@@ -155,7 +169,11 @@ export default class TropeBuilderApplication extends HandlebarsApplicationMixin(
     }
 
     if (stepId === "secondTalent") {
-      context.secondTalentOptions = this.#data.secondTalents.map(t => ({
+      const { secondTalentNames: heldSecondTalentNames } = this.#heldNames();
+      const excludedSecondTalents = new Set(heldSecondTalentNames);
+      const availableSecondTalents = this.#data.secondTalents.filter(t => !excludedSecondTalents.has(t.name));
+      const secondTalentPool = availableSecondTalents.length ? availableSecondTalents : this.#data.secondTalents;
+      context.secondTalentOptions = secondTalentPool.map(t => ({
         name: t.name,
         selected: t.name === (this.#draft.secondTalent?.name ?? "")
       }));
@@ -343,7 +361,8 @@ export default class TropeBuilderApplication extends HandlebarsApplicationMixin(
   }
 
   static #onRollTrope() {
-    const trope = rollTrope(this.#data.tropes, Math.random);
+    const { tropeNames } = this.#heldNames();
+    const trope = rollTrope(this.#data.tropes, Math.random, tropeNames);
     this.#setTrope(trope);
   }
 
